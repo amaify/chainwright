@@ -1,6 +1,0 @@
-import defineWalletSetup from "@/core/define-wallet-setup";
-
-export default defineWalletSetup(async ({ context, walletPage }) => {
-    console.log("Setting up MetaMask part two!!");
-    return void 0;
-});

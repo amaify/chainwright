@@ -12,53 +12,81 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const BASE_DIR = path.join(__dirname, "..", "test", WALLET_SETUP_DIR_NAME);
 
+type ActionOptions = {
+    headless: boolean;
+    force: boolean;
+    all: "all" | boolean;
+    metamask: "metamask" | boolean;
+    solflare: "solflare" | boolean;
+};
+
 export async function clientEntry() {
     const program = new Command();
 
     program
         .name(pc.yellow("Playwright Kit Web3"))
         .description(pc.green("A CLI tool for setting up wallet cache for E2E testing of web3 applications"))
+        .version(pc.blue("0.1.0"));
+
+    program
+        .command("setup-wallet")
+        .argument("[dir]", "Directory containing the wallet setup functions", path.resolve(BASE_DIR))
+        .option(
+            "--headless",
+            "Build cache in the headless browser mode. Alternatively, set the `HEADLESS` env variable to `true`",
+            false,
+        )
+        .option("-f, --force", "Force the creation of cache even if it already exists", false)
         .option("-a, --all", "Setup all wallets", "all")
         .option("-m, --metamask", "Setup MetaMask", "metamask")
         .option("-s, --solflare", "Setup Solflare", "solflare")
-        .version(pc.blue("0.1.0"))
-        .command("setup-wallet")
-        .argument(
-            "[dir]",
-            "Directory containing the wallet setup functions",
-            path.join("src", "test", WALLET_SETUP_DIR_NAME),
-        );
+        .action(async (setupDir: string, flags: ActionOptions) => {
+            // Use this to filter out "headless" and "force"
+            const commandOptions = ["all", "metamask", "solflare"] as const;
+
+            const flagValue = Object.keys(flags).filter((_key) => {
+                return commandOptions.includes(_key as CLIOptions)
+                    ? flags[_key as keyof ActionOptions] === true
+                    : false;
+            });
+
+            const isWalletSelected = flagValue.length > 0;
+            const response: CLIOptions = !isWalletSelected
+                ? await select({
+                      message: "Select the wallet you want to setup",
+                      choices: [
+                          { name: "MetaMask", value: "metamask" },
+                          { name: "Solflare", value: "solflare" },
+                          { name: "All", value: "all" },
+                      ],
+                      loop: false,
+                      pageSize: 10,
+                      default: "all",
+                  })
+                : (flagValue[0] as CLIOptions);
+
+            let walletSetupDir = setupDir;
+            const customDirectory = program.commands[0]?.args ?? [];
+
+            if (customDirectory[0]) walletSetupDir = path.resolve(process.cwd(), customDirectory[0]);
+
+            if (flags.headless) process.env.HEADLESS = true;
+
+            const setFunctionHashes = await getSetupFunctionHash({
+                walletSetupDir,
+                selectedWallet: response,
+            });
+
+            for (const { hash, walletName } of setFunctionHashes) {
+                await triggerCacheCreation({
+                    walletName: walletName as SupportedWallets,
+                    walletHash: hash,
+                    force: flags.force,
+                });
+            }
+        });
 
     await program.parseAsync(process.argv);
-
-    const flags = program.opts();
-    const flagValue = Object.keys(flags).filter((_key) => flags[_key] === true);
-    const isFlagsPassed = flagValue.length > 0;
-
-    const response: CLIOptions = !isFlagsPassed
-        ? await select({
-              message: "Select the wallet you want to setup",
-              choices: [
-                  { name: "MetaMask", value: "metamask" },
-                  { name: "Solflare", value: "solflare" },
-                  { name: "All", value: "all" },
-              ],
-              loop: false,
-              pageSize: 10,
-              default: "all",
-          })
-        : (flagValue[0] as CLIOptions);
-
-    let walletSetupDir = BASE_DIR;
-    const filteredArgs = program.args.filter((_arg) => _arg !== "setup-wallet");
-
-    if (filteredArgs[0]) walletSetupDir = path.resolve(process.cwd(), filteredArgs[0]);
-
-    const setFunctionHashes = await getSetupFunctionHash(walletSetupDir, response);
-
-    for (const { hash, walletName } of setFunctionHashes) {
-        await triggerCacheCreation({ walletName: walletName as SupportedWallets, walletHash: hash });
-    }
 }
 
-clientEntry().catch((error) => console.log("Error: ", error));
+clientEntry().catch((error) => console.error("Error: ", error));

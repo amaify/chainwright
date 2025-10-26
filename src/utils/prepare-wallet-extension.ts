@@ -10,13 +10,19 @@ type Args = {
     name: CLIOptions;
     walletHash: string;
     downloadUrl: string;
+    force: boolean;
 };
 
-export async function prepareWalletExtension({ downloadUrl, name, walletHash }: Args) {
+export async function prepareWalletExtension({ downloadUrl, name, walletHash, force }: Args) {
     const CACHE_DIR_NAME = getCacheDirectory(name);
     const walletName = name.toUpperCase();
     const zipFilePath = path.join(CACHE_DIR_NAME, `${name}-${walletHash}-extension.zip`);
     const outputPath = path.join(CACHE_DIR_NAME, `${name}-${walletHash}-extension`);
+
+    if (force) {
+        fs.rmSync(CACHE_DIR_NAME, { recursive: true });
+        console.info(picocolors.magenta(`🧹 Removed ${walletName} because of the force flag`));
+    }
 
     // Ensure the cache directory exists
     if (!fs.existsSync(CACHE_DIR_NAME)) {
@@ -27,7 +33,7 @@ export async function prepareWalletExtension({ downloadUrl, name, walletHash }: 
     }
 
     // Download MetaMask if not cached
-    if (fs.existsSync(zipFilePath)) {
+    if (fs.existsSync(outputPath)) {
         console.info(`✅ ${walletName} Version is downloaded already.`);
     } else {
         console.info(picocolors.cyanBright(`📥 Downloading ${name} extension...`));
@@ -42,7 +48,8 @@ export async function prepareWalletExtension({ downloadUrl, name, walletHash }: 
         zip.extractAllTo(outputPath, true);
         console.info(`✅ ${walletName} Extension extracted successfully.`);
     } else {
-        console.info(picocolors.yellow(`ℹ️ ${walletName}: Using cached extracted extension.`));
+        console.info(picocolors.yellow(`ℹ️ ${walletName}: Cache already exists for for ${outputPath} skipping...`));
+        process.exit(0);
     }
 
     // Validate the extracted extension

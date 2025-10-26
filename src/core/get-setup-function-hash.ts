@@ -4,9 +4,14 @@ import { glob } from "glob";
 import type { CLIOptions } from "@/utils/constants";
 import { createWalletSetupHash } from "./create-hash";
 
+type SetupFunctionHash = {
+    walletSetupDir: string;
+    selectedWallet: CLIOptions;
+};
+
 export const createGlobPattern = (walletSetupDir: string) => path.join(walletSetupDir, "**", "*.setup.{ts,js,mjs}");
 
-export async function getSetupFunctionHash(walletSetupDir: string, selectedWallet: CLIOptions) {
+export async function getSetupFunctionHash({ walletSetupDir, selectedWallet }: SetupFunctionHash) {
     const globPattern = createGlobPattern(walletSetupDir);
     const fileList = (await glob(globPattern)).sort();
     const filteredFileList =
