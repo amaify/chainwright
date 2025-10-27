@@ -5,7 +5,7 @@ import { select } from "@inquirer/prompts";
 import { Command } from "commander";
 import pc from "picocolors";
 import { getSetupFunctionHash } from "@/core/get-setup-function-hash";
-import { triggerCacheCreation } from "@/utils/trigger-cache-creation";
+import { triggerCacheCreation } from "@/core/trigger-cache-creation";
 import { type CLIOptions, type SupportedWallets, WALLET_SETUP_DIR_NAME } from "../utils/constants";
 
 const __filename = fileURLToPath(import.meta.url);
