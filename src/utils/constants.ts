@@ -1,11 +1,10 @@
-import { getArchivedWalletDownloadUrl } from "./get-archived-wallet-download-url";
-
-export type CLIOptions = "metamask" | "solflare" | "all";
-export type SupportedWallets = Exclude<CLIOptions, "all">;
-
 export const CACHE_DIR_NAME = ".wallet-cache";
 export const WALLET_SETUP_DIR_NAME = "wallet-setup";
 
-const METAMASK_VERSION = "12.23.0";
+const METAMASK_VERSION = "13.7.0";
+const ARCHIVED_WALLET_BASE_URL = `https://github.com/amaify/playwright-kit-web3/releases/download/v0.1.0/`;
+
 export const METAMASK_DOWNLOAD_URL = `https://github.com/MetaMask/metamask-extension/releases/download/v${METAMASK_VERSION}/metamask-chrome-${METAMASK_VERSION}.zip`;
-export const SOLFLARE_DOWNLOAD_URL = getArchivedWalletDownloadUrl("solflare-2.8.3");
+export const SOLFLARE_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}solflare-wallet-extension-v2.13.0.zip`;
+export const PETRA_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}petra-wallet-extension-v2.2.2.zip`;
+export const PHANTOM_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}phantom-wallet-extension-v25.40.0.zip`;

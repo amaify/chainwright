@@ -1,15 +1,16 @@
-import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { glob } from "glob";
-import type { CLIOptions } from "@/utils/constants";
-import extractWalletNameFromPath from "@/utils/extract-wallet-name-from-path";
-import { createWalletSetupHash } from "./create-hash";
+import type { CLIOptions } from "@/types";
+import extractWalletNameFromPath from "@/utils/wallets/extract-wallet-name-from-path";
+import type defineWalletSetup from "./define-wallet-setup";
 
 type SetupFunctionHash = {
     walletSetupDir: string;
     selectedWallet: CLIOptions;
 };
+
+type SetupFunction = Awaited<ReturnType<typeof defineWalletSetup>>;
 
 const toPosix = (path: string) => path.replace(/\\/g, "/");
 
@@ -28,6 +29,7 @@ export async function getSetupFunctionHash({ walletSetupDir, selectedWallet }: S
             windowsPathsNoEscape: true,
         })
     ).sort();
+
     const filteredFileList =
         selectedWallet === "all" ? fileList : fileList.filter((filePath) => filePath.includes(selectedWallet));
 
@@ -44,12 +46,12 @@ export async function getSetupFunctionHash({ walletSetupDir, selectedWallet }: S
 
     const setupFunctionHashes = await Promise.all(
         _fileList.map(async ({ filePath, walletName }) => {
-            const sourceCode = fs.readFileSync(filePath, "utf8");
-            const hash = createWalletSetupHash(sourceCode);
             const importUrl = new URL(pathToFileURL(filePath)).href;
-            const setupFunction = (await import(importUrl)) as () => Promise<void>;
 
-            return { hash, walletName, setupFunction };
+            const setupFunction = (await import(importUrl).then((module) => module.default)) as SetupFunction;
+            const { fn, walletProfile } = setupFunction;
+
+            return { walletName, setupFunction: fn, walletProfile: walletProfile ?? undefined };
         }),
     );
 

@@ -6,7 +6,8 @@ import { Command } from "commander";
 import pc from "picocolors";
 import { getSetupFunctionHash } from "@/core/get-setup-function-hash";
 import { triggerCacheCreation } from "@/core/trigger-cache-creation";
-import { type CLIOptions, type SupportedWallets, WALLET_SETUP_DIR_NAME } from "../utils/constants";
+import type { CLIOptions, SupportedWallets } from "@/types";
+import { WALLET_SETUP_DIR_NAME } from "../utils/constants";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,9 +41,11 @@ export async function clientEntry() {
         .option("-a, --all", "Setup all wallets", "all")
         .option("-m, --metamask", "Setup MetaMask", "metamask")
         .option("-s, --solflare", "Setup Solflare", "solflare")
+        .option("--pt, --petra", "Setup Petra", "petra")
+        .option("--ph, --phantom", "Setup Phantom", "phantom")
         .action(async (setupDir: string, flags: ActionOptions) => {
             // Use this to filter out "headless" and "force"
-            const commandOptions = ["all", "metamask", "solflare"] as const;
+            const commandOptions = ["all", "metamask", "solflare", "petra", "phantom"] as const;
 
             const flagValue = Object.keys(flags).filter((_key) => {
                 return commandOptions.includes(_key as CLIOptions)
@@ -57,6 +60,8 @@ export async function clientEntry() {
                       choices: [
                           { name: "MetaMask", value: "metamask" },
                           { name: "Solflare", value: "solflare" },
+                          { name: "Petra", value: "petra" },
+                          { name: "Phantom", value: "phantom" },
                           { name: "All", value: "all" },
                       ],
                       loop: false,
@@ -77,11 +82,12 @@ export async function clientEntry() {
                 selectedWallet: response,
             });
 
-            for (const { hash, walletName } of setFunctionHashes) {
+            for (const { walletName, walletProfile, setupFunction } of setFunctionHashes) {
                 await triggerCacheCreation({
                     walletName: walletName as SupportedWallets,
-                    walletHash: hash,
                     force: flags.force,
+                    setupFunction,
+                    walletProfile,
                 });
             }
         });

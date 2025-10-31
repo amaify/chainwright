@@ -2,24 +2,23 @@ import fs from "node:fs";
 import path from "node:path";
 import AdmZip from "adm-zip";
 import picocolors from "picocolors";
-import type { CLIOptions } from "./constants";
+import type { CLIOptions } from "@/types";
 import { downloadFile } from "./download-file";
 import getCacheDirectory from "./get-cache-directory";
 
 type Args = {
     name: CLIOptions;
-    walletHash: string;
     downloadUrl: string;
     force: boolean;
 };
 
-export async function prepareWalletExtension({ downloadUrl, name, walletHash, force }: Args) {
+export async function prepareWalletExtension({ downloadUrl, name, force }: Args) {
     const CACHE_DIR_NAME = getCacheDirectory(name);
     const walletName = name.toUpperCase();
-    const zipFilePath = path.join(CACHE_DIR_NAME, `${name}-${walletHash}-extension.zip`);
-    const outputPath = path.join(CACHE_DIR_NAME, `${name}-${walletHash}-extension`);
+    const zipFilePath = path.join(CACHE_DIR_NAME, `${name}-extension.zip`);
+    const outputPath = path.join(CACHE_DIR_NAME, `${name}-extension`);
 
-    if (force) {
+    if (force && fs.existsSync(CACHE_DIR_NAME)) {
         fs.rmSync(CACHE_DIR_NAME, { recursive: true });
         console.info(picocolors.magenta(`🧹 Removed ${walletName} because of the force flag`));
     }
@@ -49,7 +48,6 @@ export async function prepareWalletExtension({ downloadUrl, name, walletHash, fo
         console.info(`✅ ${walletName} Extension extracted successfully.`);
     } else {
         console.info(picocolors.yellow(`ℹ️ ${walletName}: Cache already exists for for ${outputPath} skipping...`));
-        process.exit(0);
     }
 
     // Validate the extracted extension
