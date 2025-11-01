@@ -47,7 +47,6 @@ export default async function getSetupFunction({ walletSetupDir, selectedWallet 
     const setupFunctionHashes = await Promise.all(
         _fileList.map(async ({ filePath, walletName }) => {
             const importUrl = new URL(pathToFileURL(filePath)).href;
-
             const setupFunction = (await import(importUrl).then((module) => module.default)) as SetupFunction;
             const { fn, walletProfile } = setupFunction;
 
