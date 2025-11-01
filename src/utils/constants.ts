@@ -1,3 +1,5 @@
+import type { SupportedWalletsMap } from "@/types";
+
 export const CACHE_DIR_NAME = ".wallet-cache";
 export const WALLET_SETUP_DIR_NAME = "wallet-setup";
 
@@ -8,3 +10,22 @@ export const METAMASK_DOWNLOAD_URL = `https://github.com/MetaMask/metamask-exten
 export const SOLFLARE_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}solflare-wallet-extension-v2.13.0.zip`;
 export const PETRA_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}petra-wallet-extension-v2.2.2.zip`;
 export const PHANTOM_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}phantom-wallet-extension-v25.40.0.zip`;
+
+export const SUPPORTED_WALLETS: SupportedWalletsMap = {
+    metamask: {
+        downloadUrl: METAMASK_DOWNLOAD_URL,
+        extensionName: "MetaMask",
+    },
+    solflare: {
+        downloadUrl: SOLFLARE_DOWNLOAD_URL,
+        extensionName: "Solflare Wallet",
+    },
+    petra: {
+        downloadUrl: PETRA_DOWNLOAD_URL,
+        extensionName: "Petra Aptos Wallet",
+    },
+    phantom: {
+        downloadUrl: PHANTOM_DOWNLOAD_URL,
+        extensionName: "Phantom",
+    },
+};

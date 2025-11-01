@@ -9,3 +9,15 @@ type Args = {
     walletPage: Page;
 };
 export type WalletSetupFunction = ({ context, walletPage }: Args) => Promise<void>;
+
+export type SupportedWalletsMap = {
+    [key in SupportedWallets]: {
+        downloadUrl: string;
+        extensionName: ExtensionName;
+    };
+};
+
+export type GetSetupFunctionFileList = {
+    filePath: string;
+    walletName: SupportedWallets;
+};

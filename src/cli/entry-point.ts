@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { select } from "@inquirer/prompts";
 import { Command } from "commander";
 import pc from "picocolors";
-import { getSetupFunctionHash } from "@/core/get-setup-function-hash";
+import getSetupFunction from "@/core/get-setup-function";
 import { triggerCacheCreation } from "@/core/trigger-cache-creation";
 import type { CLIOptions, SupportedWallets } from "@/types";
 import { WALLET_SETUP_DIR_NAME } from "../utils/constants";
@@ -77,17 +77,18 @@ export async function clientEntry() {
 
             if (flags.headless) process.env.HEADLESS = true;
 
-            const setFunctionHashes = await getSetupFunctionHash({
+            const setFunctionHashes = await getSetupFunction({
                 walletSetupDir,
                 selectedWallet: response,
             });
 
-            for (const { walletName, walletProfile, setupFunction } of setFunctionHashes) {
+            for (const { walletName, walletProfile, setupFunction, fileList } of setFunctionHashes) {
                 await triggerCacheCreation({
                     walletName: walletName as SupportedWallets,
                     force: flags.force,
                     setupFunction,
                     walletProfile,
+                    fileList,
                 });
             }
         });

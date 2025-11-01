@@ -3,6 +3,7 @@ import path from "node:path";
 import AdmZip from "adm-zip";
 import picocolors from "picocolors";
 import type { CLIOptions } from "@/types";
+import { SUPPORTED_WALLETS } from "./constants";
 import { downloadFile } from "./download-file";
 import getCacheDirectory from "./get-cache-directory";
 
@@ -14,7 +15,8 @@ type Args = {
 
 export async function prepareWalletExtension({ downloadUrl, name, force }: Args) {
     const CACHE_DIR_NAME = getCacheDirectory(name);
-    const walletName = name.toUpperCase();
+    const supportedWallet = SUPPORTED_WALLETS[name as Exclude<CLIOptions, "all">];
+    const walletName = supportedWallet.extensionName;
     const zipFilePath = path.join(CACHE_DIR_NAME, `${name}-extension.zip`);
     const outputPath = path.join(CACHE_DIR_NAME, `${name}-extension`);
 
@@ -31,11 +33,11 @@ export async function prepareWalletExtension({ downloadUrl, name, force }: Args)
         });
     }
 
-    // Download MetaMask if not cached
+    // Download wallet extension if not cached
     if (fs.existsSync(outputPath)) {
         console.info(`✅ ${walletName} Version is downloaded already.`);
     } else {
-        console.info(picocolors.cyanBright(`📥 Downloading ${name} extension...`));
+        console.info(picocolors.cyanBright(`📥 Downloading ${walletName} extension...`));
         await downloadFile({ url: downloadUrl, destination: zipFilePath });
         console.info(picocolors.green(`✅ ${name.toUpperCase()} Extension downloaded successfully.`));
     }
@@ -47,7 +49,9 @@ export async function prepareWalletExtension({ downloadUrl, name, force }: Args)
         zip.extractAllTo(outputPath, true);
         console.info(`✅ ${walletName} Extension extracted successfully.`);
     } else {
-        console.info(picocolors.yellow(`ℹ️ ${walletName}: Cache already exists for for ${outputPath} skipping...`));
+        console.info(
+            picocolors.yellow(`⚠️ ${walletName}: Cache already exists for ${outputPath}. Using cached version.`),
+        );
     }
 
     // Validate the extracted extension

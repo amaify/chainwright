@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { CLIOptions } from "@/types";
+import type { SupportedWallets } from "@/types";
 
 export default function extractWalletNameFromPath(filePath: string) {
     const base = path.basename(filePath);
@@ -9,5 +9,5 @@ export default function extractWalletNameFromPath(filePath: string) {
     if (!walletNameMatch) {
         throw new Error(`Invalid wallet setup filename: ${base} (expected "<name>[ -variant].setup.{ts,js,mjs}")`);
     }
-    return walletNameMatch[1] as CLIOptions;
+    return walletNameMatch[1] as SupportedWallets;
 }

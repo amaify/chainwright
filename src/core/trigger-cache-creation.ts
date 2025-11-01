@@ -2,15 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import picocolors from "picocolors";
 import { chromium } from "playwright-core";
-import type { ExtensionName, SupportedWallets, WalletSetupFunction } from "@/types";
+import type { GetSetupFunctionFileList, SupportedWallets, WalletSetupFunction } from "@/types";
 import getCacheDirectory from "@/utils/get-cache-directory";
 import { getWalletExtensionIdFromBrowser } from "@/utils/wallets/get-wallet-extension-id-from-browser";
-import {
-    METAMASK_DOWNLOAD_URL,
-    PETRA_DOWNLOAD_URL,
-    PHANTOM_DOWNLOAD_URL,
-    SOLFLARE_DOWNLOAD_URL,
-} from "../utils/constants";
+import { SUPPORTED_WALLETS } from "../utils/constants";
 import { prepareWalletExtension } from "../utils/prepare-wallet-extension";
 import { waitForExtensionOnLoadPage } from "../utils/wait-for-extension-on-load-page";
 
@@ -18,36 +13,11 @@ type Args = {
     walletName: SupportedWallets;
     force: boolean;
     setupFunction: WalletSetupFunction;
+    fileList: GetSetupFunctionFileList[];
     walletProfile?: string;
 };
 
-type SupportedWalletsMap = {
-    [key in SupportedWallets]: {
-        downloadUrl: string;
-        extensionName: ExtensionName;
-    };
-};
-
-const SUPPORTED_WALLETS: SupportedWalletsMap = {
-    metamask: {
-        downloadUrl: METAMASK_DOWNLOAD_URL,
-        extensionName: "MetaMask",
-    },
-    solflare: {
-        downloadUrl: SOLFLARE_DOWNLOAD_URL,
-        extensionName: "Solflare Wallet",
-    },
-    petra: {
-        downloadUrl: PETRA_DOWNLOAD_URL,
-        extensionName: "Petra Aptos Wallet",
-    },
-    phantom: {
-        downloadUrl: PHANTOM_DOWNLOAD_URL,
-        extensionName: "Phantom",
-    },
-};
-
-export async function triggerCacheCreation({ walletName, force, walletProfile, setupFunction }: Args) {
+export async function triggerCacheCreation({ walletName, force, walletProfile, fileList, setupFunction }: Args) {
     const { downloadUrl, extensionName } = SUPPORTED_WALLETS[walletName];
     const CACHE_DIR_NAME = getCacheDirectory(walletName);
 
@@ -64,7 +34,7 @@ export async function triggerCacheCreation({ walletName, force, walletProfile, s
 
     const browserArgs = [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`];
 
-    if (fs.existsSync(userDataDir)) {
+    if (fs.existsSync(userDataDir) && fileList.length > 1) {
         console.error(
             [
                 `❌ ${walletProfileDir} directory already exists for ${extensionName}.`,
@@ -74,6 +44,10 @@ export async function triggerCacheCreation({ walletName, force, walletProfile, s
                 ),
             ].join("\n"),
         );
+        process.exit(1);
+    }
+
+    if (fs.existsSync(userDataDir)) {
         process.exit(1);
     }
 
