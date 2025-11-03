@@ -82,12 +82,12 @@ export async function clientEntry() {
                 selectedWallet: response,
             });
 
-            for (const { walletName, walletProfile, setupFunction, fileList } of _setupFunction) {
+            for (const { walletName, config, setupFunction, fileList } of _setupFunction) {
                 try {
                     console.info(pc.cyanBright(`\nSetting up cache for ${walletName}...`));
                     await triggerCacheCreation({
                         walletName: walletName as SupportedWallets,
-                        walletProfile,
+                        config,
                         setupFunction,
                         fileList,
                         force: flags.force,

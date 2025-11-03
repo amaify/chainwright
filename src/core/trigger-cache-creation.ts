@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import picocolors from "picocolors";
 import { chromium } from "playwright-core";
-import type { GetSetupFunctionFileList, SupportedWallets, WalletSetupFunction } from "@/types";
+import type { GetSetupFunctionFileList, SupportedWallets, WalletSetupConfig, WalletSetupFunction } from "@/types";
 import getCacheDirectory from "@/utils/get-cache-directory";
 import { getWalletExtensionIdFromBrowser } from "@/utils/wallets/get-wallet-extension-id-from-browser";
 import { SUPPORTED_WALLETS } from "../utils/constants";
@@ -14,12 +14,13 @@ type Args = {
     force: boolean;
     setupFunction: WalletSetupFunction;
     fileList: GetSetupFunctionFileList[];
-    walletProfile?: string;
+    config?: WalletSetupConfig;
 };
 
-export async function triggerCacheCreation({ walletName, force, walletProfile, fileList, setupFunction }: Args) {
+export async function triggerCacheCreation({ walletName, force, config, fileList, setupFunction }: Args) {
     const { downloadUrl, extensionName } = SUPPORTED_WALLETS[walletName];
     const CACHE_DIR_NAME = getCacheDirectory(walletName);
+    const walletProfile = config?.profileName;
 
     const walletProfileDir = walletProfile ? `${walletProfile}` : `wallet-data`;
     const extensionIdPathTxt = path.resolve(CACHE_DIR_NAME, "extension-id.txt");
@@ -60,6 +61,7 @@ export async function triggerCacheCreation({ walletName, force, walletProfile, f
     const context = await chromium.launchPersistentContext(userDataDir, {
         headless: false,
         args: browserArgs,
+        slowMo: config?.slowMo ?? 0,
     });
 
     console.info(picocolors.magentaBright(`🧩🚀 Starting Chrome extension for ${walletName.toUpperCase()}`));

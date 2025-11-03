@@ -21,3 +21,8 @@ export type GetSetupFunctionFileList = {
     filePath: string;
     walletName: SupportedWallets;
 };
+
+export type WalletSetupConfig = {
+    profileName?: string;
+    slowMo?: number;
+};

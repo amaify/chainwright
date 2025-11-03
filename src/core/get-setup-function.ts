@@ -52,9 +52,9 @@ export default async function getSetupFunction({ walletSetupDir, selectedWallet 
 
             return {
                 walletName,
-                setupFunction: fn,
-                walletProfile: config.profileName ?? undefined,
                 fileList: _fileList,
+                config,
+                setupFunction: fn,
             };
         }),
     );

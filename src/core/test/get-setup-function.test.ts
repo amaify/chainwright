@@ -132,7 +132,7 @@ describe("getSetupFunction", () => {
 
         expect(result).toHaveLength(1);
         expect(result[0]).toHaveProperty("walletName", "metamask");
-        expect(result[0]).toHaveProperty(["walletProfile"], "profile-two");
+        expect(result[0]).toHaveProperty(["config", "profileName"], "profile-two");
         expect(result[0]).toHaveProperty("setupFunction");
     });
 
