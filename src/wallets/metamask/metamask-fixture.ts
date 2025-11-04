@@ -8,7 +8,7 @@ import persistLocalStorage from "@/utils/persist-local-storage";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
-import { MetamaskProfile } from "./metamask";
+import { MetamaskProfile } from "./metamask-profile";
 
 export type MetamaskFixture = {
     context: BrowserContext;

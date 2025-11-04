@@ -1,6 +1,5 @@
-import { expect } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 import picocolors from "picocolors";
-import type { Page } from "playwright-core";
 import { homepageSelectors } from "../selectors/homepage-selectors";
 import { onboardSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
