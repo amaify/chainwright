@@ -1,7 +1,6 @@
 import { testWithMetamaskFixture } from "@/tests/fixture/test-with-metamask-fixture";
-import { metamaskFixture } from "@/wallets/metamask/metamask-fixture";
 
-const test = metamaskFixture();
+const test = testWithMetamaskFixture;
 
 test.describe("Rename account E2E tests", () => {
     test("Should rename account successfully", async ({ metamask }) => {

@@ -28,6 +28,6 @@ export class Metamask {
     }
 
     async renameAccount({ newAccountName, oldAccountName }: Omit<RenameAccount, "page">) {
-        renameAccount({ page: this.page, newAccountName, oldAccountName });
+        await renameAccount({ page: this.page, newAccountName, oldAccountName });
     }
 }

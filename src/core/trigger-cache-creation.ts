@@ -4,7 +4,6 @@ import picocolors from "picocolors";
 import { chromium } from "playwright-core";
 import type { GetSetupFunctionFileList, SupportedWallets, WalletSetupConfig, WalletSetupFunction } from "@/types";
 import getCacheDirectory from "@/utils/get-cache-directory";
-import { sleep } from "@/utils/sleep";
 import { getWalletExtensionIdFromBrowser } from "@/utils/wallets/get-wallet-extension-id-from-browser";
 import { SUPPORTED_WALLETS } from "../utils/constants";
 import { prepareWalletExtension } from "../utils/prepare-wallet-extension";
@@ -65,7 +64,7 @@ export async function triggerCacheCreation({
     }
 
     if (fs.existsSync(walletDataDir)) {
-        process.exit(0);
+        return void 0;
     }
 
     const context = await chromium.launchPersistentContext(walletDataDir, {
@@ -84,7 +83,7 @@ export async function triggerCacheCreation({
         fs.writeFileSync(extensionIdPathTxt, extensionId, "utf-8");
         console.info(picocolors.cyanBright(`💾 Saved extension ID to: ${extensionIdPathTxt}`));
 
-        // // Save extension path to disk
+        // Save extension path to disk
         fs.writeFileSync(extensionPathTxt, extensionPath, "utf-8");
         console.info(picocolors.blueBright(`📁 Saved extension Path to: ${extensionPathTxt}`));
 
@@ -93,8 +92,6 @@ export async function triggerCacheCreation({
     }
 
     await setupFunction({ context, walletPage });
-
-    await sleep(3000);
 
     await context.close();
 }

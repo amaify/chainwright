@@ -1,5 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 import picocolors from "picocolors";
+import { sleep } from "@/utils/sleep";
 import { homepageSelectors } from "../selectors/homepage-selectors";
 import { onboardSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
@@ -115,6 +116,8 @@ export default async function onboard({ page, mode, password, ...args }: Onboard
     await expect(page.getByTestId(homepageSelectors.swapButton)).toBeVisible();
     await expect(page.getByTestId(homepageSelectors.sendButton)).toBeVisible();
     await expect(page.getByTestId(homepageSelectors.receiveButton)).toBeVisible();
+
+    await sleep(8_000);
 
     console.info(picocolors.greenBright("✨ MetaMask onboarding completed successfully"));
 }

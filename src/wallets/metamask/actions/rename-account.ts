@@ -8,9 +8,6 @@ export type RenameAccount = {
 };
 
 export async function renameAccount({ page, oldAccountName, newAccountName }: RenameAccount) {
-    console.log("Old Account Name: ----> ", oldAccountName);
-    console.log("New Account Name: ----> ", newAccountName);
-    console.log("Page URL: ----> ", page?.url());
     const accountMenuButton = page.getByTestId(homepageSelectors.accountMenuButton);
 
     await expect(accountMenuButton).toBeVisible({ timeout: 60_000 });
