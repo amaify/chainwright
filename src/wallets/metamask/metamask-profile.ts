@@ -6,12 +6,12 @@ export class MetamaskProfile {
 
     async indexUrl() {
         const extensionId = await this.extensionId();
-        return `chrome-extension://${extensionId}/index.html`;
+        return `chrome-extension://${extensionId}/home.html`;
     }
 
     async promptUrl() {
         const extensionId = await this.extensionId();
-        return `chrome-extension://${extensionId}/prompt.html`;
+        return `chrome-extension://${extensionId}/notification.html`;
     }
 
     async extensionId() {

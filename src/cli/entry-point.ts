@@ -11,7 +11,7 @@ import { WALLET_SETUP_DIR_NAME } from "../utils/constants";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const BASE_DIR = path.join(__dirname, "..", "test", WALLET_SETUP_DIR_NAME);
+const BASE_DIR = path.join(__dirname, "..", "tests", WALLET_SETUP_DIR_NAME);
 
 type ActionOptions = {
     headless: boolean;

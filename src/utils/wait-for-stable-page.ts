@@ -1,6 +1,8 @@
 import type { Page } from "@playwright/test";
 
+const TIMEOUT = 15_000;
+
 export default async function waitForStablePage(page: Page) {
-    await page.waitForLoadState("load", { timeout: 10_000 });
-    await page.waitForLoadState("domcontentloaded", { timeout: 10_000 });
+    await page.waitForLoadState("load", { timeout: TIMEOUT });
+    await page.waitForLoadState("domcontentloaded", { timeout: TIMEOUT });
 }

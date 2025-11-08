@@ -2,6 +2,7 @@ import type { Page } from "playwright-core";
 import { lockWallet } from "./actions/lock";
 import onboard from "./actions/onboard";
 import { openSettings } from "./actions/open-settings";
+import { type RenameAccount, renameAccount } from "./actions/rename-account";
 import unlock from "./actions/unlock";
 import type { OnboardingArgs } from "./types";
 
@@ -24,5 +25,9 @@ export class Metamask {
     async lock() {
         await openSettings(this.page);
         await lockWallet(this.page);
+    }
+
+    async renameAccount({ newAccountName, oldAccountName }: Omit<RenameAccount, "page">) {
+        renameAccount({ page: this.page, newAccountName, oldAccountName });
     }
 }

@@ -4,6 +4,7 @@ import picocolors from "picocolors";
 import { chromium } from "playwright-core";
 import type { GetSetupFunctionFileList, SupportedWallets, WalletSetupConfig, WalletSetupFunction } from "@/types";
 import getCacheDirectory from "@/utils/get-cache-directory";
+import { sleep } from "@/utils/sleep";
 import { getWalletExtensionIdFromBrowser } from "@/utils/wallets/get-wallet-extension-id-from-browser";
 import { SUPPORTED_WALLETS } from "../utils/constants";
 import { prepareWalletExtension } from "../utils/prepare-wallet-extension";
@@ -23,18 +24,18 @@ export async function triggerCacheCreation({
     force,
     config,
     fileList,
-    setupFunction,
     walletPassword,
+    setupFunction,
 }: Args) {
     const { downloadUrl, extensionName } = SUPPORTED_WALLETS[walletName];
     const CACHE_DIR_NAME = getCacheDirectory(walletName);
     const walletProfile = config?.profileName;
 
-    const walletProfileDir = walletProfile ? `${walletProfile}` : `wallet-data`;
+    const walletProfileDir = walletProfile ? `${walletProfile}` : "wallet-data";
     const extensionIdPathTxt = path.resolve(CACHE_DIR_NAME, "extension-id.txt");
     const extensionPathTxt = path.resolve(CACHE_DIR_NAME, "extension-path.txt");
     const passwordTxt = path.resolve(CACHE_DIR_NAME, "password.txt");
-    const userDataDir = path.join(CACHE_DIR_NAME, walletProfileDir);
+    const walletDataDir = path.resolve(CACHE_DIR_NAME, walletProfileDir);
 
     const extensionPath = await prepareWalletExtension({
         downloadUrl,
@@ -44,7 +45,7 @@ export async function triggerCacheCreation({
 
     const browserArgs = [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`];
 
-    if (fs.existsSync(userDataDir) && fileList.length > 1) {
+    if (fs.existsSync(walletDataDir) && fileList.length > 1) {
         throw Error(
             [
                 picocolors.yellowBright(
@@ -63,17 +64,15 @@ export async function triggerCacheCreation({
         );
     }
 
-    if (fs.existsSync(userDataDir)) {
+    if (fs.existsSync(walletDataDir)) {
         process.exit(0);
     }
 
-    const context = await chromium.launchPersistentContext(userDataDir, {
+    const context = await chromium.launchPersistentContext(walletDataDir, {
         headless: false,
         args: browserArgs,
         slowMo: config?.slowMo ?? 0,
     });
-
-    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 
     console.info(picocolors.magentaBright(`🧩🚀 Starting Chrome extension for ${walletName.toUpperCase()}`));
     const walletPage = await waitForExtensionOnLoadPage(context, walletName);
@@ -94,6 +93,8 @@ export async function triggerCacheCreation({
     }
 
     await setupFunction({ context, walletPage });
+
+    await sleep(3000);
 
     await context.close();
 }

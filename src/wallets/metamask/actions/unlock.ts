@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
-import { unlockWalletSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors, unlockWalletSelectors } from "../selectors/homepage-selectors";
 
 export default async function unlock(page: Page) {
     const walletPassword = await getWalletPasswordFromCache("metamask");
@@ -12,4 +12,9 @@ export default async function unlock(page: Page) {
     const unlockButton = page.getByTestId(unlockWalletSelectors.unlockButton);
     await expect(unlockButton).toBeVisible();
     await unlockButton.click();
+
+    await expect(page.getByTestId(homepageSelectors.buyButton)).toBeVisible();
+    await expect(page.getByTestId(homepageSelectors.swapButton)).toBeVisible();
+    await expect(page.getByTestId(homepageSelectors.sendButton)).toBeVisible();
+    await expect(page.getByTestId(homepageSelectors.receiveButton)).toBeVisible();
 }

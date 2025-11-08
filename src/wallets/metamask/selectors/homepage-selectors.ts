@@ -6,6 +6,8 @@ export const homepageSelectors = {
     openSettingsButton: "account-options-menu-button",
     settingsMenu: "global-menu",
     lockButton: "global-menu-lock",
+    accountMenuButton: "account-menu-icon",
+    accountCell: "multichain-account-cell-entropy",
 };
 
 export const unlockWalletSelectors = {
