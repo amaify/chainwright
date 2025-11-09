@@ -6,6 +6,16 @@ export default async function unlock(page: Page) {
     const walletPassword = await getWalletPasswordFromCache("metamask");
 
     const inputField = page.getByTestId(unlockWalletSelectors.passwordInput);
+    const isWalletOpen = await inputField
+        .isVisible()
+        .then(() => true)
+        .catch(() => false);
+
+    if (!isWalletOpen) {
+        console.info("💡 Wallet is already unlocked");
+        return;
+    }
+
     await expect(inputField).toBeVisible({ timeout: 15_000 });
     await inputField.fill(walletPassword);
 

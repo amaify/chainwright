@@ -3,10 +3,11 @@ export const homepageSelectors = {
     sendButton: "button:has-text('Send')",
     receiveButton: "button:has-text('Receive')",
     openSettingsButton: "account-options-menu-button",
-    settingsMenu: "global-menu",
+    settingsMenu: "button[aria-label='Settings']",
     lockButton: "global-menu-lock",
-    accountMenuButton: "account-menu-icon",
-    accountCell: "multichain-account-cell-entropy",
+    accountMenuButton: "button[data-part='trigger']",
+    accountDialog: "div[role='dialog']",
+    backButton: "button[id='back-button']",
 };
 
 export const unlockWalletSelectors = {
@@ -15,11 +16,13 @@ export const unlockWalletSelectors = {
 };
 
 export const accountSelectors = {
-    accountOptionsMenuButton: "multichain-account-cell-end-accessory",
-    accountDetailsLabel: "Account details",
+    accountOptionsMenuButton: "button[data-part='trigger']",
+    editAccountButton: "button[aria-label='Edit account name']",
+    renameAccountInput: "input[name='name']",
+    saveButton: "button:has-text('Save')",
+    cancelButton: "button:has-text('Cancel')",
     renameAccountLabel: "Rename",
     addressesLabel: "Addresses",
     pinToTopLabel: "Pin to top",
     hideAccountLabel: "Hide account",
-    backButton: "back",
 };

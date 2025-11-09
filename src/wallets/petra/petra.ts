@@ -27,7 +27,7 @@ export class Petra {
         await lockWallet(this.page);
     }
 
-    async renameAccount({ newAccountName, oldAccountName }: Omit<RenameAccount, "page">) {
-        await renameAccount({ page: this.page, newAccountName, oldAccountName });
+    async renameAccount({ newAccountName }: Omit<RenameAccount, "page">) {
+        await renameAccount({ page: this.page, newAccountName });
     }
 }

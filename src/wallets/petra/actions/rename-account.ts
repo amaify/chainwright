@@ -1,80 +1,43 @@
-import { expect, type Locator, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import z from "zod";
 import { skip } from "@/tests/utils/skip";
 import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors";
 
 export type RenameAccount = {
     page: Page;
-    oldAccountName: string;
     newAccountName: string;
 };
 
-export async function renameAccount({ page, oldAccountName, newAccountName }: RenameAccount) {
-    const accountMenuButton = page.getByTestId(homepageSelectors.accountMenuButton);
-    const accountMenuTextContent = await accountMenuButton.textContent();
+export async function renameAccount({ page, newAccountName }: RenameAccount) {
+    const parsedNewAccountName = z.string().min(1, "Account name cannot be an empty string").parse(newAccountName);
 
+    const settingsMenuButton = page.locator(homepageSelectors.settingsMenu);
+    await settingsMenuButton.click();
+
+    await expect(page.getByText("Settings").first()).toBeVisible();
+    const editAccountButton = page.locator(accountSelectors.editAccountButton);
+    await expect(editAccountButton).toBeVisible();
+    await editAccountButton.click();
+
+    await expect(page.getByText("Account name").first()).toBeVisible();
+    const renameInput = page.locator(accountSelectors.renameAccountInput);
+
+    const currentAccountName = await renameInput.getAttribute("value");
     skip(
-        accountMenuTextContent === newAccountName,
-        `The account to be renamed "${newAccountName}" already exists. Skipping test.`,
+        currentAccountName === parsedNewAccountName,
+        `The account to be renamed "${parsedNewAccountName}" already exists. Skipping test.`,
     );
 
-    await expect(accountMenuButton).toBeVisible({ timeout: 15_000 });
-    await accountMenuButton.click();
-    await expect(page.getByRole("heading", { name: /accounts/i })).toBeVisible();
+    await renameInput.fill(parsedNewAccountName);
 
-    const accountCells = await page.getByTestId(/^multichain-account-cell-entropy:/).all();
-    let currentAccount: Locator | null = null;
+    const saveButton = page.locator(accountSelectors.saveButton);
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
 
-    for (const accountCell of accountCells) {
-        const textContent = await accountCell.textContent();
+    await expect(page.getByText(parsedNewAccountName).first()).toBeVisible();
+    const backButton = page.locator(homepageSelectors.backButton);
+    await backButton.click();
 
-        if (textContent?.includes(oldAccountName)) {
-            currentAccount = accountCell;
-            break;
-        }
-    }
-
-    if (!currentAccount) {
-        skip(!currentAccount, `Account with name "${oldAccountName}" not found.`);
-    }
-
-    const currentAccountText = await currentAccount?.textContent();
-
-    if (currentAccountText?.split("$")[0] === newAccountName) {
-        skip(
-            currentAccountText?.split("$")[0] === newAccountName,
-            `The new account name "${newAccountName}" is the same as the old account name "${oldAccountName}".`,
-        );
-    }
-
-    const optionsButton = page.locator(`div[aria-label='${oldAccountName} options']`);
-
-    await expect(optionsButton).toBeVisible();
-    await optionsButton.click();
-
-    await expect(page.getByRole("tooltip")).toBeVisible();
-    const renameOption = page.locator(`div[aria-label='${accountSelectors.renameAccountLabel}']`);
-    await expect(renameOption).toBeVisible();
-    await renameOption.click();
-
-    const dialog = page.getByRole("dialog");
-    const dialogTitle = dialog.getByRole("heading", { name: /rename/i });
-    await expect(dialogTitle).toBeVisible();
-
-    const inputField = dialog.getByRole("textbox");
-    await expect(inputField).toBeVisible();
-    await inputField.fill(newAccountName);
-
-    const confirmButton = dialog.getByRole("button", { name: /confirm/i });
-    await expect(confirmButton).toBeEnabled();
-    await confirmButton.click();
-
-    for (const accountCell of accountCells) {
-        const textContent = await accountCell.textContent();
-
-        if (textContent?.includes(newAccountName)) {
-            await expect(accountCell).toBeVisible();
-            await expect(accountCell).toContainText(newAccountName);
-            break;
-        }
-    }
+    await expect(page.locator(homepageSelectors.depositButton)).toBeVisible();
+    await expect(page.locator(homepageSelectors.sendButton)).toBeVisible();
 }
