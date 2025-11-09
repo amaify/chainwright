@@ -1,8 +1,7 @@
 export const homepageSelectors = {
-    buyButton: "eth-overview-buy",
-    swapButton: "eth-overview-swap",
-    sendButton: "eth-overview-send",
-    receiveButton: "eth-overview-receive",
+    depositButton: "button:has-text('Deposit')",
+    sendButton: "button:has-text('Send')",
+    receiveButton: "button:has-text('Receive')",
     openSettingsButton: "account-options-menu-button",
     settingsMenu: "global-menu",
     lockButton: "global-menu-lock",
@@ -11,8 +10,8 @@ export const homepageSelectors = {
 };
 
 export const unlockWalletSelectors = {
-    passwordInput: "unlock-password",
-    unlockButton: "unlock-submit",
+    passwordInput: "input[name='password']",
+    unlockButton: "button:has-text('Unlock')",
 };
 
 export const accountSelectors = {

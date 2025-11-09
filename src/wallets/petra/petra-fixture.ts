@@ -9,19 +9,19 @@ import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import waitForStablePage from "@/utils/wait-for-stable-page";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
 import unlock from "./actions/unlock";
-import { Metamask } from "./metamask";
-import { MetamaskProfile } from "./metamask-profile";
+import { Petra } from "./petra";
+import { PetraProfile } from "./petra-profile";
 
-export type MetamaskFixture = {
+export type PetraFixture = {
     contextPath: string;
-    metamask: Metamask;
-    metamaskPage: Page;
+    petra: Petra;
+    petraPage: Page;
 };
 
-let _metamaskPage: Page;
+let _petraPage: Page;
 
-export const metamaskFixture = (slowMo: number = 0, profileName?: string) => {
-    return base.extend<MetamaskFixture>({
+export const petraFixture = (slowMo: number = 0, profileName?: string) => {
+    return base.extend<PetraFixture>({
         contextPath: async ({ browserName }, use, testInfo) => {
             const tempWalletDataDir = await createTempContextDirectory(`${browserName}-${testInfo.testId}`);
 
@@ -34,7 +34,7 @@ export const metamaskFixture = (slowMo: number = 0, profileName?: string) => {
             }
         },
         context: async ({ context: currentContext, contextPath: tempWalletDataDir }, use) => {
-            const wallet = new MetamaskProfile();
+            const wallet = new PetraProfile();
 
             const CACHE_DIR = getCacheDirectory(wallet.name);
             const extensionPath = await getWalletExtensionPathFromCache(wallet.name);
@@ -67,30 +67,30 @@ export const metamaskFixture = (slowMo: number = 0, profileName?: string) => {
 
             const indexUrl = await wallet.indexUrl();
             const homePage = walletPageContext.pages().find((page) => page.url().startsWith(indexUrl));
-            _metamaskPage = homePage || (await getPageFromContext(walletPageContext, indexUrl));
+            _petraPage = homePage || (await getPageFromContext(walletPageContext, indexUrl));
 
-            await waitForStablePage(_metamaskPage);
+            await waitForStablePage(_petraPage);
 
             for (const page of walletPageContext.pages()) {
                 const url = page.url();
-                if (url.includes("about:blank")) {
+                if (url.includes("about:blank") || url.includes(wallet.onboardingPath)) {
                     await page.close();
                 }
             }
 
-            await _metamaskPage.bringToFront();
+            await _petraPage.bringToFront();
 
-            await unlock(_metamaskPage);
+            await unlock(_petraPage);
 
             await use(walletPageContext);
 
             await walletPageContext.close();
         },
-        metamaskPage: async ({ context: _ }, use) => {
-            await use(_metamaskPage);
+        petraPage: async ({ context: _ }, use) => {
+            await use(_petraPage);
         },
-        metamask: async ({ context: _ }, use) => {
-            const metamaskInstance = new Metamask(_metamaskPage);
+        petra: async ({ context: _ }, use) => {
+            const metamaskInstance = new Petra(_petraPage);
             await use(metamaskInstance);
         },
     });
