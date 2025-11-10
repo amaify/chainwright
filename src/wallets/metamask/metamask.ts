@@ -15,7 +15,6 @@ export class Metamask {
 
     async onboard(args: OnboardingArgs) {
         await onboard({ page: this.page, ...args });
-        return void 0;
     }
 
     async unlock() {

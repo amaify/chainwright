@@ -23,99 +23,70 @@ export default async function onboard({ page, mode, password, ...args }: Onboard
 
     if (mode === "create") {
         const useSecretRecoveryPhraseButton = page.getByTestId(onboardSelectors.useSecretRecoveryPhraseButton);
-        await expect(createWalletButton).toBeVisible();
         await createWalletButton.click();
-
-        await expect(useSecretRecoveryPhraseButton).toBeVisible();
         await useSecretRecoveryPhraseButton.click();
 
-        await expect(createNewPasswordInput).toBeVisible();
         await createNewPasswordInput.fill(password);
-
-        await expect(confirmNewPasswordInput).toBeVisible();
         await confirmNewPasswordInput.fill(password);
 
-        await expect(confirmPasswordCheckbox).toBeVisible();
         await confirmPasswordCheckbox.click();
-
-        await expect(createPasswordButton).toBeVisible();
         await createPasswordButton.click();
 
         const revealSecretRecoveryPhraseButton = page.getByTestId(onboardSelectors.revealSecretRecoveryPhraseButton);
-        await expect(revealSecretRecoveryPhraseButton).toBeVisible();
         await revealSecretRecoveryPhraseButton.click();
 
         const recoveryPhraseRemindMeLaterButton = page.getByTestId(onboardSelectors.recoveryPhraseRemindMeLaterButton);
-        await expect(recoveryPhraseRemindMeLaterButton).toBeVisible();
         await recoveryPhraseRemindMeLaterButton.click();
 
-        await expect(metamaskMetricsIAgreeButton).toBeVisible();
         await metamaskMetricsIAgreeButton.click();
-
-        await expect(onboardingDoneButton).toBeVisible();
         await onboardingDoneButton.click();
 
         await expect(page.getByTestId(homepageSelectors.buyButton)).toBeVisible();
         await expect(page.getByTestId(homepageSelectors.swapButton)).toBeVisible();
         await expect(page.getByTestId(homepageSelectors.sendButton)).toBeVisible();
         await expect(page.getByTestId(homepageSelectors.receiveButton)).toBeVisible();
-
-        console.info(picocolors.greenBright("✨ MetaMask onboarding completed successfully"));
-        return;
     }
 
-    const recoveryPhrase = "secretRecoveryPhrase" in args ? (args.secretRecoveryPhrase?.split(" ") ?? []) : [];
-    const importUsingSecretRecoveryPhraseButton = page.getByTestId(
-        onboardSelectors.importUsingSecretRecoveryPhraseButton,
-    );
+    if (mode === "import") {
+        const recoveryPhrase = "secretRecoveryPhrase" in args ? (args.secretRecoveryPhrase?.split(" ") ?? []) : [];
+        const importUsingSecretRecoveryPhraseButton = page.getByTestId(
+            onboardSelectors.importUsingSecretRecoveryPhraseButton,
+        );
 
-    await expect(importWalletButton).toBeVisible();
-    await importWalletButton.click();
+        await importWalletButton.click();
+        await importUsingSecretRecoveryPhraseButton.click();
 
-    await expect(importUsingSecretRecoveryPhraseButton).toBeVisible();
-    await importUsingSecretRecoveryPhraseButton.click();
+        const initialSecretRecoveryPhraseTextAreaInput = page.getByTestId(
+            onboardSelectors.secretRecoveryPhraseTextAreaInput,
+        );
+        await initialSecretRecoveryPhraseTextAreaInput.fill(recoveryPhrase[0] as string);
+        await initialSecretRecoveryPhraseTextAreaInput.press("Space");
 
-    const initialSecretRecoveryPhraseTextAreaInput = page.getByTestId(
-        onboardSelectors.secretRecoveryPhraseTextAreaInput,
-    );
-    await initialSecretRecoveryPhraseTextAreaInput.fill(recoveryPhrase[0] as string);
-    await initialSecretRecoveryPhraseTextAreaInput.press("Space");
+        for (let i = 1; i < recoveryPhrase.length; i++) {
+            const inputField = page.getByTestId(`import-srp__srp-word-${i}`);
+            await inputField.fill(recoveryPhrase[i] as string);
+            await inputField.press("Space");
+        }
 
-    for (let i = 1; i < recoveryPhrase.length; i++) {
-        const inputField = page.getByTestId(`import-srp__srp-word-${i}`);
-        await inputField.fill(recoveryPhrase[i] as string);
-        await inputField.press("Space");
+        const importWalletConfirmButton = page.getByTestId(onboardSelectors.importWalletConfirmButton);
+        await importWalletConfirmButton.click();
+        await createNewPasswordInput.fill(password);
+
+        await confirmNewPasswordInput.fill(password);
+        await confirmPasswordCheckbox.click();
+
+        await createPasswordButton.click();
+        await metamaskMetricsIAgreeButton.click();
+
+        const walletReadyBox = page.getByTestId("wallet-ready");
+        await expect(walletReadyBox).toContainText(/your wallet is ready/i);
+        await onboardingDoneButton.click();
+
+        await expect(page.getByTestId(homepageSelectors.buyButton)).toBeVisible();
+        await expect(page.getByTestId(homepageSelectors.swapButton)).toBeVisible();
+        await expect(page.getByTestId(homepageSelectors.sendButton)).toBeVisible();
+        await expect(page.getByTestId(homepageSelectors.receiveButton)).toBeVisible();
     }
-
-    const importWalletConfirmButton = page.getByTestId(onboardSelectors.importWalletConfirmButton);
-    await expect(importWalletConfirmButton).toBeVisible();
-    await expect(importWalletConfirmButton).toBeEnabled();
-    await importWalletConfirmButton.click();
-
-    await expect(createNewPasswordInput).toBeVisible();
-    await createNewPasswordInput.fill(password);
-
-    await expect(confirmNewPasswordInput).toBeVisible();
-    await confirmNewPasswordInput.fill(password);
-
-    await expect(confirmPasswordCheckbox).toBeVisible();
-    await confirmPasswordCheckbox.click();
-
-    await expect(createPasswordButton).toBeVisible();
-    await createPasswordButton.click();
-
-    await expect(metamaskMetricsIAgreeButton).toBeVisible();
-    await metamaskMetricsIAgreeButton.click();
-
-    const walletReadyBox = page.getByTestId("wallet-ready");
-    await expect(walletReadyBox).toContainText(/your wallet is ready/i);
-    await expect(onboardingDoneButton).toBeVisible();
-    await onboardingDoneButton.click();
-
-    await expect(page.getByTestId(homepageSelectors.buyButton)).toBeVisible();
-    await expect(page.getByTestId(homepageSelectors.swapButton)).toBeVisible();
-    await expect(page.getByTestId(homepageSelectors.sendButton)).toBeVisible();
-    await expect(page.getByTestId(homepageSelectors.receiveButton)).toBeVisible();
 
     await sleep(8_000);
 
