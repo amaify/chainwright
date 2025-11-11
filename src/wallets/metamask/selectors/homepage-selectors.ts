@@ -23,4 +23,5 @@ export const accountSelectors = {
     pinToTopLabel: "Pin to top",
     hideAccountLabel: "Hide account",
     backButton: "back",
+    addMultichainAccountButton: "add-multichain-account-button",
 };

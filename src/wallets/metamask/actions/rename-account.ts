@@ -21,6 +21,13 @@ export async function renameAccount({ page, oldAccountName, newAccountName }: Re
     await accountMenuButton.click();
     await expect(page.getByRole("heading", { name: /accounts/i })).toBeVisible();
 
+    const addAccountButtonLoading = page.getByTestId(accountSelectors.addMultichainAccountButton);
+    const startTextContent = await addAccountButtonLoading.textContent();
+
+    await expect
+        .poll(async () => (await addAccountButtonLoading.textContent())?.trim() ?? "", { timeout: 60_000 })
+        .not.toBe(startTextContent);
+
     const accountCells = await page.getByTestId(/^multichain-account-cell-entropy:/).all();
     let currentAccount: Locator | null = null;
 

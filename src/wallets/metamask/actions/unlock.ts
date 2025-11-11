@@ -1,7 +1,7 @@
 import { expect, type Page } from "@playwright/test";
-import { waitForMetaMaskLoad } from "@/utils/wait-for-stable-page";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { homepageSelectors, unlockWalletSelectors } from "../selectors/homepage-selectors";
+import { waitForMetaMaskLoad } from "../utils";
 
 export default async function unlock(page: Page) {
     const walletPassword = await getWalletPasswordFromCache("metamask");
