@@ -20,6 +20,15 @@ export async function addAccount({ page, privateKey, accountName }: AddAccount) 
     await expect(page.getByRole("heading", { name: /accounts/i })).toBeVisible();
 
     const addWalletButton = page.getByTestId(accountSelectors.addWalletButton);
+    const startTextContent = await addWalletButton.textContent();
+
+    if (startTextContent?.includes("Syncing")) {
+        await expect
+            .poll(async () => (await addWalletButton.textContent())?.trim() ?? "", { timeout: 360_000 })
+            .not.toBe(startTextContent);
+    }
+
+    await expect(addWalletButton).toBeEnabled({ timeout: 60_000 });
     await addWalletButton.click();
 
     const addWalletModal = page.getByRole("dialog");

@@ -15,7 +15,7 @@ export default defineConfig({
     reporter: [["list"]],
 
     /* Global timeout for each test */
-    timeout: 180_000,
+    timeout: 1000000000,
 
     use: {
         // We are using locally deployed Metamask Test Dapp for somePhantom tests.
