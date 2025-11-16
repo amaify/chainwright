@@ -4,6 +4,7 @@ import { sleep } from "@/utils/sleep";
 import { homepageSelectors } from "../selectors/homepage-selectors";
 import { onboardSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
+import { toggleShowTestnetNetwork } from "./toggle-show-testnet-network";
 
 type Onboard = OnboardingArgs & {
     page: Page;
@@ -87,6 +88,8 @@ export default async function onboard({ page, mode, password, ...args }: Onboard
         await expect(page.getByTestId(homepageSelectors.sendButton)).toBeVisible();
         await expect(page.getByTestId(homepageSelectors.receiveButton)).toBeVisible();
     }
+
+    await toggleShowTestnetNetwork({ page });
 
     await sleep(8_000);
 

@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { select } from "@inquirer/prompts";
 import { Command } from "commander";
 import pc from "picocolors";
+import picocolors from "picocolors";
 import getSetupFunction from "@/core/get-setup-function";
 import { triggerCacheCreation } from "@/core/trigger-cache-creation";
 import type { CLIOptions, SupportedWallets } from "@/types";
@@ -110,4 +111,6 @@ export async function clientEntry() {
     await program.parseAsync(process.argv);
 }
 
-clientEntry().catch((error) => console.error("Failed to run the CLI: ", (error as Error).message));
+clientEntry().catch((error) =>
+    console.error(picocolors.redBright(`Failed to run the CLI: ${(error as Error).message})`)),
+);

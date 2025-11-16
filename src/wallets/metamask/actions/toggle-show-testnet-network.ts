@@ -1,8 +1,9 @@
 import { expect, type Page } from "@playwright/test";
+import { skip } from "@/tests/utils/skip";
 import { homepageSelectors, settingsSelectors } from "../selectors/homepage-selectors";
 
 export async function toggleShowTestnetNetwork({ page }: { page: Page }) {
-    const settingsButton = page.getByTestId(homepageSelectors.openSettingsButton);
+    const settingsButton = page.locator(`div:has(> button[data-testid='${homepageSelectors.openSettingsButton}'])`);
     await settingsButton.click();
 
     const networksButton = page.getByTestId(settingsSelectors.networksButton);
@@ -12,10 +13,16 @@ export async function toggleShowTestnetNetwork({ page }: { page: Page }) {
     await expect(netowrksDialog).toBeVisible();
     await expect(netowrksDialog).toContainText(/manage networks/i);
 
-    await netowrksDialog.locator("div:has(> label[class='toggle-button toggle-button--off'])").scrollIntoViewIfNeeded();
-    const showTestnetNetworkToggle = netowrksDialog.locator(
-        "div:has(> label[class='toggle-button toggle-button--off'])",
-    );
+    const networkSwitchToggle = "div:has(> p:has-text('Show test networks'))";
+    await netowrksDialog.locator(networkSwitchToggle).scrollIntoViewIfNeeded();
+
+    const showTestnetNetworkToggle = netowrksDialog.locator(networkSwitchToggle);
+    const isNetworkSwitchOffToggleVisible = await showTestnetNetworkToggle
+        .locator("label[class='toggle-button toggle-button--off']")
+        .isVisible()
+        .catch(() => false);
+
+    skip(!isNetworkSwitchOffToggleVisible, "Testnet networks are already visible.");
     await showTestnetNetworkToggle.locator("label[class='toggle-button toggle-button--off']").click();
 
     await page.getByTestId("Sepolia").scrollIntoViewIfNeeded();

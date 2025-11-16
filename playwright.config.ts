@@ -6,7 +6,7 @@ import { defineConfig, devices } from "@playwright/test";
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-    testDir: "./src/tests",
+    testDir: "./src/tests/e2e",
     /* Run tests sequentially to avoid MetaMask extension conflicts */
     workers: 1,
     /* Retry on CI only */

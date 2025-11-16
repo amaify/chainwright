@@ -6,6 +6,10 @@ export const homepageSelectors = {
     openSettingsButton: "account-options-menu-button",
     accountMenuButton: "account-menu-icon",
     accountCell: "multichain-account-cell-entropy",
+    openNetworkSelectorButton: "sort-by-networks",
+    accountAddressesButton: "networks-subtitle-test-id",
+    accountAddressesElements: "multichain-address-row",
+    accountAddressQRCode: "multichain-address-row-qr-button",
 };
 
 export const settingsSelectors = {
