@@ -13,7 +13,7 @@ export async function switchNetwork({ page, networkType, chainName }: SwitchNetw
 
     const selectNetworkModalCloseButton = page.getByTestId("modal-header-close-button");
 
-    if (networkType === "testnet") {
+    if (networkType === "testnet" || networkType === "custom") {
         const customTabSelector = page.getByRole("tab", { name: "Custom" });
         await customTabSelector.click();
 

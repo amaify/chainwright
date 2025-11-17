@@ -31,6 +31,6 @@ export type SwitchNetwork =
           networkType: "mainnet";
       }
     | {
-          chainName: "Sepolia" | "Linea Sepolia" | "Mega Testnet" | "Monad Testnet";
-          networkType: "testnet";
+          chainName: "Sepolia" | "Linea Sepolia" | "Mega Testnet" | "Monad Testnet" | (string & {});
+          networkType: "testnet" | "custom";
       };
