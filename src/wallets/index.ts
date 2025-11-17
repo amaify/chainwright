@@ -1,1 +1,2 @@
-export * from "./metamask/metamask";
+export * from "./metamask/index";
+export * from "./petra/index";
