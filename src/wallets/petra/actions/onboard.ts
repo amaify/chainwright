@@ -7,6 +7,7 @@ import { PetraProfile } from "../petra-profile";
 import { homepageSelectors } from "../selectors/homepage-selectors";
 import { onboardSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
+import { renameAccount } from "./rename-account";
 
 type Onboard = OnboardingArgs & {
     page: Page;
@@ -101,6 +102,8 @@ export default async function onboard({ page, mode, password, ...args }: Onboard
         await expect(page.locator(homepageSelectors.depositButton)).toBeVisible({ timeout: IS_VISIBLE_TIMEOUT });
         await expect(page.locator(homepageSelectors.sendButton)).toBeVisible({ timeout: IS_VISIBLE_TIMEOUT });
     }
+
+    await renameAccount({ page, newAccountName: "Default" });
 
     await sleep(8_000);
     console.info(picocolors.greenBright("✨ Petra onboarding completed successfully"));
