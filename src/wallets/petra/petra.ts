@@ -4,6 +4,7 @@ import { getAccountAddress } from "./actions/get-account-address";
 import { lockWallet } from "./actions/lock";
 import onboard from "./actions/onboard";
 import { type RenameAccount, renameAccount } from "./actions/rename-account";
+import { switchAccount } from "./actions/switch-account";
 import { switchNetwork } from "./actions/switch-network";
 import unlock from "./actions/unlock";
 import type { AddAccount, OnboardingArgs, SwitchNetwork } from "./types";
@@ -33,6 +34,10 @@ export class Petra {
 
     async switchNetwork(networkName: SwitchNetwork) {
         await switchNetwork(this.page, networkName);
+    }
+
+    async switchAccount(accountName: string) {
+        await switchAccount(this.page, accountName);
     }
 
     async getAccountAddress() {

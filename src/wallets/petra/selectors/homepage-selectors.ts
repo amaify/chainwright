@@ -28,8 +28,4 @@ export const accountSelectors = {
     addAccountButton: "button:has-text('Add accounts')",
     addAccountWithPrivateKeyButton: "button:has-text('Import private key')",
     addAccountWithMnemonicButton: "button:has-text('Import mnemonic')",
-    renameAccountLabel: "Rename",
-    addressesLabel: "Addresses",
-    pinToTopLabel: "Pin to top",
-    hideAccountLabel: "Hide account",
 };
