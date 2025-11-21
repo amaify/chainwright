@@ -12,8 +12,10 @@
         "build": "tsup",
         "dev": "tsx src/cli/index.ts setup-wallet -f",
         "test": "vitest",
+        "format": "biome format --write ./src",
         "test:e2e:debug": "playwright test --debug",
-        "test:e2e:ui": "playwright test --ui"
+        "test:e2e:ui": "playwright test --ui",
+        "add:wallet": "tsx scripts/main.ts"
     },
     "devDependencies": {
         "@biomejs/biome": "2.3.1",

@@ -1,0 +1,22 @@
+{
+    "folders": ["actions", "selectors"],
+    "files": [
+        "{{walletName}}-fixture.ts",
+        "{{walletName}}-profile.ts",
+        "{{walletName}}.ts",
+        "index.ts",
+        "types.ts",
+        "utils.ts",
+        "actions/unlock.ts",
+        "actions/lock.ts",
+        "actions/onboard.ts",
+        "actions/add-account.ts",
+        "actions/get-account-address.ts",
+        "actions/open-settings.ts",
+        "actions/rename-account.ts",
+        "actions/switch-account.ts",
+        "actions/switch-network.ts",
+        "selectors/homepage-selectors.ts",
+        "selectors/onboard-selectors.ts"
+    ]
+}
