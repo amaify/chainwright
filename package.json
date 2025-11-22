@@ -32,12 +32,12 @@
         "zod": "^4.1.12"
     },
     "dependencies": {
-        "@inquirer/prompts": "^7.9.0",
+        "@inquirer/prompts": "^8.0.1",
         "cli-progress": "^3.12.0",
-        "commander": "^14.0.1",
-        "glob": "^11.0.3",
+        "commander": "^14.0.2",
+        "glob": "^13.0.0",
         "picocolors": "^1.1.1",
-        "rimraf": "^6.0.1"
+        "rimraf": "^6.1.2"
     },
     "overrides": {
         "@rollup/rollup-win32-arm64-msvc": "^4.52.5"
