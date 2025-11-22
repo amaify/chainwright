@@ -1,0 +1,15 @@
+export const onboardingSelectors = {
+    createNewWalletButton: "button:has-text('Create a new wallet')",
+    IAlreadyHaveAWalletButton: "button:has-text('I already have a wallet')",
+    importRecoveryPhraseButton: "button:has-text('Import Recovery Phrase')",
+    importPrivateKeyButton: "button:has-text('Import Private Key')",
+    createSeedPhraseWalletButton: "create-manual-seed-phrase",
+    passwordInput: "onboarding-form-password-input",
+    passwordConfirmInput: "onboarding-form-confirm-password-input",
+    termsCheckBox: "onboarding-form-terms-of-service-checkbox",
+    continueButton: "button:has-text('Continue')",
+    importWalletButton: "button:has-text('Import Wallet')",
+    getStartedButton: "button:has-text('Get Started')",
+    recoveryPhraseSavedCheckbox: "onboarding-form-saved-secret-recovery-phrase-checkbox",
+    recoveryPhraseInput: "secret-recovery-phrase-word-input",
+};
