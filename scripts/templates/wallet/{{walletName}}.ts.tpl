@@ -1,77 +1,113 @@
-import { Page } from "@playwright/test";
-import { BaseWallet } from "@/wallets/core/base-wallet";
-import { BaseWalletPage } from "@/wallets/core/base-wallet-page";
-import { getPopupPageFromContext } from "@/wallets/utils/get-popup-page-from-context";
-import { getExtensionIdFromCache } from "@/wallets/utils/get-extension-id-from-cache";
-import { confirmTransaction } from "./actions/confirm-transaction";
-import { cancelTransaction } from "./actions/cancel-transaction";
+import type { Page } from "@playwright/test";
+import { addAccount } from "./actions/add-account";
+import { getAccountAddress } from "./actions/get-account-address";
+import { lockWallet } from "./actions/lock";
+import onboard from "./actions/onboard";
+import {  renameAccount } from "./actions/rename-account";
+import { switchAccount } from "./actions/switch-account";
+import { switchNetwork } from "./actions/switch-network";
 import { unlock } from "./actions/unlock";
-import { connectToApp } from "./actions/connect-to-app";
 
+export class {{WalletName}} {
+    page: Page;
 
-export class {{WalletName}} extends BaseWallet {
-  name = "{{walletName}}" as const;
-  onboardingPath = "onboarding path here"
+    constructor(page: Page) {
+        this.page = page;
+    }
 
-  async indexUrl(): Promise<string> {
-     return `chrome-extension://${this.extensionId}/(path to the homepage).html`;
-  };
+    /**
+     * Onboards the wallet.
+     * This function onboards the wallet by entering the password and other required information.
+     * @param {OnboardingArgs} args - The arguments required for onboarding.
+     * @param args.mode - Create a new wallet or import via private key / mnemonic.
+     * @param args.password - The password for the wallet.
+     * @param args.secretRecoveryPhrase - The secret recovery phrase for the wallet when importing a wallet.
+     * @example
+     * const {{walletName}} = new {{WalletName}}(page);
+     * await {{walletName}}.onboard({ mode: "importPrivateKey", password: "password", privateKey: "private key" });
+     */
+    async onboard() {
+        await onboard(this.page)
+    }
 
-  async promptUrl(): Promise<string> {
-    const extensionId = await this.extensionId();
-    return `chrome-extension://${extensionId}/(wallet's prompt path).html`;
-  }
+    /**
+     * Unlocks the wallet by entering the password.
+     * @example
+     * const {{walletName}} = new {{WalletName}}(page);
+     * await {{walletName}}.unlock();
+     */
+    async unlock() {
+        await unlock(this.page);
+    }
 
-   async extensionId(): Promise<string> {
-     return await getExtensionIdFromCache("{{walletName}}");
-  }
-}
+    /**
+     * Locks the wallet by entering the password.
+     * This function locks the wallet by opening the settings page and then locking the wallet.
+     * @example
+     * const {{walletName}} = new {{WalletName}}(page);
+     * await {{walletName}}.lock();
+     */
+    async lock() {
+        await lockWallet(this.page)
+    }
 
-export class {{WalletName}}Page extends BaseWalletPage {
-  wallet: {{WalletName}};
+    /**
+     * Renames an account in the wallet.
+     * @param {Omit<RenameAccount, "page">} args - The arguments to rename the account.
+     * @param args.newAccountName - The new name of the account.
+     * @example
+     * const {{walletName}} = new {{WalletName}}(page);
+     * await {{walletName}}.renameAccount({ newAccountName: "New Account Name" });
+     */
+    async renameAccount() {
+        await renameAccount(this.page)
+    }
 
-  constructor(page: Page) {
-    super(page);
-    this.wallet = new {{WalletName}}()
-  }
+    /**
+     * Switches the current network to the given network.
+     * @param {SwitchNetwork} networkName - The name of the network to switch to.
+     * @example
+     * const {{walletName}} = new {{WalletName}}(page);
+     * await {{walletName}}.switchNetwork("network name");
+     */
+    async switchNetwork(networkName: SwitchNetwork) {
+        await switchNetwork(this.page)
+    }
 
-  async onboarding(): Promise<void> {
-    console.error("not implemented");
-  }
+    /**
+     * Switches the current account to the given account.
+     * @param {string} accountName - The name of the account to switch to.
+     * @example
+     * const {{walletName}} = new {{walletName}}(page);
+     * await {{walletName}}.switchAccount("Account 1");
+     */
+    async switchAccount(accountName: string) {
+        await switchAccount(this.page)
+    }
 
-  async unlock(): Promise<void> {
-    await unlock(this.page)
-  }
+    /**
+     * Retrieves the current account's address.
+     * @returns A promise that resolves with the current account's address as a string.
+     *
+     * @example
+     * const {{walletName}} = new {{WalletName}}(page);
+     * const address = await {{walletName}}.getAccountAddress();
+     */
+    async getAccountAddress() {
+        await getAccountAddress(this.page)
+    }
 
-  async connectToApp(): Promise<void> {
-    const promptUrl = await this.wallet.promptUrl();
-    const popupPage = await getPopupPageFromContext(this.page.context(), promptUrl);
-    await connectToApp(popupPage)
-  }
-
-  async switchNetwork(networkName?: string): Promise<void> {
-    console.info(networkName)
-    console.error("not implemented");
-  }
-
-  async switchAccount(accountName: string): Promise<void> {
-    console.info(accountName)
-    console.error("not implemented");
-  }
-
-  async confirmTransaction(): Promise<void> {
-    const promptUrl = await this.wallet.promptUrl();
-    const popupPage = await getPopupPageFromContext(this.page.context(), promptUrl);
-    await confirmTransaction(popupPage)
-  }
-
-  async cancelTransaction(): Promise<void> {
-    const promptUrl = await this.wallet.promptUrl();
-    const popupPage = await getPopupPageFromContext(this.page.context(), promptUrl);
-    await cancelTransaction(popupPage)
-  }
-
-  async getAccountAddress(): Promise<string> {
-    throw new Error("Not implemented");
-  }
+    /**
+     * Adds an account to the wallet via a private key or mnemonic phrase.
+     * @param {{ accountName, ...args }: AddAccount} - The arguments to add the account.
+     * @param {string} args.accountName - The name of the account to add.
+     * @param {string} args.privateKey - The private key of the account to add, if the mode is "privateKey".
+     * @param {string[]} args.mnemonicPhrase - The mnemonic phrase of the account to add, if the mode is "mnemonic".
+     * @example
+     * const {{walletName}} = new {{WalletName}}(page);
+     * await {{walletName}}.addAccount(TBD);
+     */
+    async addAccount() {
+        await addAccount(this.page)
+    }
 }

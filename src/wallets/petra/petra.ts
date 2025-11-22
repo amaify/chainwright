@@ -1,4 +1,4 @@
-import type { Page } from "playwright-core";
+import type { Page } from "@playwright/test";
 import { addAccount } from "./actions/add-account";
 import { getAccountAddress } from "./actions/get-account-address";
 import { lockWallet } from "./actions/lock";
@@ -16,34 +16,98 @@ export class Petra {
         this.page = page;
     }
 
+    /**
+     * Onboards the wallet.
+     * This function onboards the wallet by entering the password and other required information.
+     * @param {OnboardingArgs} args - The arguments required for onboarding.
+     * @param args.mode - Create a new wallet or import via private key / mnemonic.
+     * @param args.password - The password for the wallet.
+     * @param args.secretRecoveryPhrase - The secret recovery phrase for the wallet when importing a wallet.
+     * @example
+     * const petra = new Petra(page);
+     * await petra.onboard({ mode: "importPrivateKey", password: "password", privateKey: "private key" });
+     */
     async onboard(args: OnboardingArgs) {
         await onboard({ page: this.page, ...args });
     }
 
+    /**
+     * Unlocks the wallet by entering the password.
+     * @example
+     * const petra = new Petra(page);
+     * await petra.unlock();
+     */
     async unlock() {
         await unlock(this.page);
     }
 
+    /**
+     * Locks the wallet by entering the password.
+     * This function locks the wallet by opening the settings page and then locking the wallet.
+     * @example
+     * const petra = new Petra(page);
+     * await petra.lock();
+     */
     async lock() {
         await lockWallet(this.page);
     }
 
+    /**
+     * Renames an account in the wallet.
+     * @param {Omit<RenameAccount, "page">} args - The arguments to rename the account.
+     * @param args.newAccountName - The new name of the account.
+     * @example
+     * const petra = new Petra(page);
+     * await petra.renameAccount({ newAccountName: "New Account Name" });
+     */
     async renameAccount({ newAccountName }: Omit<RenameAccount, "page">) {
         await renameAccount({ page: this.page, newAccountName });
     }
 
+    /**
+     * Switches the current network to the given network.
+     * @param {SwitchNetwork} networkName - The name of the network to switch to.
+     * @example
+     * const petra = new Petra(page);
+     * await petra.switchNetwork("Testnet");
+     */
     async switchNetwork(networkName: SwitchNetwork) {
         await switchNetwork(this.page, networkName);
     }
 
+    /**
+     * Switches the current account to the given account.
+     * @param {string} accountName - The name of the account to switch to.
+     * @example
+     * const petra = new Petra(page);
+     * await petra.switchAccount("Account 1");
+     */
     async switchAccount(accountName: string) {
         await switchAccount(this.page, accountName);
     }
 
+    /**
+     * Retrieves the current account's address.
+     * @returns A promise that resolves with the current account's address as a string.
+     *
+     * @example
+     * const petra = new Petra(page);
+     * const address = await petra.getAccountAddress();
+     */
     async getAccountAddress() {
         return await getAccountAddress(this.page);
     }
 
+    /**
+     * Adds an account to the wallet via a private key or mnemonic phrase.
+     * @param {{ accountName, ...args }: AddAccount} - The arguments to add the account.
+     * @param {string} args.accountName - The name of the account to add.
+     * @param {string} args.privateKey - The private key of the account to add, if the mode is "privateKey".
+     * @param {string[]} args.mnemonicPhrase - The mnemonic phrase of the account to add, if the mode is "mnemonic".
+     * @example
+     * const petra = new Petra(page);
+     * await petra.addAccount({ accountName: "Account 1", privateKey: "private key", mode: "privateKey" });
+     */
     async addAccount({ accountName, ...args }: AddAccount) {
         await addAccount({ page: this.page, accountName, ...args });
     }

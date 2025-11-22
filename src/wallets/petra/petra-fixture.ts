@@ -92,8 +92,8 @@ export const petraFixture = (slowMo: number = 0, profileName?: string) => {
             await use(_petraPage);
         },
         petra: async ({ context: _ }, use) => {
-            const metamaskInstance = new Petra(_petraPage);
-            await use(metamaskInstance);
+            const petraInstance = new Petra(_petraPage);
+            await use(petraInstance);
         },
     });
 };
