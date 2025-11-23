@@ -13,7 +13,7 @@ type Onboard = OnboardingArgs & {
     page: Page;
 };
 
-export default async function onboard({ page, mode, password, ...args }: Onboard) {
+export default async function onboard({ page, ...args }: Onboard) {
     console.info(picocolors.yellowBright(`\n Petra onboarding started...`));
 
     const petraProfile = new PetraProfile();
@@ -27,7 +27,8 @@ export default async function onboard({ page, mode, password, ...args }: Onboard
     const getStartedButton = page.locator(onboardSelectors.getStartedButton);
     const onboardingCompleteText = page.locator(onboardSelectors.onboardingCompleteText);
 
-    if (mode === "create") {
+    if (args.mode === "create") {
+        const { password } = args;
         const createSeedPhraseButton = page.locator(onboardSelectors.createSeedPhraseButton);
         await createAccountButton.click();
         await createSeedPhraseButton.click();
@@ -48,8 +49,8 @@ export default async function onboard({ page, mode, password, ...args }: Onboard
         await expect(page.locator(homepageSelectors.sendButton)).toBeVisible({ timeout: IS_VISIBLE_TIMEOUT });
     }
 
-    if (mode === "importPrivateKey") {
-        const privateKey = "privateKey" in args ? args.privateKey : "";
+    if (args.mode === "importPrivateKey") {
+        const { password, privateKey } = args;
         const importPrivateKeyButton = page.locator(onboardSelectors.importUsingPrivateKeyButton);
         const privateKeyInput = page.locator(onboardSelectors.privateKeyInput);
         const importButton = page.locator(onboardSelectors.importButton);
@@ -75,14 +76,14 @@ export default async function onboard({ page, mode, password, ...args }: Onboard
         await expect(page.locator(homepageSelectors.sendButton)).toBeVisible({ timeout: IS_VISIBLE_TIMEOUT });
     }
 
-    if (mode === "importMnemonic") {
-        const mnemonicPhrase = "secretRecoveryPhrase" in args ? args.secretRecoveryPhrase.split(" ") : [];
+    if (args.mode === "importMnemonic") {
+        const { password, secretRecoveryPhrase } = args;
         const importMnemonicPhraseButton = page.locator(onboardSelectors.importUsingMnemonicButton);
 
         await importWalletButton.click();
         await importMnemonicPhraseButton.click();
 
-        for (const [index, phrase] of mnemonicPhrase.entries()) {
+        for (const [index, phrase] of secretRecoveryPhrase.split(" ").entries()) {
             const phraseInput = page.locator(
                 `input[name="mnemonic-${String.fromCharCode("a".charCodeAt(0) + index)}"]`,
             );

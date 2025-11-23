@@ -10,7 +10,7 @@ type Onboard = OnboardingArgs & {
     page: Page;
 };
 
-export default async function onboard({ page, mode, password, ...args }: Onboard) {
+export default async function onboard({ page, ...args }: Onboard) {
     console.info(picocolors.yellowBright(`\n 🦊 MetaMask onboarding started...`));
 
     const createWalletButton = page.getByTestId(onboardSelectors.createWalletButton);
@@ -22,7 +22,8 @@ export default async function onboard({ page, mode, password, ...args }: Onboard
     const metamaskMetricsIAgreeButton = page.getByTestId(onboardSelectors.metamaskMetricsIAgreeButton);
     const onboardingDoneButton = page.getByTestId(onboardSelectors.onboardingDoneButton);
 
-    if (mode === "create") {
+    if (args.mode === "create") {
+        const { password } = args;
         const useSecretRecoveryPhraseButton = page.getByTestId(onboardSelectors.useSecretRecoveryPhraseButton);
         await createWalletButton.click();
         await useSecretRecoveryPhraseButton.click();
@@ -48,8 +49,10 @@ export default async function onboard({ page, mode, password, ...args }: Onboard
         await expect(page.getByTestId(homepageSelectors.receiveButton)).toBeVisible();
     }
 
-    if (mode === "import") {
-        const recoveryPhrase = "secretRecoveryPhrase" in args ? (args.secretRecoveryPhrase?.split(" ") ?? []) : [];
+    if (args.mode === "import") {
+        const { password, secretRecoveryPhrase } = args;
+        const recoveryPhrase = secretRecoveryPhrase.split(" ");
+
         const importUsingSecretRecoveryPhraseButton = page.getByTestId(
             onboardSelectors.importUsingSecretRecoveryPhraseButton,
         );
