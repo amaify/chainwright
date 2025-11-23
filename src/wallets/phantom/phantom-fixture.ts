@@ -72,7 +72,7 @@ export const phantomFixture = (slowMo: number = 0, profileName?: string) => {
              * Without this workaround, the fixture is flaky.
              * @TODO: INVESTIGATE WHY THIS HAPPENS. SPENT >6 HOURS AND COULDN'T FIND ANY PROPER SOLUTION
              */
-            await sleep(250);
+            await sleep(300);
             const indexUrl = await wallet.indexUrl();
             _phantomPage = await getPageFromContext(walletPageContext, indexUrl);
 
