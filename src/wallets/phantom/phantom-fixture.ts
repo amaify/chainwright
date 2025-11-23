@@ -6,7 +6,7 @@ import getCacheDirectory from "@/utils/get-cache-directory";
 import getPageFromContext from "@/utils/get-page-from-context";
 import persistLocalStorage from "@/utils/persist-local-storage";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
-import waitForStablePage from "@/utils/wait-for-stable-page";
+import { sleep } from "@/utils/sleep";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
 import { unlock } from "./actions/unlock";
 import { Phantom } from "./phantom";
@@ -41,15 +41,12 @@ export const phantomFixture = (slowMo: number = 0, profileName?: string) => {
             const walletDataDir = path.resolve(CACHE_DIR, profileName ?? "wallet-data");
 
             if (!fs.existsSync(walletDataDir)) {
-                throw new Error(`❌ Cache for MetaMask wallet data not found. Create it first`);
+                throw new Error(`❌ Cache for Phantom wallet data not found. Create it first`);
             }
 
             await fs.promises.cp(walletDataDir, tempWalletDataDir, { recursive: true, force: true });
 
-            const browserArgs = [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`];
             if (process.env.HEADLESS) {
-                browserArgs.push("--headless=new");
-
                 if (slowMo > 0) {
                     console.warn("⚠️ Slow motion makes no sense in headless mode. It will be ignored!");
                 }
@@ -57,7 +54,7 @@ export const phantomFixture = (slowMo: number = 0, profileName?: string) => {
 
             const walletPageContext = await chromium.launchPersistentContext(tempWalletDataDir, {
                 headless: false,
-                args: [`--disable-extensions-except=${extensionPath}`],
+                args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
                 slowMo: process.env.HEADLESS ? 0 : slowMo,
             });
 
@@ -65,13 +62,19 @@ export const phantomFixture = (slowMo: number = 0, profileName?: string) => {
 
             const { cookies, origins } = await currentContext.storageState();
             if (cookies) await walletPageContext.addCookies(cookies);
-            if (origins && origins.length > 0) persistLocalStorage(origins, walletPageContext);
+            if (origins && origins.length > 0) {
+                await persistLocalStorage(origins, walletPageContext);
+            }
 
+            /**
+             * Ideally, we shouldn't have "sleep" here.
+             * But, it's a workaround to make sure that the wallet page is fully loaded.
+             * Without this workaround, the fixture is flaky.
+             * @TODO: INVESTIGATE WHY THIS HAPPENS. SPENT >6 HOURS AND COULDN'T FIND ANY PROPER SOLUTION
+             */
+            await sleep(250);
             const indexUrl = await wallet.indexUrl();
-            const homePage = walletPageContext.pages().find((page) => page.url().startsWith(indexUrl));
-            _phantomPage = homePage || (await getPageFromContext(walletPageContext, indexUrl));
-
-            await waitForStablePage(_phantomPage);
+            _phantomPage = await getPageFromContext(walletPageContext, indexUrl);
 
             for (const page of walletPageContext.pages()) {
                 const url = page.url();
@@ -81,11 +84,8 @@ export const phantomFixture = (slowMo: number = 0, profileName?: string) => {
             }
 
             await _phantomPage.bringToFront();
-
             await unlock(_phantomPage);
-
             await use(walletPageContext);
-
             await walletPageContext.close();
         },
         phantomPage: async ({ context: _ }, use) => {

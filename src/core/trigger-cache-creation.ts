@@ -91,7 +91,11 @@ export async function triggerCacheCreation({
         console.info(picocolors.yellowBright(`🔑 Saved ${walletName} password to: ${passwordTxt}`));
     }
 
-    await setupFunction({ context, walletPage });
+    try {
+        await setupFunction({ context, walletPage });
+    } catch (error) {
+        console.error("Error setting up wallet: ", (error as Error).message);
+    }
 
     await context.close();
 }

@@ -10,10 +10,10 @@ type Onboarding = OnboardingArgs & { page: Page };
 export default async function onboard({ page, ...args }: Onboarding) {
     console.info(picocolors.yellowBright(`\n Phantom onboarding started...`));
 
-    const createANewWalletButton = page.locator(onboardingSelectors.createNewWalletButton);
-    await createANewWalletButton.click();
-
     if (args.mode === "create") {
+        const createANewWalletButton = page.locator(onboardingSelectors.createNewWalletButton);
+        await createANewWalletButton.click();
+
         const createSeedPhraseWalletButton = page.getByTestId(onboardingSelectors.createSeedPhraseWalletButton);
         await createSeedPhraseWalletButton.click();
 
@@ -123,6 +123,9 @@ export default async function onboard({ page, ...args }: Onboarding) {
 
         const loadingButton = continueButton.locator("> div > svg");
         await loadingButton.waitFor({ state: "detached", timeout: 30_000 });
+
+        await sleep(1_000);
+
         await continueButton.click();
 
         const getStartedButton = page.locator(onboardingSelectors.getStartedButton).last();
@@ -132,6 +135,8 @@ export default async function onboard({ page, ...args }: Onboarding) {
     const newPage = await page.context().newPage();
     await newPage.goto(await new PhantomProfile().indexUrl());
 
+    // wait for the wallet profile to finish saving
     await sleep(8_000);
+
     console.info(picocolors.greenBright("✨ Phantom onboarding completed successfully"));
 }

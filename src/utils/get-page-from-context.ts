@@ -6,7 +6,6 @@ export default async function getPageFromContext(context: BrowserContext, path: 
 
     await expect(async () => {
         await promptPage.goto(path);
-
         await waitForStablePage(promptPage);
     }).toPass();
 
