@@ -3,14 +3,13 @@ import path from "node:path";
 import { test as base, chromium, type Page } from "@playwright/test";
 import createTempContextDirectory from "@/utils/create-temp-context-directory";
 import getCacheDirectory from "@/utils/get-cache-directory";
-import getPageFromContext from "@/utils/get-page-from-context";
 import persistLocalStorage from "@/utils/persist-local-storage";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
-import { sleep } from "@/utils/sleep";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
 import { unlock } from "./actions/unlock";
 import { Phantom } from "./phantom";
 import { PhantomProfile } from "./phantom-profile";
+import { getPageFromContextPhantom } from "./utils";
 
 export type PhantomFixture = {
     contextPath: string;
@@ -66,9 +65,7 @@ export const phantomFixture = (slowMo: number = 0, profileName?: string) => {
                 await persistLocalStorage(origins, walletPageContext);
             }
 
-            await sleep(1_000);
-            const indexUrl = await wallet.indexUrl();
-            _phantomPage = await getPageFromContext(walletPageContext, indexUrl);
+            _phantomPage = await getPageFromContextPhantom(walletPageContext);
 
             for (const page of walletPageContext.pages()) {
                 const url = page.url();
