@@ -7,7 +7,7 @@ import { renameAccount } from "./actions/rename-account";
 import { switchAccount } from "./actions/switch-account";
 import { switchNetwork } from "./actions/switch-network";
 import { unlock } from "./actions/unlock";
-import type { OnboardingArgs } from "./types";
+import type { AddAccountArgs, OnboardingArgs, RenameAccountArgs } from "./types";
 
 export class Phantom {
     page: Page;
@@ -54,14 +54,15 @@ export class Phantom {
 
     /**
      * Renames an account in the wallet.
-     * @param {Omit<RenameAccount, "page">} args - The arguments to rename the account.
+     * @param {RenameAccountArgs} args - The arguments to rename the account.
+     * @param args.currentName - The current name of the active account.
      * @param args.newAccountName - The new name of the account.
      * @example
      * const phantom = new Phantom(page);
-     * await phantom.renameAccount({ newAccountName: "New Account Name" });
+     * await phantom.renameAccount({ newAccountName: "New Account Name", currentAccountName: "Account 1" });
      */
-    async renameAccount() {
-        await renameAccount(this.page);
+    async renameAccount({ ...args }: RenameAccountArgs) {
+        await renameAccount({ page: this.page, ...args });
     }
 
     /**
@@ -108,7 +109,7 @@ export class Phantom {
      * const phantom = new Phantom(page);
      * await phantom.addAccount(TBD);
      */
-    async addAccount() {
-        await addAccount(this.page);
+    async addAccount({ ...args }: AddAccountArgs) {
+        await addAccount({ page: this.page, ...args });
     }
 }

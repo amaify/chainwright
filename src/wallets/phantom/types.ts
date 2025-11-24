@@ -15,3 +15,14 @@ export type OnboardingArgs =
           accountName: string;
           chain: "Ethereum" | "Solana" | "Base" | "Sui" | "Bitcoin" | "Polygon" | "HyperEVM";
       };
+
+export type RenameAccountArgs = {
+    currentAccountName: string;
+    newAccountName: string;
+};
+
+export type AddAccountArgs = {
+    privateKey: string;
+    accountName: string;
+    chain: "Ethereum" | "Solana" | "Base" | "Sui" | "Bitcoin" | "Polygon" | "HyperEVM";
+};
