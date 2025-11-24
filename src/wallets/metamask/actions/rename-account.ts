@@ -1,5 +1,4 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { skip } from "@/tests/utils/skip";
 import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors";
 
 export type RenameAccount = {
@@ -12,10 +11,9 @@ export async function renameAccount({ page, currentAccountName, newAccountName }
     const accountMenuButton = page.getByTestId(homepageSelectors.accountMenuButton);
     const accountMenuTextContent = await accountMenuButton.textContent();
 
-    skip(
-        accountMenuTextContent === newAccountName,
-        `The account to be renamed "${newAccountName}" already exists. Skipping test.`,
-    );
+    if (accountMenuTextContent === newAccountName) {
+        throw Error(`The account to be renamed "${newAccountName}" already exists.`);
+    }
 
     await expect(accountMenuButton).toBeVisible({ timeout: 15_000 });
     await accountMenuButton.click();
@@ -30,7 +28,7 @@ export async function renameAccount({ page, currentAccountName, newAccountName }
             .not.toBe(startTextContent);
     }
 
-    const accountCells = await page.getByTestId(/^multichain-account-cell-entropy:/).all();
+    const accountCells = await page.getByTestId(/^multichain-account-cell/).all();
     let currentAccount: Locator | null = null;
 
     for (const accountCell of accountCells) {
@@ -43,14 +41,13 @@ export async function renameAccount({ page, currentAccountName, newAccountName }
     }
 
     if (!currentAccount) {
-        skip(!currentAccount, `Account with name "${currentAccountName}" not found.`);
+        throw Error(`Account with name "${currentAccountName}" not found.`);
     }
 
-    const currentAccountText = await currentAccount?.textContent();
+    const currentAccountText = await currentAccount.textContent();
 
     if (currentAccountText?.split("$")[0] === newAccountName) {
-        skip(
-            currentAccountText?.split("$")[0] === newAccountName,
+        throw Error(
             `The new account name "${newAccountName}" is the same as the old account name "${currentAccountName}".`,
         );
     }
@@ -87,6 +84,6 @@ export async function renameAccount({ page, currentAccountName, newAccountName }
         }
     }
 
-    const backButton = page.locator("button[aria-label='Back']").nth(1);
+    const backButton = page.locator("button[aria-label='Back']");
     await backButton.click();
 }

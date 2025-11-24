@@ -1,6 +1,5 @@
 import { expect, type Page } from "@playwright/test";
 import z from "zod";
-import { skip } from "@/tests/utils/skip";
 import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors";
 
 export type RenameAccount = {
@@ -23,10 +22,10 @@ export async function renameAccount({ page, newAccountName }: RenameAccount) {
     const renameInput = page.locator(accountSelectors.renameAccountInput);
 
     const currentAccountName = await renameInput.getAttribute("value");
-    skip(
-        currentAccountName === parsedNewAccountName,
-        `The account to be renamed "${parsedNewAccountName}" already exists. Skipping test.`,
-    );
+
+    if (currentAccountName === parsedNewAccountName) {
+        throw Error(`The account to be renamed "${parsedNewAccountName}" already exists.`);
+    }
 
     await renameInput.fill(parsedNewAccountName);
 
