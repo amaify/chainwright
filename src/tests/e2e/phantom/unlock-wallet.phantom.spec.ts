@@ -7,7 +7,9 @@ test.describe("E2E test for unlocking wallet", () => {
     test("Should unlock wallet successfully", async ({ phantom, phantomPage }) => {
         await phantom.lock();
 
-        await expect(phantomPage.getByText("Welcome")).toBeVisible();
+        const enterYourPasswordText = phantomPage.getByText("Enter your password");
+        await enterYourPasswordText.waitFor({ state: "attached" });
+        await expect(enterYourPasswordText).toBeVisible();
 
         await phantom.unlock();
     });

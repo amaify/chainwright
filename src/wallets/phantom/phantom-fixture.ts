@@ -6,7 +6,6 @@ import getCacheDirectory from "@/utils/get-cache-directory";
 import getPageFromContext from "@/utils/get-page-from-context";
 import persistLocalStorage from "@/utils/persist-local-storage";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
-import { sleep } from "@/utils/sleep";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
 import { unlock } from "./actions/unlock";
 import { Phantom } from "./phantom";
@@ -66,15 +65,20 @@ export const phantomFixture = (slowMo: number = 0, profileName?: string) => {
                 await persistLocalStorage(origins, walletPageContext);
             }
 
-            /**
-             * Ideally, we shouldn't have "sleep" here.
-             * But, it's a workaround to make sure that the wallet page is fully loaded.
-             * Without this workaround, the fixture is flaky.
-             * @TODO: INVESTIGATE WHY THIS HAPPENS. SPENT >6 HOURS AND COULDN'T FIND ANY PROPER SOLUTION
-             */
-            await sleep(300);
             const indexUrl = await wallet.indexUrl();
             _phantomPage = await getPageFromContext(walletPageContext, indexUrl);
+
+            /**
+             * Known Issue: In "walletPageContext", we navigate to the index page of the wallet.
+             * However, the page closes on it's own. Why this happens? I couldn't figure it out.
+             * The initial fix was to add some sort of delay "sleep(500)" before we try to get the
+             * page from context. However, this was too hacky and unstable.
+             *
+             * The better fix I think is to spin up a new page twice rather than "sleeping" for a few seconds.
+             * With the initial fix, we are not sure how it will behave in CI.
+             */
+            _phantomPage = await walletPageContext.newPage();
+            await _phantomPage.goto(indexUrl);
 
             for (const page of walletPageContext.pages()) {
                 const url = page.url();

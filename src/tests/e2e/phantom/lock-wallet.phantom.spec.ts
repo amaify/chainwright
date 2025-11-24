@@ -6,6 +6,8 @@ const test = testWithPhantomFixture;
 test.describe("E2E test for locking wallet", () => {
     test("Should be able to lock wallet", async ({ phantom, phantomPage }) => {
         await phantom.lock();
-        await expect(phantomPage.getByText("Enter your password")).toBeVisible();
+        const enterYourPasswordText = phantomPage.getByText("Enter your password");
+        await enterYourPasswordText.waitFor({ state: "attached" });
+        await expect(enterYourPasswordText).toBeVisible();
     });
 });
