@@ -6,8 +6,9 @@ import onboard from "./actions/onboard";
 import { renameAccount } from "./actions/rename-account";
 import { switchAccount } from "./actions/switch-account";
 import { switchNetwork } from "./actions/switch-network";
+import { toggleOptionalChain } from "./actions/toggle-optional-chain";
 import { unlock } from "./actions/unlock";
-import type { AddAccountArgs, OnboardingArgs, RenameAccountArgs } from "./types";
+import type { AddAccountArgs, OnboardingArgs, RenameAccountArgs, ToggleOptionalChainArgs } from "./types";
 
 export class Phantom {
     page: Page;
@@ -72,7 +73,7 @@ export class Phantom {
      * const phantom = new Phantom(page);
      * await phantom.switchNetwork("network name");
      */
-    async switchNetwork(networkName: SwitchNetwork) {
+    async switchNetwork() {
         await switchNetwork(this.page);
     }
 
@@ -83,7 +84,7 @@ export class Phantom {
      * const phantom = new phantom(page);
      * await phantom.switchAccount("Account 1");
      */
-    async switchAccount(accountName: string) {
+    async switchAccount() {
         await switchAccount(this.page);
     }
 
@@ -111,5 +112,9 @@ export class Phantom {
      */
     async addAccount({ ...args }: AddAccountArgs) {
         await addAccount({ page: this.page, ...args });
+    }
+
+    async toggleOptionalChains({ toggleMode, supportedChains }: ToggleOptionalChainArgs) {
+        await toggleOptionalChain({ page: this.page, supportedChains, toggleMode });
     }
 }
