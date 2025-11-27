@@ -28,9 +28,31 @@ export type AddAccountArgs = {
 };
 
 export type OptionalChains = "Ethereum" | "Monad" | "Base" | "Sui" | "Polygon" | "Bitcoin" | "Hyperevm";
-export type ToggleOptionalChainMode = "on" | "off" | "onboard";
+export type ToggleOptionalChainMode = "on" | "off";
 
 export type ToggleOptionalChainArgs = {
     supportedChains: Array<OptionalChains>;
     toggleMode: ToggleOptionalChainMode;
+};
+
+export type SwitchNetwork =
+    | (
+          | {
+                mode: "on";
+                chain: "Solana";
+                network: "Solana Devnet" | "Solana Testnet" | "Solana Localnet";
+            }
+          | {
+                mode: "on";
+                chain: "Ethereum";
+                network: "Ethereum Sepolia" | "Monad Testnet" | "Base Sepolia" | "Polygon Amoy" | "HyperEVM Testnet";
+            }
+      )
+    | {
+          mode: "off";
+      };
+
+export type GetAccountAddress = {
+    accountName: string;
+    chain: "Solana" | "Ethereum" | "Monad" | "Base" | "Sui" | "Polygon" | "Bitcoin" | "Hyperevm";
 };

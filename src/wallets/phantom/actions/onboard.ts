@@ -4,7 +4,6 @@ import { sleep } from "@/utils/sleep";
 import { PhantomProfile } from "../phantom-profile";
 import { onboardingSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
-import { toggleOptionalChain } from "./toggle-optional-chain";
 
 type Onboarding = OnboardingArgs & { page: Page };
 
@@ -135,16 +134,6 @@ export default async function onboard({ page, ...args }: Onboarding) {
 
     const newPage = await page.context().newPage();
     await newPage.goto(await new PhantomProfile().indexUrl());
-
-    const notificationButton = newPage.locator("div[id='modal'] button:has-text('Got it')");
-    await notificationButton.waitFor({ state: "attached", timeout: 15_000 });
-    const isNotificationButtonVisible = await notificationButton.isVisible({ timeout: 15_000 }).catch(() => false);
-
-    if (isNotificationButtonVisible) {
-        await notificationButton.click();
-    }
-
-    await toggleOptionalChain({ page: newPage, supportedChains: [], toggleMode: "onboard" });
 
     // wait for the wallet profile to finish saving
     await sleep(8_000);

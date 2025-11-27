@@ -9,7 +9,7 @@ import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-exte
 import { unlock } from "./actions/unlock";
 import { Phantom } from "./phantom";
 import { PhantomProfile } from "./phantom-profile";
-import { getPageFromContextPhantom } from "./utils";
+import { autoClosePhantomNotification, getPageFromContextPhantom } from "./utils";
 
 export type PhantomFixture = {
     contextPath: string;
@@ -80,7 +80,14 @@ export const phantomFixture = (slowMo: number = 0, profileName?: string) => {
             await walletPageContext.close();
         },
         phantomPage: async ({ context: _ }, use) => {
+            let cancelled = false;
+            const isCancelled = () => cancelled;
+            const runner = autoClosePhantomNotification(_phantomPage, isCancelled);
+
             await use(_phantomPage);
+
+            cancelled = true;
+            await runner.catch(() => {});
         },
         phantom: async ({ context: _ }, use) => {
             const phantomInstance = new Phantom(_phantomPage);

@@ -8,7 +8,14 @@ import { switchAccount } from "./actions/switch-account";
 import { switchNetwork } from "./actions/switch-network";
 import { toggleOptionalChain } from "./actions/toggle-optional-chain";
 import { unlock } from "./actions/unlock";
-import type { AddAccountArgs, OnboardingArgs, RenameAccountArgs, ToggleOptionalChainArgs } from "./types";
+import type {
+    AddAccountArgs,
+    GetAccountAddress,
+    OnboardingArgs,
+    RenameAccountArgs,
+    SwitchNetwork,
+    ToggleOptionalChainArgs,
+} from "./types";
 
 export class Phantom {
     page: Page;
@@ -67,37 +74,27 @@ export class Phantom {
     }
 
     /**
-     * Switches the current network to the given network.
-     * @param {SwitchNetwork} networkName - The name of the network to switch to.
-     * @example
-     * const phantom = new Phantom(page);
-     * await phantom.switchNetwork("network name");
-     */
-    async switchNetwork() {
-        await switchNetwork(this.page);
-    }
-
-    /**
      * Switches the current account to the given account.
      * @param {string} accountName - The name of the account to switch to.
      * @example
      * const phantom = new phantom(page);
      * await phantom.switchAccount("Account 1");
      */
-    async switchAccount() {
-        await switchAccount(this.page);
+    async switchAccount(accountName: string) {
+        await switchAccount(this.page, accountName);
     }
 
     /**
      * Retrieves the current account's address.
+     * @param {string} accountName - The name of the account to switch to.
      * @returns A promise that resolves with the current account's address as a string.
      *
      * @example
      * const phantom = new Phantom(page);
      * const address = await phantom.getAccountAddress();
      */
-    async getAccountAddress() {
-        await getAccountAddress(this.page);
+    async getAccountAddress({ accountName, chain }: GetAccountAddress) {
+        return await getAccountAddress({ page: this.page, accountName, chain });
     }
 
     /**
@@ -114,7 +111,30 @@ export class Phantom {
         await addAccount({ page: this.page, ...args });
     }
 
+    /**
+     * Toggles the optional chains on or off.
+     * @param {ToggleOptionalchainArgs} args - The arguments to toggle the optional chains.
+     * @param {string} args.toggleMode - The mode of the optional chains. Can be either "on" or "off".
+     * @param {string[]} args.supportedChains - The list of supported chains.
+     * @example
+     * const phantom = new Phantom(page);
+     * await phantom.toggleOptionalChains({ supportedChains: ["Monad", "Bitcoin"], toggleMode: "off" });
+     */
     async toggleOptionalChains({ toggleMode, supportedChains }: ToggleOptionalChainArgs) {
         await toggleOptionalChain({ page: this.page, supportedChains, toggleMode });
+    }
+
+    /**
+     * Toggles the testnet network on or off.
+     * @param {SwitchNetwork} args - The arguments to toggle the testnet network.
+     * @param {string} args.mode - The mode of the testnet network. Can be either "on" or "off".
+     * @param {string} args.chain - The name of the chain to toggle the testnet network for. Can be either "Solana" or "Ethereum".
+     * @param {string} args.network - The name of the network to toggle the testnet network for. For example, "Solana Testnet".
+     * @example
+     * const phantom = new Phantom(page);
+     * await phantom.switchNetwork({ mode: "on", chain: "Solana", network: "Solana Testnet" });
+     */
+    async switchNetwork({ ...args }: SwitchNetwork) {
+        await switchNetwork({ page: this.page, ...args });
     }
 }

@@ -10,23 +10,8 @@ export async function toggleOptionalChain({ page, supportedChains, toggleMode = 
 
     const activeNetworkButton = page.locator("button[id='settings-item-active-networks']");
     await activeNetworkButton.click();
-    const allOptionalButtons = await page.locator("button[id^='toggle']:not([disabled])").all();
 
-    if (supportedChains.length === 0 && toggleMode === "onboard") {
-        for (const option of allOptionalButtons) {
-            await option.click();
-        }
-
-        const headerBackButton = page.getByTestId("header--back");
-        await headerBackButton.click();
-
-        const settingsCloseButton = page.getByTestId(settingsSelectors.closeMenuButton);
-        await settingsCloseButton.click();
-
-        return;
-    }
-
-    if (supportedChains.length === 0 && toggleMode !== "onboard") {
+    if (supportedChains.length === 0) {
         throw Error("Supported chains array cannot be empty for toggle mode other than 'onboard'");
     }
 

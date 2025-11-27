@@ -10,6 +10,8 @@ export const menuSelectors = {
 export const settingsSelectors = {
     lockWalletButton: "lock-menu-item",
     closeMenuButton: "settings-menu-close-button",
+    developerSettingsButton: "settings-item-developer-settings",
+    activeNetworksButton: "settings-item-active-networks",
 };
 
 export const accountSelectors = {

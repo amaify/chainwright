@@ -10,12 +10,4 @@ export async function unlock(page: Page) {
     await unlockInput.fill(walletPassword);
     await unlockButton.click();
     await unlockButton.waitFor({ state: "detached" });
-
-    const notificationButton = page.locator("div[id='modal'] button:has-text('Got it')");
-    await notificationButton.waitFor({ state: "attached", timeout: 15_000 }).catch(() => {});
-    const isNotificationButtonVisible = await notificationButton.isVisible().catch(() => false);
-
-    if (isNotificationButtonVisible) {
-        await notificationButton.click();
-    }
 }
