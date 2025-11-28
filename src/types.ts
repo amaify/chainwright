@@ -1,8 +1,8 @@
 import type { BrowserContext, Page } from "playwright-core";
 
-export type CLIOptions = "metamask" | "solflare" | "petra" | "phantom" | "all";
+export type CLIOptions = "metamask" | "solflare" | "petra" | "phantom" | "meteor" | "all";
 export type SupportedWallets = Exclude<CLIOptions, "all">;
-export type ExtensionName = "Petra Aptos Wallet" | "MetaMask" | "Phantom" | "Solflare Wallet";
+export type ExtensionName = "Petra Aptos Wallet" | "MetaMask" | "Phantom" | "Solflare Wallet" | "Meteor Wallet";
 
 type Args = {
     context: BrowserContext;

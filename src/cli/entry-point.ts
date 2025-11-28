@@ -46,7 +46,7 @@ export async function clientEntry() {
         .option("--ph, --phantom", "Setup Phantom", "phantom")
         .action(async (setupDir: string, flags: ActionOptions) => {
             // Use this to filter out "headless" and "force"
-            const commandOptions = ["all", "metamask", "solflare", "petra", "phantom"] as const;
+            const commandOptions = ["all", "metamask", "solflare", "petra", "meteor", "phantom"] as const;
 
             const flagValue = Object.keys(flags).filter((_key) => {
                 return commandOptions.includes(_key as CLIOptions)
@@ -61,6 +61,7 @@ export async function clientEntry() {
                       choices: [
                           { name: "All", value: "all" },
                           { name: "MetaMask", value: "metamask" },
+                          { name: "Meteor", value: "meteor" },
                           { name: "Petra", value: "petra" },
                           { name: "Phantom", value: "phantom" },
                           { name: "Solflare", value: "solflare" },
