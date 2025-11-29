@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import picocolors from "picocolors";
 import { MeteorProfile } from "../meteor-profile";
 import { onboardingSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
@@ -12,11 +13,15 @@ export default async function onboard({ page, privateKey, network, password, acc
     await page.goto(indexUrl);
 
     const switchNetworkButton = page.locator(onboardingSelectors.switchNetworkButton).last();
-    await switchNetworkButton.click();
+    const currentNetwork = await switchNetworkButton.textContent();
+    const currentNetworkPassed = network.split("net")[0]?.toLowerCase() ?? "";
 
-    const popoverMenuList = page.locator("section[role='dialog'] div[role='menu']");
-    const networkButtonOption = popoverMenuList.locator(`> button:has-text('${network}')`);
-    await networkButtonOption.click();
+    if (!currentNetwork?.toLowerCase().includes(currentNetworkPassed)) {
+        await switchNetworkButton.click();
+        const popoverMenuList = page.locator("section[role='dialog'] div[role='menu']");
+        const networkButtonOption = popoverMenuList.locator(`> button:has-text('${network}')`);
+        await networkButtonOption.click();
+    }
 
     const importExistingWalletButton = page.locator(onboardingSelectors.importExistingWalletButton);
     await importExistingWalletButton.click();
@@ -35,6 +40,21 @@ export default async function onboard({ page, privateKey, network, password, acc
     await findMyAccountButton.click();
     const loadingButton = page.locator("button[type='submit'][data-loading]");
     await loadingButton.waitFor({ state: "detached", timeout: 25_000 });
+
+    const warningToast = page.getByRole("status");
+    const warningTitle = warningToast.locator("div[id='toast-1-title']:has-text('No Account Found')");
+    const isWarningToastVisible = await warningTitle.isVisible().catch(() => false);
+
+    if (isWarningToastVisible) {
+        throw Error(
+            picocolors.redBright(
+                [
+                    "No Account Found",
+                    "Account associated with the private key not found. Please make sure you are trying to import an account on the correct network(Mainnet/Testnet).",
+                ].join("\n"),
+            ),
+        );
+    }
 
     const accountButton = page.locator("button:not([aria-label='Back'],[id^='menu-button']):has-text('Account')");
     await accountButton.click();

@@ -7,7 +7,7 @@ import { renameAccount } from "./actions/rename-account";
 import { switchAccount } from "./actions/switch-account";
 import { switchNetwork } from "./actions/switch-network";
 import { unlock } from "./actions/unlock";
-import type { OnboardingArgs, RenameAccountArgs } from "./types";
+import type { AddAccountArgs, MeteorNetwork, OnboardingArgs, RenameAccountArgs } from "./types";
 
 export class Meteor {
     page: Page;
@@ -70,8 +70,8 @@ export class Meteor {
      * const meteor = new Meteor(page);
      * await meteor.switchNetwork("network name");
      */
-    async switchNetwork() {
-        await switchNetwork(this.page);
+    async switchNetwork(network: MeteorNetwork) {
+        await switchNetwork(this.page, network);
     }
 
     /**
@@ -107,7 +107,7 @@ export class Meteor {
      * const meteor = new Meteor(page);
      * await meteor.addAccount(TBD);
      */
-    async addAccount() {
-        await addAccount(this.page);
+    async addAccount({ accountName, network, privateKey }: AddAccountArgs) {
+        await addAccount({ page: this.page, accountName, network, privateKey });
     }
 }
