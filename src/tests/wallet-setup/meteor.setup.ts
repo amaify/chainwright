@@ -8,5 +8,5 @@ const PRIVATE_KEY = "ed25519:53dYe8aG2tZzceRqFAtt5zbaDsTwNLNBVSkVwkJXRCYqXUMCUkt
 
 export default defineWalletSetup(PASSWORD, async ({ walletPage }) => {
     const meteor = new Meteor(walletPage);
-    await meteor.onboard({ network: "Testnet", privateKey: PRIVATE_KEY, password: PASSWORD });
+    await meteor.onboard({ network: "Testnet", privateKey: PRIVATE_KEY, password: PASSWORD, accountName: "Default" });
 });

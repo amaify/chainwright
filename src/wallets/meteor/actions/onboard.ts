@@ -2,10 +2,11 @@ import type { Page } from "@playwright/test";
 import { MeteorProfile } from "../meteor-profile";
 import { onboardingSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
+import { renameAccount } from "./rename-account";
 
 type Onboard = OnboardingArgs & { page: Page };
 
-export default async function onboard({ page, privateKey, network, password }: Onboard) {
+export default async function onboard({ page, privateKey, network, password, accountName }: Onboard) {
     const meteorProfile = new MeteorProfile();
     const indexUrl = await meteorProfile.indexUrl();
     await page.goto(indexUrl);
@@ -58,4 +59,6 @@ export default async function onboard({ page, privateKey, network, password }: O
 
     const finishButton = page.locator('button:has-text("Finish")');
     await finishButton.click();
+
+    await renameAccount({ page, newAccountName: accountName });
 }
