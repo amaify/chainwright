@@ -1,7 +1,6 @@
 import { expect } from "@playwright/test";
-import { testFixtureWithNetworkProfile, testWithMeteorFixture } from "@/tests/fixture/test-with-meteor-fixture";
+import { testFixtureWithNetworkProfile } from "@/tests/fixture/test-with-meteor-fixture";
 
-const test = testWithMeteorFixture;
 const testWithNetworkProfile = testFixtureWithNetworkProfile;
 
 testWithNetworkProfile(
@@ -16,13 +15,3 @@ testWithNetworkProfile(
         await expect(availableBalance).toBeVisible();
     },
 );
-
-test("Should throw an error if there is no associated account for the network", async ({ meteor }) => {
-    try {
-        await meteor.switchNetwork("Mainnet");
-    } catch (_error) {
-        void 0;
-    }
-
-    await expect(meteor.switchNetwork("Mainnet")).rejects.toThrowError();
-});

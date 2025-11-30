@@ -2,13 +2,10 @@ import type { Page } from "@playwright/test";
 import { homepageSelectors } from "../selectors/homepage-selectors";
 import type { MeteorNetwork } from "../types";
 import { switchNetworkUtil } from "../utils";
+import { openSettings } from "./open-settings";
 
 export async function switchNetwork(page: Page, network: MeteorNetwork) {
-    const sidebarMenuButton = page.locator(homepageSelectors.openSidebarMenuButton);
-    await sidebarMenuButton.click();
-
-    const settingsButton = page.locator(homepageSelectors.settingsButton);
-    await settingsButton.click();
+    await openSettings(page);
 
     const result = await switchNetworkUtil(page, network, "div[role='menu']");
 

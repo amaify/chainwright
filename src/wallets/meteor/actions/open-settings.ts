@@ -1,5 +1,10 @@
-import { type Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { homepageSelectors } from "../selectors/homepage-selectors";
 
 export async function openSettings(page: Page) {
-    console.info("Not implemented");
+    const sidebarMenuButton = page.locator(homepageSelectors.openSidebarMenuButton);
+    await sidebarMenuButton.click();
+
+    const settingsButton = page.locator(homepageSelectors.settingsButton);
+    await settingsButton.click();
 }

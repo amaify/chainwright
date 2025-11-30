@@ -3,6 +3,7 @@ import { addAccount } from "./actions/add-account";
 import { getAccountAddress } from "./actions/get-account-address";
 import { lockWallet } from "./actions/lock";
 import onboard from "./actions/onboard";
+import { openSettings } from "./actions/open-settings";
 import { renameAccount } from "./actions/rename-account";
 import { switchAccount } from "./actions/switch-account";
 import { switchNetwork } from "./actions/switch-network";
@@ -109,5 +110,15 @@ export class Meteor {
      */
     async addAccount({ accountName, network, privateKey }: AddAccountArgs) {
         await addAccount({ page: this.page, accountName, network, privateKey });
+    }
+
+    /**
+     * Opens the settings page for the wallet.
+     * @example
+     * const meteor = new Meteor(page);
+     * await meteor.openSettings();
+     */
+    async openSettings() {
+        await openSettings(this.page);
     }
 }
