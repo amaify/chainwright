@@ -1,5 +1,6 @@
 import type { Page } from "@playwright/test";
 import picocolors from "picocolors";
+import { sleep } from "@/utils/sleep";
 import { MeteorProfile } from "../meteor-profile";
 import { onboardingSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
@@ -8,6 +9,8 @@ import { renameAccount } from "./rename-account";
 type Onboard = OnboardingArgs & { page: Page };
 
 export default async function onboard({ page, privateKey, network, password, accountName }: Onboard) {
+    console.info(picocolors.yellowBright(`\n Meteor onboarding started...`));
+
     const meteorProfile = new MeteorProfile();
     const indexUrl = await meteorProfile.indexUrl();
     await page.goto(indexUrl);
@@ -46,14 +49,37 @@ export default async function onboard({ page, privateKey, network, password, acc
     const isWarningToastVisible = await warningTitle.isVisible().catch(() => false);
 
     if (isWarningToastVisible) {
-        throw Error(
-            picocolors.redBright(
-                [
-                    "No Account Found",
-                    "Account associated with the private key not found. Please make sure you are trying to import an account on the correct network(Mainnet/Testnet).",
-                ].join("\n"),
-            ),
-        );
+        let maxRetries = 5;
+        let isRetrySuccessful = false;
+
+        while (maxRetries > 0) {
+            console.info(`\n Retrying search for account. ${maxRetries} attempts left`);
+            await sleep(15_000);
+            await findMyAccountButton.click();
+            await loadingButton.waitFor({ state: "detached", timeout: 20_000 });
+
+            const importAccountContainer = page.locator("div:has-text('Import Your Account')").nth(-2);
+            const importAccountButton = importAccountContainer.locator("button");
+            const isImportAccountButtonVisible = await importAccountButton.isVisible().catch(() => false);
+
+            if (isImportAccountButtonVisible) {
+                isRetrySuccessful = true;
+                break;
+            }
+
+            maxRetries -= 1;
+        }
+
+        if (!isRetrySuccessful) {
+            throw Error(
+                picocolors.redBright(
+                    [
+                        "No Account Found",
+                        "Account associated with the private key not found. Please make sure you are trying to import an account on the correct network(Mainnet/Testnet).",
+                    ].join("\n"),
+                ),
+            );
+        }
     }
 
     const accountButton = page.locator("button:not([aria-label='Back'],[id^='menu-button']):has-text('Account')");
@@ -81,4 +107,6 @@ export default async function onboard({ page, privateKey, network, password, acc
     await finishButton.click();
 
     await renameAccount({ page, newAccountName: accountName });
+
+    console.info(picocolors.greenBright("✨ Meteor onboarding completed successfully"));
 }

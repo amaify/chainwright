@@ -81,8 +81,8 @@ export class Meteor {
      * const meteor = new meteor(page);
      * await meteor.switchAccount("Account 1");
      */
-    async switchAccount() {
-        await switchAccount(this.page);
+    async switchAccount(accountName: string) {
+        await switchAccount(this.page, accountName);
     }
 
     /**
@@ -94,7 +94,7 @@ export class Meteor {
      * const address = await meteor.getAccountAddress();
      */
     async getAccountAddress() {
-        await getAccountAddress(this.page);
+        return await getAccountAddress(this.page);
     }
 
     /**

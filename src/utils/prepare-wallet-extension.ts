@@ -8,10 +8,12 @@ import { downloadFile } from "./download-file";
 import getCacheDirectory from "./get-cache-directory";
 
 type Args = {
+    force: boolean;
     name: CLIOptions;
     downloadUrl: string;
-    force: boolean;
 };
+
+let IS_EXECUTED = false;
 
 export async function prepareWalletExtension({ downloadUrl, name, force }: Args) {
     const CACHE_DIR_NAME = getCacheDirectory(name);
@@ -20,7 +22,7 @@ export async function prepareWalletExtension({ downloadUrl, name, force }: Args)
     const zipFilePath = path.join(CACHE_DIR_NAME, `${name}-extension.zip`);
     const outputPath = path.join(CACHE_DIR_NAME, `${name}-extension`);
 
-    if (force && fs.existsSync(CACHE_DIR_NAME)) {
+    if (force && fs.existsSync(CACHE_DIR_NAME) && !IS_EXECUTED) {
         fs.rmSync(CACHE_DIR_NAME, { recursive: true });
         console.info(picocolors.magenta(`🧹 Removed ${walletName} because of the force flag`));
     }
@@ -49,6 +51,11 @@ export async function prepareWalletExtension({ downloadUrl, name, force }: Args)
         zip.extractAllTo(outputPath, true);
         console.info(`✅ ${walletName} Extension extracted successfully.`);
     } else {
+        if (IS_EXECUTED) {
+            console.info(picocolors.magentaBright(`Using cached ${walletName} extension for profile creation.`));
+            return outputPath;
+        }
+
         console.info(
             picocolors.yellow(
                 `⚠️ Skipping ${walletName} cache creation: Cache already exists at ${outputPath}. Use --force to overwrite.`,
@@ -61,6 +68,8 @@ export async function prepareWalletExtension({ downloadUrl, name, force }: Args)
     if (!fs.existsSync(manifestPath)) {
         throw new Error(`❌ (${walletName}) Invalid extension: manifest.json not found`);
     }
+
+    IS_EXECUTED = true;
 
     return outputPath;
 }
