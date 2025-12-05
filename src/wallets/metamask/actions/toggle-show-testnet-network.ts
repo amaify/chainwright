@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 import { skip } from "@/tests/utils/skip";
-import { homepageSelectors, settingsSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors, settingsSelectors } from "../selectors/homepage-selectors.metamask";
 
 export async function toggleShowTestnetNetwork({ page }: { page: Page }) {
     const settingsButton = page.locator(`div:has(> button[data-testid='${homepageSelectors.openSettingsButton}'])`);

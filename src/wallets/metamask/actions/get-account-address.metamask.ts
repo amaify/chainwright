@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { homepageSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors } from "../selectors/homepage-selectors.metamask";
 
 export async function getAccountAddress(page: Page) {
     const addressesButton = page.getByTestId(homepageSelectors.accountAddressesButton);

@@ -1,8 +1,8 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import z from "zod";
 import { skip } from "@/tests/utils/skip";
-import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors";
-import { onboardSelectors } from "../selectors/onboard-selectors";
+import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors.metamask";
+import { onboardSelectors } from "../selectors/onboard-selectors.metamask";
 import type { AddAccountArgs } from "../types";
 
 type AddAccount = AddAccountArgs & {

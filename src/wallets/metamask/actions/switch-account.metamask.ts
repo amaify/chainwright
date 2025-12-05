@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { skip } from "@/tests/utils/skip";
-import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors";
+import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors.metamask";
 
 export type SwitchAccount = {
     page: Page;

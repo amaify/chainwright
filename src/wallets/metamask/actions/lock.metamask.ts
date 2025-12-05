@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { settingsSelectors } from "../selectors/homepage-selectors";
+import { settingsSelectors } from "../selectors/homepage-selectors.metamask";
 
 export async function lockWallet(page: Page) {
     const lockButton = page.getByTestId(settingsSelectors.lockButton);

@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { homepageSelectors, settingsSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors, settingsSelectors } from "../selectors/homepage-selectors.metamask";
 
 export async function openSettings(page: Page) {
     const settingsButton = page.getByTestId(homepageSelectors.openSettingsButton);

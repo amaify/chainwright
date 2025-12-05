@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { homepageSelectors, settingsSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors, settingsSelectors } from "../selectors/homepage-selectors.metamask";
 import { type AddCustomNetwork, addCustomNetworkSchema } from "../types";
 
 interface AddCustomNetworkArgs extends AddCustomNetwork {

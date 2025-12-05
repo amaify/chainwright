@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { homepageSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors } from "../selectors/homepage-selectors.metamask";
 import type { SwitchNetwork } from "../types";
 import { toggleShowTestnetNetwork } from "./toggle-show-testnet-network";
 

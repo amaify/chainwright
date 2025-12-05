@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors";
+import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors.metamask";
 
 export type RenameAccount = {
     page: Page;

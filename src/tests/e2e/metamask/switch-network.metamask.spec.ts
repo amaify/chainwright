@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import { testWithMetamaskFixture } from "@/tests/fixture/test-with-metamask-fixture";
-import { homepageSelectors } from "@/wallets/metamask/selectors/homepage-selectors";
+import { homepageSelectors } from "@/wallets/metamask/selectors/homepage-selectors.metamask";
 
 const test = testWithMetamaskFixture;
 

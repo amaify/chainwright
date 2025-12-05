@@ -2,8 +2,8 @@ import { expect, type Page } from "@playwright/test";
 import picocolors from "picocolors";
 import { sleep } from "@/utils/sleep";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
-import { homepageSelectors } from "../selectors/homepage-selectors";
-import { onboardSelectors } from "../selectors/onboard-selectors";
+import { homepageSelectors } from "../selectors/homepage-selectors.metamask";
+import { onboardSelectors } from "../selectors/onboard-selectors.metamask";
 import type { OnboardingArgs } from "../types";
 import { toggleShowTestnetNetwork } from "./toggle-show-testnet-network";
 

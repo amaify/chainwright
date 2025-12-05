@@ -1,7 +1,7 @@
 import { errors, type Page } from "@playwright/test";
 import { sleep } from "@/utils/sleep";
 import waitForStablePage from "@/utils/wait-for-stable-page";
-import { loadingSelectors } from "./selectors/loading-selectors";
+import { loadingSelectors } from "./selectors/loading-selectors.metamask";
 
 const TIMEOUT = 60_000;
 
