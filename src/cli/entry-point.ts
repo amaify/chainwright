@@ -40,13 +40,23 @@ export async function clientEntry() {
         )
         .option("-f, --force", "Force the creation of cache even if it already exists", false)
         .option("-a, --all", "Setup all wallets", "all")
+        .option("--kp, --keplr", "Setup Keplr", "keplr")
         .option("-m, --metamask", "Setup MetaMask", "metamask")
-        .option("-s, --solflare", "Setup Solflare", "solflare")
+        .option("--mt, --meteor", "Setup Meteor", "meteor")
         .option("--pt, --petra", "Setup Petra", "petra")
         .option("--ph, --phantom", "Setup Phantom", "phantom")
+        .option("-s, --solflare", "Setup Solflare", "solflare")
         .action(async (setupDir: string, flags: ActionOptions) => {
             // Use this to filter out "headless" and "force"
-            const commandOptions = ["all", "metamask", "solflare", "petra", "meteor", "phantom"] as const;
+            const commandOptions: Array<CLIOptions> = [
+                "all",
+                "metamask",
+                "solflare",
+                "petra",
+                "meteor",
+                "keplr",
+                "phantom",
+            ];
 
             const flagValue = Object.keys(flags).filter((_key) => {
                 return commandOptions.includes(_key as CLIOptions)
@@ -60,6 +70,7 @@ export async function clientEntry() {
                       message: "Select the wallet you want to setup",
                       choices: [
                           { name: "All", value: "all" },
+                          { name: "Keplr", value: "keplr" },
                           { name: "MetaMask", value: "metamask" },
                           { name: "Meteor", value: "meteor" },
                           { name: "Petra", value: "petra" },
