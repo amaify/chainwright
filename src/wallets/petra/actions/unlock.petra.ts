@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
-import { homepageSelectors, unlockWalletSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors, unlockWalletSelectors } from "../selectors/homepage-selectors.petra";
 
 export default async function unlock(page: Page) {
     const walletPassword = await getWalletPasswordFromCache("petra");

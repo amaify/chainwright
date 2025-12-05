@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 import { skip } from "@/tests/utils/skip";
-import { accountSelectors } from "../selectors/homepage-selectors";
+import { accountSelectors } from "../selectors/homepage-selectors.petra";
 
 export async function switchAccount(page: Page, accountName: string) {
     const accountMenuButton = page.locator(accountSelectors.accountOptionsMenuButton).first();

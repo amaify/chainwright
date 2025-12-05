@@ -1,9 +1,9 @@
 import type { Page } from "@playwright/test";
 import z from "zod";
-import { accountSelectors } from "../selectors/homepage-selectors";
-import { onboardSelectors } from "../selectors/onboard-selectors";
+import { accountSelectors } from "../selectors/homepage-selectors.petra";
+import { onboardSelectors } from "../selectors/onboard-selectors.petra";
 import type { AddAccount } from "../types";
-import { renameAccount } from "./rename-account";
+import { renameAccount } from "./rename-account.petra";
 
 export async function addAccount({ page, accountName, mode, ...args }: AddAccount & { page: Page }) {
     const parsedAccountName = z

@@ -1,12 +1,12 @@
 import type { Page } from "@playwright/test";
-import { addAccount } from "./actions/add-account";
-import { getAccountAddress } from "./actions/get-account-address";
-import { lockWallet } from "./actions/lock";
-import onboard from "./actions/onboard";
-import { type RenameAccount, renameAccount } from "./actions/rename-account";
-import { switchAccount } from "./actions/switch-account";
-import { switchNetwork } from "./actions/switch-network";
-import unlock from "./actions/unlock";
+import { addAccount } from "./actions/add-account.petra";
+import { getAccountAddress } from "./actions/get-account-address.petra";
+import { lockWallet } from "./actions/lock.petra";
+import onboard from "./actions/onboard.petra";
+import { type RenameAccount, renameAccount } from "./actions/rename-account.petra";
+import { switchAccount } from "./actions/switch-account.petra";
+import { switchNetwork } from "./actions/switch-network.petra";
+import unlock from "./actions/unlock.petra";
 import type { AddAccount, OnboardingArgs, SwitchNetwork } from "./types";
 
 export class Petra {

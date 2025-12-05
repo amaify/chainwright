@@ -8,7 +8,7 @@ import persistLocalStorage from "@/utils/persist-local-storage";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import waitForStablePage from "@/utils/wait-for-stable-page";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
-import unlock from "./actions/unlock";
+import unlock from "./actions/unlock.petra";
 import { Petra } from "./petra";
 import { PetraProfile } from "./petra-profile";
 

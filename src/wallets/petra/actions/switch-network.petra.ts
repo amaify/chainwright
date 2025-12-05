@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { homepageSelectors, settingsMenuSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors, settingsMenuSelectors } from "../selectors/homepage-selectors.petra";
 import type { SwitchNetwork } from "../types";
 
 export async function switchNetwork(page: Page, networkName: SwitchNetwork) {

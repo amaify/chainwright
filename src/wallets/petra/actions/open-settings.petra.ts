@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { homepageSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors } from "../selectors/homepage-selectors.petra";
 
 export async function openSettings(page: Page) {
     const settingsButton = page.locator(homepageSelectors.settingsMenu);

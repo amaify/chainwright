@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { openSettings } from "./open-settings";
+import { openSettings } from "./open-settings.petra";
 
 export async function lockWallet(page: Page) {
     await openSettings(page);

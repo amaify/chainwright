@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import { testWithPetraFixture } from "@/tests/fixture/test-with-petra-fixture";
-import { accountSelectors } from "@/wallets/petra/selectors/homepage-selectors";
+import { accountSelectors } from "@/wallets/petra/selectors/homepage-selectors.petra";
 
 const test = testWithPetraFixture;
 

@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 import z from "zod";
-import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors";
+import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors.petra";
 
 export type RenameAccount = {
     page: Page;
