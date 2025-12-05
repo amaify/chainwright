@@ -7,6 +7,7 @@ import { renameAccount } from "./actions/rename-account";
 import { switchAccount } from "./actions/switch-account";
 import { switchNetwork } from "./actions/switch-network";
 import { unlock } from "./actions/unlock";
+import type { OnboardingArgs } from "./types";
 
 export class Keplr {
     page: Page;
@@ -17,17 +18,16 @@ export class Keplr {
 
     /**
      * Onboards the wallet.
-     * This function onboards the wallet by entering the password and other required information.
      * @param {OnboardingArgs} args - The arguments required for onboarding.
-     * @param args.mode - Create a new wallet or import via private key / mnemonic.
-     * @param args.password - The password for the wallet.
-     * @param args.secretRecoveryPhrase - The secret recovery phrase for the wallet when importing a wallet.
+     * @param args.chain - The chain to onboard the wallet on.
+     * @param args.privateKey - The private key of the wallet to onboard.
+     * @param args.walletName - The name of the wallet to onboard.
      * @example
      * const keplr = new Keplr(page);
-     * await keplr.onboard({ mode: "importPrivateKey", password: "password", privateKey: "private key" });
+     * await keplr.onboard({ chain: "injective", privateKey: "private key", walletName: "Wallet Name" });
      */
-    async onboard() {
-        await onboard(this.page);
+    async onboard({ chains, privateKey, walletName }: OnboardingArgs) {
+        await onboard({ page: this.page, privateKey, walletName, chains });
     }
 
     /**
@@ -70,7 +70,7 @@ export class Keplr {
      * const keplr = new Keplr(page);
      * await keplr.switchNetwork("network name");
      */
-    async switchNetwork(networkName: SwitchNetwork) {
+    async switchNetwork() {
         await switchNetwork(this.page);
     }
 
@@ -81,7 +81,7 @@ export class Keplr {
      * const keplr = new keplr(page);
      * await keplr.switchAccount("Account 1");
      */
-    async switchAccount(accountName: string) {
+    async switchAccount() {
         await switchAccount(this.page);
     }
 

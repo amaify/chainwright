@@ -2,7 +2,7 @@ import { getWalletExtensionIdFromCache } from "@/utils/wallets/get-wallet-extens
 
 export class MeteorProfile {
     readonly name = "meteor" as const;
-    readonly onboardingPath = "ext_index_popup.html"; // Not implemented;
+    readonly onboardingPath = "ext_index_popup.html";
 
     async indexUrl() {
         const extensionId = await this.extensionId();
@@ -11,7 +11,7 @@ export class MeteorProfile {
 
     async promptUrl() {
         const extensionId = await this.extensionId();
-        return `chrome-extension://${extensionId}/<Notification/prompt path>.html`;
+        return `chrome-extension://${extensionId}/ext_index.html`;
     }
 
     async extensionId() {

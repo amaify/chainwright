@@ -2,16 +2,16 @@ import { getWalletExtensionIdFromCache } from "@/utils/wallets/get-wallet-extens
 
 export class KeplrProfile {
     readonly name = "keplr" as const;
-    readonly onboardingPath = ""; // Not implemented;
+    readonly onboardingPath = "register.html";
 
     async indexUrl() {
         const extensionId = await this.extensionId();
-        return `chrome-extension://${extensionId}/<home/index path>.html`;
+        return `chrome-extension://${extensionId}/sidePanel.html`;
     }
 
     async promptUrl() {
         const extensionId = await this.extensionId();
-        return `chrome-extension://${extensionId}/<Notification/prompt path>.html`;
+        return `chrome-extension://${extensionId}/popup.html`;
     }
 
     async extensionId() {
