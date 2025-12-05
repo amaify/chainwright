@@ -41,7 +41,7 @@ export const {{walletName}}Fixture = (slowMo: number = 0, profileName?: string) 
             const walletDataDir = path.resolve(CACHE_DIR, profileName ?? "wallet-data");
 
             if (!fs.existsSync(walletDataDir)) {
-                throw new Error(`❌ Cache for MetaMask wallet data not found. Create it first`);
+                throw new Error(`❌ Cache for {{WalletName}} wallet data not found. Create it first`);
             }
 
             await fs.promises.cp(walletDataDir, tempWalletDataDir, { recursive: true, force: true });
