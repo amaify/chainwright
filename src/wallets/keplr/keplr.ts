@@ -1,12 +1,12 @@
 import type { Page } from "@playwright/test";
-import { addAccount } from "./actions/add-account";
-import { getAccountAddress } from "./actions/get-account-address";
-import { lockWallet } from "./actions/lock";
-import onboard from "./actions/onboard";
-import { renameAccount } from "./actions/rename-account";
-import { switchAccount } from "./actions/switch-account";
-import { switchNetwork } from "./actions/switch-network";
-import { unlock } from "./actions/unlock";
+import { addAccount } from "./actions/add-account.keplr";
+import { getAccountAddress } from "./actions/get-account-address.keplr";
+import { lockWallet } from "./actions/lock.keplr";
+import onboard from "./actions/onboard.keplr";
+import { renameAccount } from "./actions/rename-account.keplr";
+import { switchAccount } from "./actions/switch-account.keplr";
+import { switchNetwork } from "./actions/switch-network.keplr";
+import { unlock } from "./actions/unlock.keplr";
 import type { OnboardingArgs } from "./types";
 
 export class Keplr {

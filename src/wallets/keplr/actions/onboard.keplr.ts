@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 import picocolors from "picocolors";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
-import { onboardingSelectors } from "../selectors/onboard-selectors";
+import { onboardingSelectors } from "../selectors/onboard-selectors.keplr";
 import type { OnboardingArgs } from "../types";
 
 type Onboard = OnboardingArgs & { page: Page };

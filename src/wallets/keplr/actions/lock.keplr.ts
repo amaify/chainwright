@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { homepageSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors } from "../selectors/homepage-selectors.keplr";
 
 export async function lockWallet(page: Page) {
     const openMenuButton = page.locator(homepageSelectors.openSidebarMenuButton);
