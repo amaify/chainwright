@@ -1,5 +1,5 @@
 import type { Locator, Page } from "@playwright/test";
-import { homepageSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors } from "../selectors/homepage-selectors.meteor";
 
 export async function switchAccount(page: Page, accountName: string) {
     const sidebarMenuButton = page.locator(homepageSelectors.openSidebarMenuButton);

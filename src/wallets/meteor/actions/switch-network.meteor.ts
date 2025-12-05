@@ -1,8 +1,8 @@
 import type { Page } from "@playwright/test";
-import { homepageSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors } from "../selectors/homepage-selectors.meteor";
 import type { MeteorNetwork } from "../types";
 import { switchNetworkUtil } from "../utils";
-import { openSettings } from "./open-settings";
+import { openSettings } from "./open-settings.meteor";
 
 export async function switchNetwork(page: Page, network: MeteorNetwork) {
     await openSettings(page);

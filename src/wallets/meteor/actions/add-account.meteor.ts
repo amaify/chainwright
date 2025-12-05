@@ -1,9 +1,9 @@
 import type { Page } from "@playwright/test";
-import { homepageSelectors } from "../selectors/homepage-selectors";
-import { onboardingSelectors } from "../selectors/onboard-selectors";
+import { homepageSelectors } from "../selectors/homepage-selectors.meteor";
+import { onboardingSelectors } from "../selectors/onboard-selectors.meteor";
 import type { AddAccountArgs } from "../types";
 import { switchNetworkUtil } from "../utils";
-import { renameAccount } from "./rename-account";
+import { renameAccount } from "./rename-account.meteor";
 
 type AddAccount = AddAccountArgs & { page: Page };
 

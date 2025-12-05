@@ -3,9 +3,9 @@ import picocolors from "picocolors";
 import { sleep } from "@/utils/sleep";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { MeteorProfile } from "../meteor-profile";
-import { onboardingSelectors } from "../selectors/onboard-selectors";
+import { onboardingSelectors } from "../selectors/onboard-selectors.meteor";
 import type { OnboardingArgs } from "../types";
-import { renameAccount } from "./rename-account";
+import { renameAccount } from "./rename-account.meteor";
 
 type Onboard = OnboardingArgs & { page: Page };
 

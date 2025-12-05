@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { onboardingSelectors } from "./selectors/onboard-selectors";
+import { onboardingSelectors } from "./selectors/onboard-selectors.meteor";
 import type { MeteorNetwork } from "./types";
 
 export async function switchNetworkUtil(page: Page, network: MeteorNetwork, popoverLocator: string) {

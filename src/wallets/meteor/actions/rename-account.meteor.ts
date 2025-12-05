@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { homepageSelectors } from "../selectors/homepage-selectors";
+import { homepageSelectors } from "../selectors/homepage-selectors.meteor";
 import type { RenameAccountArgs } from "../types";
 
 type RenameAccount = RenameAccountArgs & { page: Page };

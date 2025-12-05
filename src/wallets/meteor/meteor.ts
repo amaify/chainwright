@@ -1,13 +1,13 @@
 import type { Page } from "@playwright/test";
-import { addAccount } from "./actions/add-account";
-import { getAccountAddress } from "./actions/get-account-address";
-import { lockWallet } from "./actions/lock";
-import onboard from "./actions/onboard";
-import { openSettings } from "./actions/open-settings";
-import { renameAccount } from "./actions/rename-account";
-import { switchAccount } from "./actions/switch-account";
-import { switchNetwork } from "./actions/switch-network";
-import { unlock } from "./actions/unlock";
+import { addAccount } from "./actions/add-account.meteor";
+import { getAccountAddress } from "./actions/get-account-address.meteor";
+import { lockWallet } from "./actions/lock.meteor";
+import onboard from "./actions/onboard.meteor";
+import { openSettings } from "./actions/open-settings.meteor";
+import { renameAccount } from "./actions/rename-account.meteor";
+import { switchAccount } from "./actions/switch-account.meteor";
+import { switchNetwork } from "./actions/switch-network.meteor";
+import { unlock } from "./actions/unlock.meteor";
 import type { AddAccountArgs, MeteorNetwork, OnboardingArgs, RenameAccountArgs } from "./types";
 
 export class Meteor {
