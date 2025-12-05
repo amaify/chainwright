@@ -7,5 +7,5 @@ export default defineWalletSetup(PASSWORD, async ({ walletPage }) => {
     const metamask = new Metamask(walletPage);
     const seedPhrase = "slam razor near morning edge across provide sting section bind soup differ";
 
-    await metamask.onboard({ mode: "import", password: PASSWORD, secretRecoveryPhrase: seedPhrase });
+    await metamask.onboard({ mode: "import", secretRecoveryPhrase: seedPhrase });
 });

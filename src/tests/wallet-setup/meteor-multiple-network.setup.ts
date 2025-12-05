@@ -17,7 +17,6 @@ export default defineWalletSetup(
         await meteor.onboard({
             network: "Testnet",
             privateKey: PRIVATE_KEY,
-            password: PASSWORD,
             accountName: "Default",
         });
 

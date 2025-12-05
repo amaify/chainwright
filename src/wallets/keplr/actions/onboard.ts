@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import picocolors from "picocolors";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { onboardingSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
@@ -6,6 +7,8 @@ import type { OnboardingArgs } from "../types";
 type Onboard = OnboardingArgs & { page: Page };
 
 export default async function onboard({ page, privateKey, walletName, chains }: Onboard) {
+    console.info(picocolors.yellowBright(`\n Keplr onboarding started...`));
+
     const PASSWORD = await getWalletPasswordFromCache("keplr");
     const importExistingWalletButton = page.locator(onboardingSelectors.importExistingWalletButton);
     await importExistingWalletButton.click();
@@ -63,4 +66,6 @@ export default async function onboard({ page, privateKey, walletName, chains }: 
 
     const finishButton = page.locator(onboardingSelectors.finishButton);
     await finishButton.click();
+
+    console.info(picocolors.greenBright("✨ Keplr onboarding completed successfully"));
 }

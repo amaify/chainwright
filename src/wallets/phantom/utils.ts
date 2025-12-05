@@ -26,14 +26,23 @@ export async function getPageFromContextPhantom(context: BrowserContext) {
 
 export async function autoClosePhantomNotification(page: Page, isCancelled: () => boolean) {
     const INTERVAL = 300;
+    let isClosed = false;
+    const isNotificationClosed = () => isClosed;
 
-    while (!isCancelled() && !page.isClosed()) {
+    while (!isCancelled() || !isNotificationClosed()) {
+        const _isClosed = isNotificationClosed();
+
+        // Check if notification is closed
+        // If it's closed, there's no need to check again
+        if (_isClosed) return;
+
         try {
             const notificationButton = page.locator("div[id='modal'] button:has-text('Got it')");
             const isNotificationButtonVisible = await notificationButton.isVisible().catch(() => false);
 
             if (isNotificationButtonVisible) {
                 await notificationButton.click();
+                isClosed = true;
             }
         } catch (error) {
             console.error("[autoClosePhantomNotification]: ", error);

@@ -1,7 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// Build reporter array dynamically
-
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -15,7 +13,7 @@ export default defineConfig({
     reporter: [["list"]],
 
     /* Global timeout for each test */
-    timeout: 1000000000,
+    timeout: process.env.CI ? 180_000 : 30_000,
 
     use: {
         // We are using locally deployed Metamask Test Dapp for somePhantom tests.

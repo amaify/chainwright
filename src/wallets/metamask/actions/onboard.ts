@@ -1,6 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 import picocolors from "picocolors";
 import { sleep } from "@/utils/sleep";
+import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { homepageSelectors } from "../selectors/homepage-selectors";
 import { onboardSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
@@ -12,6 +13,7 @@ type Onboard = OnboardingArgs & {
 
 export default async function onboard({ page, ...args }: Onboard) {
     console.info(picocolors.yellowBright(`\n 🦊 MetaMask onboarding started...`));
+    const PASSWORD = await getWalletPasswordFromCache("metamask");
 
     const createWalletButton = page.getByTestId(onboardSelectors.createWalletButton);
     const importWalletButton = page.getByTestId(onboardSelectors.importWalletButton);
@@ -23,13 +25,12 @@ export default async function onboard({ page, ...args }: Onboard) {
     const onboardingDoneButton = page.getByTestId(onboardSelectors.onboardingDoneButton);
 
     if (args.mode === "create") {
-        const { password } = args;
         const useSecretRecoveryPhraseButton = page.getByTestId(onboardSelectors.useSecretRecoveryPhraseButton);
         await createWalletButton.click();
         await useSecretRecoveryPhraseButton.click();
 
-        await createNewPasswordInput.fill(password);
-        await confirmNewPasswordInput.fill(password);
+        await createNewPasswordInput.fill(PASSWORD);
+        await confirmNewPasswordInput.fill(PASSWORD);
 
         await confirmPasswordCheckbox.click();
         await createPasswordButton.click();
@@ -50,7 +51,7 @@ export default async function onboard({ page, ...args }: Onboard) {
     }
 
     if (args.mode === "import") {
-        const { password, secretRecoveryPhrase } = args;
+        const { secretRecoveryPhrase } = args;
         const recoveryPhrase = secretRecoveryPhrase.split(" ");
 
         const importUsingSecretRecoveryPhraseButton = page.getByTestId(
@@ -74,9 +75,9 @@ export default async function onboard({ page, ...args }: Onboard) {
 
         const importWalletConfirmButton = page.getByTestId(onboardSelectors.importWalletConfirmButton);
         await importWalletConfirmButton.click();
-        await createNewPasswordInput.fill(password);
+        await createNewPasswordInput.fill(PASSWORD);
 
-        await confirmNewPasswordInput.fill(password);
+        await confirmNewPasswordInput.fill(PASSWORD);
         await confirmPasswordCheckbox.click();
 
         await createPasswordButton.click();

@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 import picocolors from "picocolors";
 import { sleep } from "@/utils/sleep";
+import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { PhantomProfile } from "../phantom-profile";
 import { onboardingSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
@@ -9,6 +10,8 @@ type Onboarding = OnboardingArgs & { page: Page };
 
 export default async function onboard({ page, ...args }: Onboarding) {
     console.info(picocolors.yellowBright(`\n Phantom onboarding started...`));
+
+    const PASSWORD = await getWalletPasswordFromCache("phantom");
 
     if (args.mode === "create") {
         const createANewWalletButton = page.locator(onboardingSelectors.createNewWalletButton);
@@ -22,8 +25,8 @@ export default async function onboard({ page, ...args }: Onboarding) {
         const termsCheckBox = page.getByTestId(onboardingSelectors.termsCheckBox);
         const continueButton = page.locator(onboardingSelectors.continueButton);
 
-        await passwordInput.fill(args.password);
-        await confirmPasswordInput.fill(args.password);
+        await passwordInput.fill(PASSWORD);
+        await confirmPasswordInput.fill(PASSWORD);
         await termsCheckBox.click();
         await continueButton.click();
 
@@ -70,8 +73,8 @@ export default async function onboard({ page, ...args }: Onboarding) {
         const confirmPasswordInput = page.getByTestId(onboardingSelectors.passwordConfirmInput);
         const termsCheckBox = page.getByTestId(onboardingSelectors.termsCheckBox);
 
-        await passwordInput.fill(args.password);
-        await confirmPasswordInput.fill(args.password);
+        await passwordInput.fill(PASSWORD);
+        await confirmPasswordInput.fill(PASSWORD);
         await termsCheckBox.click();
 
         await continueButton.click();
@@ -86,7 +89,7 @@ export default async function onboard({ page, ...args }: Onboarding) {
         const iAlreadyHaveAWalletButton = page.locator(onboardingSelectors.IAlreadyHaveAWalletButton);
         await iAlreadyHaveAWalletButton.click();
 
-        const { privateKey, chain, password, accountName } = args;
+        const { privateKey, chain, accountName } = args;
         const importViaPrivateKey = page.locator(onboardingSelectors.importPrivateKeyButton);
         await importViaPrivateKey.click();
 
@@ -114,8 +117,8 @@ export default async function onboard({ page, ...args }: Onboarding) {
         const confirmPasswordInput = page.getByTestId(onboardingSelectors.passwordConfirmInput);
         const termsCheckBox = page.getByTestId(onboardingSelectors.termsCheckBox);
 
-        await passwordInput.fill(password);
-        await confirmPasswordInput.fill(password);
+        await passwordInput.fill(PASSWORD);
+        await confirmPasswordInput.fill(PASSWORD);
         await termsCheckBox.click();
 
         const continueButton = page.locator(onboardingSelectors.continueButton);

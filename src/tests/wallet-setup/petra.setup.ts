@@ -7,7 +7,7 @@ const SECRET_PHRASE = "knife income industry useless speak inside scheme illegal
 export default defineWalletSetup(PASSWORD, async ({ walletPage }) => {
     const petra = new Petra(walletPage);
 
-    await petra.onboard({ mode: "importMnemonic", password: PASSWORD, secretRecoveryPhrase: SECRET_PHRASE });
+    await petra.onboard({ mode: "importMnemonic", secretRecoveryPhrase: SECRET_PHRASE });
     await petra.addAccount({
         accountName: "Echo",
         mode: "privateKey",

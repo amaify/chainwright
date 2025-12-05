@@ -3,7 +3,6 @@ export type MeteorNetwork = "Mainnet" | "Testnet";
 export type OnboardingArgs = {
     network: MeteorNetwork;
     privateKey: string;
-    password: string;
     accountName: string;
 };
 

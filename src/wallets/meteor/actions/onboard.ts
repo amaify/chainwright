@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 import picocolors from "picocolors";
 import { sleep } from "@/utils/sleep";
+import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { MeteorProfile } from "../meteor-profile";
 import { onboardingSelectors } from "../selectors/onboard-selectors";
 import type { OnboardingArgs } from "../types";
@@ -8,9 +9,10 @@ import { renameAccount } from "./rename-account";
 
 type Onboard = OnboardingArgs & { page: Page };
 
-export default async function onboard({ page, privateKey, network, password, accountName }: Onboard) {
+export default async function onboard({ page, privateKey, network, accountName }: Onboard) {
     console.info(picocolors.yellowBright(`\n Meteor onboarding started...`));
 
+    const PASSWORD = await getWalletPasswordFromCache("meteor");
     const meteorProfile = new MeteorProfile();
     const indexUrl = await meteorProfile.indexUrl();
     await page.goto(indexUrl);
@@ -85,8 +87,12 @@ export default async function onboard({ page, privateKey, network, password, acc
     const accountButton = page.locator("button:not([aria-label='Back'],[id^='menu-button']):has-text('Account')");
     await accountButton.click();
 
-    const closeModalButton = page.locator("button:has-text('Close')").first();
-    const isCloseModalButtonVisible = await closeModalButton.isVisible().catch(() => false);
+    const dialog = page.locator("section[role='dialog']");
+    const closeModalButton = dialog.locator("button:has-text('Close')").first();
+    const isCloseModalButtonVisible = await closeModalButton
+        .isVisible()
+        .then(() => true)
+        .catch(() => false);
 
     if (isCloseModalButtonVisible) {
         await closeModalButton.click();
@@ -99,8 +105,8 @@ export default async function onboard({ page, privateKey, network, password, acc
     const confirmPasswordInput = page.locator("input[placeholder='Confirm Password']");
     const changePasswordButton = page.locator('button:has-text("Change Password")');
 
-    await passwordInput.fill(password);
-    await confirmPasswordInput.fill(password);
+    await passwordInput.fill(PASSWORD);
+    await confirmPasswordInput.fill(PASSWORD);
     await changePasswordButton.click();
 
     const finishButton = page.locator('button:has-text("Finish")');

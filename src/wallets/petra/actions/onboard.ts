@@ -2,6 +2,7 @@ import { expect, type Page } from "@playwright/test";
 import picocolors from "picocolors";
 import { sleep } from "@/utils/sleep";
 import waitForStablePage from "@/utils/wait-for-stable-page";
+import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { IS_VISIBLE_TIMEOUT } from "@/wallets/utils/constants";
 import { PetraProfile } from "../petra-profile";
 import { homepageSelectors } from "../selectors/homepage-selectors";
@@ -17,6 +18,7 @@ export default async function onboard({ page, ...args }: Onboard) {
     console.info(picocolors.yellowBright(`\n Petra onboarding started...`));
 
     const petraProfile = new PetraProfile();
+    const PASSWORD = await getWalletPasswordFromCache("petra");
 
     const createAccountButton = page.locator(onboardSelectors.createWalletButton);
     const importWalletButton = page.locator(onboardSelectors.importWalletButton);
@@ -28,13 +30,12 @@ export default async function onboard({ page, ...args }: Onboard) {
     const onboardingCompleteText = page.locator(onboardSelectors.onboardingCompleteText);
 
     if (args.mode === "create") {
-        const { password } = args;
         const createSeedPhraseButton = page.locator(onboardSelectors.createSeedPhraseButton);
         await createAccountButton.click();
         await createSeedPhraseButton.click();
 
-        await createNewPasswordInput.fill(password);
-        await confirmNewPasswordInput.fill(password);
+        await createNewPasswordInput.fill(PASSWORD);
+        await confirmNewPasswordInput.fill(PASSWORD);
         await confirmPasswordCheckbox.click();
         await continueButton.click();
 
@@ -50,7 +51,7 @@ export default async function onboard({ page, ...args }: Onboard) {
     }
 
     if (args.mode === "importPrivateKey") {
-        const { password, privateKey } = args;
+        const { privateKey } = args;
         const importPrivateKeyButton = page.locator(onboardSelectors.importUsingPrivateKeyButton);
         const privateKeyInput = page.locator(onboardSelectors.privateKeyInput);
         const importButton = page.locator(onboardSelectors.importButton);
@@ -60,8 +61,8 @@ export default async function onboard({ page, ...args }: Onboard) {
         await privateKeyInput.fill(privateKey);
 
         await importButton.click();
-        await createNewPasswordInput.fill(password);
-        await confirmNewPasswordInput.fill(password);
+        await createNewPasswordInput.fill(PASSWORD);
+        await confirmNewPasswordInput.fill(PASSWORD);
         await confirmPasswordCheckbox.click();
 
         await continueButton.click();
@@ -77,7 +78,7 @@ export default async function onboard({ page, ...args }: Onboard) {
     }
 
     if (args.mode === "importMnemonic") {
-        const { password, secretRecoveryPhrase } = args;
+        const { secretRecoveryPhrase } = args;
         const importMnemonicPhraseButton = page.locator(onboardSelectors.importUsingMnemonicButton);
 
         await importWalletButton.click();
@@ -91,8 +92,8 @@ export default async function onboard({ page, ...args }: Onboard) {
         }
 
         await continueButton.click();
-        await createNewPasswordInput.fill(password);
-        await confirmNewPasswordInput.fill(password);
+        await createNewPasswordInput.fill(PASSWORD);
+        await confirmNewPasswordInput.fill(PASSWORD);
         await confirmPasswordCheckbox.click();
 
         await continueButton.click();
