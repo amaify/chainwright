@@ -7,16 +7,16 @@
         "index.ts",
         "types.ts",
         "utils.ts",
-        "actions/unlock.ts",
-        "actions/lock.ts",
-        "actions/onboard.ts",
-        "actions/add-account.ts",
-        "actions/get-account-address.ts",
-        "actions/open-settings.ts",
-        "actions/rename-account.ts",
-        "actions/switch-account.ts",
-        "actions/switch-network.ts",
-        "selectors/homepage-selectors.ts",
-        "selectors/onboard-selectors.ts"
+        "actions/unlock.{{walletName}}.ts",
+        "actions/lock.{{walletName}}.ts",
+        "actions/onboard.{{walletName}}.ts",
+        "actions/add-account.{{walletName}}.ts",
+        "actions/get-account-address.{{walletName}}.ts",
+        "actions/open-settings.{{walletName}}.ts",
+        "actions/rename-account.{{walletName}}.ts",
+        "actions/switch-account.{{walletName}}.ts",
+        "actions/switch-network.{{walletName}}.ts",
+        "selectors/homepage-selectors.{{walletName}}.ts",
+        "selectors/onboard-selectors.{{walletName}}.ts"
     ]
 }
