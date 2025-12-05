@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
-import { menuSelectors } from "../selectors/homepage-selectors";
-import { onboardingSelectors } from "../selectors/onboard-selectors";
+import { menuSelectors } from "../selectors/homepage-selectors.phantom";
+import { onboardingSelectors } from "../selectors/onboard-selectors.phantom";
 import type { AddAccountArgs } from "../types";
 
 type AddAccount = AddAccountArgs & { page: Page };

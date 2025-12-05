@@ -1,13 +1,13 @@
 import type { Page } from "@playwright/test";
-import { addAccount } from "./actions/add-account";
-import { getAccountAddress } from "./actions/get-account-address";
-import { lockWallet } from "./actions/lock";
-import onboard from "./actions/onboard";
-import { renameAccount } from "./actions/rename-account";
-import { switchAccount } from "./actions/switch-account";
-import { switchNetwork } from "./actions/switch-network";
-import { toggleOptionalChain } from "./actions/toggle-optional-chain";
-import { unlock } from "./actions/unlock";
+import { addAccount } from "./actions/add-account.phantom";
+import { getAccountAddress } from "./actions/get-account-address.phantom";
+import { lockWallet } from "./actions/lock.phantom";
+import onboard from "./actions/onboard.phantom";
+import { renameAccount } from "./actions/rename-account.phantom";
+import { switchAccount } from "./actions/switch-account.phantom";
+import { switchNetwork } from "./actions/switch-network.phantom";
+import { toggleOptionalChain } from "./actions/toggle-optional-chain.phantom";
+import { unlock } from "./actions/unlock.phantom";
 import type {
     AddAccountArgs,
     GetAccountAddress,

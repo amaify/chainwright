@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import { testWithPhantomFixture } from "@/tests/fixture/test-with-phantom-fixture";
-import { menuSelectors } from "@/wallets/phantom/selectors/homepage-selectors";
+import { menuSelectors } from "@/wallets/phantom/selectors/homepage-selectors.phantom";
 
 const test = testWithPhantomFixture;
 

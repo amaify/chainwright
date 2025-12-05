@@ -3,7 +3,7 @@ import picocolors from "picocolors";
 import { sleep } from "@/utils/sleep";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { PhantomProfile } from "../phantom-profile";
-import { onboardingSelectors } from "../selectors/onboard-selectors";
+import { onboardingSelectors } from "../selectors/onboard-selectors.phantom";
 import type { OnboardingArgs } from "../types";
 
 type Onboarding = OnboardingArgs & { page: Page };

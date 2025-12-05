@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 import z from "zod";
-import { menuSelectors } from "../selectors/homepage-selectors";
+import { menuSelectors } from "../selectors/homepage-selectors.phantom";
 import type { GetAccountAddress } from "../types";
 
 type GetAccountAddressArgs = GetAccountAddress & { page: Page };

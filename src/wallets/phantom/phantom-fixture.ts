@@ -6,7 +6,7 @@ import getCacheDirectory from "@/utils/get-cache-directory";
 import persistLocalStorage from "@/utils/persist-local-storage";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
-import { unlock } from "./actions/unlock";
+import { unlock } from "./actions/unlock.phantom";
 import { Phantom } from "./phantom";
 import { PhantomProfile } from "./phantom-profile";
 import { autoClosePhantomNotification, getPageFromContextPhantom } from "./utils";

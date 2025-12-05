@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 import z from "zod";
-import { menuSelectors } from "../selectors/homepage-selectors";
+import { menuSelectors } from "../selectors/homepage-selectors.phantom";
 
 export async function switchAccount(page: Page, accountName: string) {
     const parsedAccountName = z.string().min(1, "Account name cannot be an empty string").parse(accountName);

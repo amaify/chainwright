@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
-import { settingsSelectors } from "../selectors/homepage-selectors";
+import { settingsSelectors } from "../selectors/homepage-selectors.phantom";
 import type { ToggleOptionalChainArgs } from "../types";
-import { openSettings } from "./open-settings";
+import { openSettings } from "./open-settings.phantom";
 
 type ToggleOptionalChain = ToggleOptionalChainArgs & { page: Page };
 

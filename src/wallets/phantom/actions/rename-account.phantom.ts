@@ -1,5 +1,5 @@
 import type { Locator, Page } from "@playwright/test";
-import { accountSelectors, menuSelectors, settingsSelectors } from "../selectors/homepage-selectors";
+import { accountSelectors, menuSelectors, settingsSelectors } from "../selectors/homepage-selectors.phantom";
 import type { RenameAccountArgs } from "../types";
 
 type RenameAccount = RenameAccountArgs & { page: Page };

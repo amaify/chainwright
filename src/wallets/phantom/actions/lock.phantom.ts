@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { menuSelectors, settingsSelectors } from "../selectors/homepage-selectors";
+import { menuSelectors, settingsSelectors } from "../selectors/homepage-selectors.phantom";
 
 export async function lockWallet(page: Page) {
     const openMenuButton = page.getByTestId(menuSelectors.openMenuButton);

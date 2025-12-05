@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { menuSelectors } from "../selectors/homepage-selectors";
+import { menuSelectors } from "../selectors/homepage-selectors.phantom";
 
 export async function openSettings(page: Page) {
     const openMenuButton = page.getByTestId(menuSelectors.openMenuButton);

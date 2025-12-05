@@ -1,7 +1,7 @@
 import { expect, type Page } from "@playwright/test";
-import { settingsSelectors } from "../selectors/homepage-selectors";
+import { settingsSelectors } from "../selectors/homepage-selectors.phantom";
 import type { SwitchNetwork } from "../types";
-import { openSettings } from "./open-settings";
+import { openSettings } from "./open-settings.phantom";
 
 type SwitchNetworkParams = SwitchNetwork & { page: Page };
 
