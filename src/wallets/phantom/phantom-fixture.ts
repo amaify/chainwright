@@ -13,6 +13,8 @@ import { autoClosePhantomNotification, getPageFromContextPhantom } from "./utils
 
 export type PhantomFixture = {
     contextPath: string;
+    // biome-ignore lint/suspicious/noConfusingVoidType: Nothing
+    autoCloseNotification: void;
     phantom: Phantom;
     phantomPage: Page;
 };
@@ -80,18 +82,26 @@ export const phantomFixture = (slowMo: number = 0, profileName?: string) => {
             await walletPageContext.close();
         },
         phantomPage: async ({ context: _ }, use) => {
-            let cancelled = false;
-            const isCancelled = () => cancelled;
-            const runner = autoClosePhantomNotification(_phantomPage, isCancelled);
-
             await use(_phantomPage);
-
-            cancelled = true;
-            await runner.catch(() => {});
         },
         phantom: async ({ context: _ }, use) => {
             const phantomInstance = new Phantom(_phantomPage);
             await use(phantomInstance);
         },
+        autoCloseNotification: [
+            async ({ context: _ }, use) => {
+                let cancelled = false;
+                const isCancelled = () => cancelled;
+                const runner = autoClosePhantomNotification(_phantomPage, isCancelled);
+
+                await use();
+
+                cancelled = true;
+                await runner.catch((error) => {
+                    console.error(`Auto close notification error: ${(error as Error).message}`);
+                });
+            },
+            { auto: true },
+        ],
     });
 };

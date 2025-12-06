@@ -25,7 +25,7 @@ export async function getPageFromContextPhantom(context: BrowserContext) {
 }
 
 export async function autoClosePhantomNotification(page: Page, isCancelled: () => boolean) {
-    const INTERVAL = 300;
+    const INTERVAL = 1_000;
     let isClosed = false;
     const isNotificationClosed = () => isClosed;
 

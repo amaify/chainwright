@@ -3,14 +3,12 @@ import { testWithPhantomFixture } from "@/tests/fixture/test-with-phantom-fixtur
 
 const test = testWithPhantomFixture;
 
-test.describe("E2E test for unlocking wallet", () => {
-    test("Should unlock wallet successfully", async ({ phantom, phantomPage }) => {
-        await phantom.lock();
+test("Should unlock wallet successfully", async ({ phantom, phantomPage }) => {
+    await phantom.lock();
 
-        const enterYourPasswordText = phantomPage.getByText("Enter your password");
-        await enterYourPasswordText.waitFor({ state: "attached" });
-        await expect(enterYourPasswordText).toBeVisible();
+    const enterYourPasswordText = phantomPage.getByText("Enter your password");
+    await enterYourPasswordText.waitFor({ state: "attached" });
+    await expect(enterYourPasswordText).toBeVisible();
 
-        await phantom.unlock();
-    });
+    await phantom.unlock();
 });
