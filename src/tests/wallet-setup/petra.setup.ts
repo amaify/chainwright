@@ -13,14 +13,4 @@ export default defineWalletSetup(PASSWORD, async ({ walletPage }) => {
         mode: "privateKey",
         privateKey: "ed25519-priv-0xe54b00b7e1288a869951b6a36bf11c0d6ffa9211fd8c94e164d3b7207563645f",
     });
-    await petra.addAccount({
-        accountName: "Tango",
-        mode: "privateKey",
-        privateKey: "ed25519-priv-0xd273e27a5f7ede39b8c2f4bde793fb949ecf5019007b5959b7683d5d53a1240f",
-    });
-    await petra.addAccount({
-        accountName: "Mnemonic",
-        mode: "mnemonic",
-        mnemonicPhrase: "slam razor near morning edge across provide sting section bind soup differ",
-    });
 });

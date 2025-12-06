@@ -1,15 +1,14 @@
 import type { Locator, Page } from "@playwright/test";
-import { skip } from "@/tests/utils/skip";
 import { accountSelectors } from "../selectors/homepage-selectors.petra";
 
 export async function switchAccount(page: Page, accountName: string) {
     const accountMenuButton = page.locator(accountSelectors.accountOptionsMenuButton).first();
     const accountMenutButtonText = (await accountMenuButton.textContent())?.split("Switch wallet")[1]?.split("0x")[0];
 
-    skip(
-        !!accountMenutButtonText?.toLowerCase().trim().includes(accountName.toLowerCase().trim()),
-        `Already on the account "${accountName}".`,
-    );
+    if (accountMenutButtonText?.toLowerCase().trim().includes(accountName.toLowerCase().trim())) {
+        console.info(`\n Switching to ${accountName} account aborted because the account is already selected.`);
+        return;
+    }
 
     await accountMenuButton.click();
 

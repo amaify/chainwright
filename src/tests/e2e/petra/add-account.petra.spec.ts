@@ -6,7 +6,8 @@ const test = testWithPetraFixture;
 
 test.describe("E2E For Adding account in Petra wallet", () => {
     test("Should add account via private key", async ({ petra, petraPage }) => {
-        const accountName = "Private key account";
+        // PK --> Private Key
+        const accountName = "PK account";
 
         await petra.addAccount({
             accountName,
@@ -16,23 +17,24 @@ test.describe("E2E For Adding account in Petra wallet", () => {
 
         const accountMenuButton = petraPage.locator(accountSelectors.accountOptionsMenuButton).first();
         const menuButtonTextContent = await accountMenuButton.textContent();
-        const splitValue = menuButtonTextContent?.split("Switch wallet")[1]?.split("...")[0];
+        const splitValue = menuButtonTextContent?.split("Switch wallet")[1]?.split("0x")[0];
 
         expect(splitValue?.includes(accountName)).toBeTruthy();
     });
 
     test("Should add account via Mnemonic phrase", async ({ petra, petraPage }) => {
-        const accountName = "Mnemonic phrase account";
+        // MP --> Mnemonic Phrase
+        const accountName = "MP account";
 
         await petra.addAccount({
             accountName,
             mode: "mnemonic",
-            mnemonicPhrase: "robot bomb spend next present ozone music engine charge public follow opinion",
+            mnemonicPhrase: "slam razor near morning edge across provide sting section bind soup differ",
         });
 
         const accountMenuButton = petraPage.locator(accountSelectors.accountOptionsMenuButton).first();
         const menuButtonTextContent = await accountMenuButton.textContent();
-        const splitValue = menuButtonTextContent?.split("Switch wallet")[1]?.split("...")[0];
+        const splitValue = menuButtonTextContent?.split("Switch wallet")[1]?.split("0x")[0];
 
         // biome-ignore lint/style/noNonNullAssertion: nothing
         expect(accountName?.includes(splitValue!)).toBeTruthy();
