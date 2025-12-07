@@ -5,9 +5,10 @@ import { fileURLToPath } from "node:url";
 
 const projectRoot = path.resolve("./");
 const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const templateWalletDir = path.resolve(__filename, "..", "templates", "wallet");
-const templateTestsDir = path.resolve(__filename, "..", "templates", "tests");
+const templateWalletDir = path.resolve(__dirname, "templates", "wallet");
+const templateTestsDir = path.resolve(__dirname, "templates", "tests");
 
 const pascalCase = (str: string) => str.replace(/(^\w|-\w)/g, (m) => m.replace("-", "").toUpperCase());
 
@@ -26,11 +27,15 @@ type FileAndFolderStructure = {
 function writeToFile({ fileTemplate, baseDir, walletName, templateDir }: WriteToFile) {
     const WalletName = pascalCase(walletName);
 
-    const fileName = fileTemplate.replace("{{walletName}}", walletName);
+    const fileName = fileTemplate.replaceAll("{{walletName}}", walletName);
     const destPath = path.resolve(baseDir, fileName);
     const templatePath = path.resolve(templateDir, `${fileTemplate}.tpl`);
 
-    let content = fs.existsSync(templatePath) ? fs.readFileSync(templatePath, "utf-8") : `// ${fileName}`;
+    let content = fs.existsSync(templatePath)
+        ? fs.readFileSync(templatePath, "utf-8") !== ""
+            ? fs.readFileSync(templatePath, "utf-8")
+            : `// ${fileName}`
+        : `// ${fileName}`;
 
     // Keep original casing for walletName
     content = content
@@ -101,16 +106,16 @@ function createWallet(walletName: string) {
 function createTests(walletName: string) {
     const testsDir = path.resolve(projectRoot, "src", "tests");
     const testsStructurePath = path.resolve(__filename, "..", "tests-structure.json");
-    const testStructure = JSON.parse(fs.readFileSync(testsStructurePath, "utf8")) as FileAndFolderStructure;
+    const structure = JSON.parse(fs.readFileSync(testsStructurePath, "utf8")) as FileAndFolderStructure;
 
     // Create folders
-    testStructure.folders.forEach((folder) => {
+    structure.folders.forEach((folder) => {
         // console.log("Creating folders ---> ", folder);
         fs.mkdirSync(path.resolve(testsDir, folder), { recursive: true });
     });
 
     // Create files
-    testStructure.files.forEach((fileTemplate: string) => {
+    structure.files.forEach((fileTemplate: string) => {
         writeToFile({ fileTemplate, baseDir: testsDir, walletName, templateDir: templateTestsDir });
     });
 

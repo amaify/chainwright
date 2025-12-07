@@ -1,12 +1,12 @@
 import type { Page } from "@playwright/test";
-import { addAccount } from "./actions/add-account";
-import { getAccountAddress } from "./actions/get-account-address";
-import { lockWallet } from "./actions/lock";
-import onboard from "./actions/onboard";
-import {  renameAccount } from "./actions/rename-account";
-import { switchAccount } from "./actions/switch-account";
-import { switchNetwork } from "./actions/switch-network";
-import { unlock } from "./actions/unlock";
+import { addAccount } from "./actions/add-account.{{walletName}}";
+import { getAccountAddress } from "./actions/get-account-address.{{walletName}}";
+import { lockWallet } from "./actions/lock.{{walletName}}";
+import { onboard } from "./actions/onboard.{{walletName}}";
+import { renameAccount } from "./actions/rename-account.{{walletName}}";
+import { switchAccount } from "./actions/switch-account.{{walletName}}";
+import { switchNetwork } from "./actions/switch-network.{{walletName}}";
+import { unlock } from "./actions/unlock.{{walletName}}";
 
 export class {{WalletName}} {
     page: Page;
