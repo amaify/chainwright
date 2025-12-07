@@ -74,7 +74,6 @@ async function biomeFormat() {
  */
 function createWallet(walletName: string) {
     const walletDir = path.resolve(projectRoot, "src", "wallets", walletName);
-    const testsDir = path.resolve(projectRoot, "src", "tests");
 
     if (fs.existsSync(walletDir)) {
         console.error(`❌ Wallet '${walletName}' already exists at: ${walletDir}`);
@@ -84,14 +83,9 @@ function createWallet(walletName: string) {
     fs.mkdirSync(walletDir, { recursive: true });
 
     const structurePath = path.resolve(__filename, "..", "structure.json");
-    const testsStructurePath = path.resolve(__filename, "..", "tests-structure.json");
     const structure = JSON.parse(fs.readFileSync(structurePath, "utf8")) as FileAndFolderStructure;
-    const testStructure = JSON.parse(fs.readFileSync(testsStructurePath, "utf8")) as FileAndFolderStructure;
 
     // Create folders
-    testStructure.folders.forEach((folder) => {
-        fs.mkdirSync(path.resolve(testsDir, folder), { recursive: true });
-    });
     structure.folders.forEach((folder: string) => {
         fs.mkdirSync(path.resolve(walletDir, folder), { recursive: true });
     });
@@ -101,11 +95,27 @@ function createWallet(walletName: string) {
         writeToFile({ fileTemplate, baseDir: walletDir, walletName, templateDir: templateWalletDir });
     });
 
+    console.info(`✅ Wallet '${walletName}' created at: wallets/${walletName}`);
+
+    biomeFormat().catch((err) => console.error(`⚠️ Error running prettier: ${err}`));
+}
+
+function createTests(walletName: string) {
+    const testsDir = path.resolve(projectRoot, "src", "tests");
+    const testsStructurePath = path.resolve(__filename, "..", "tests-structure.json");
+    const testStructure = JSON.parse(fs.readFileSync(testsStructurePath, "utf8")) as FileAndFolderStructure;
+
+    // Create folders
+    testStructure.folders.forEach((folder) => {
+        fs.mkdirSync(path.resolve(testsDir, folder), { recursive: true });
+    });
+
+    // Create files
     testStructure.files.forEach((fileTemplate: string) => {
         writeToFile({ fileTemplate, baseDir: testsDir, walletName, templateDir: templateTestsDir });
     });
 
-    console.info(`✅ Wallet '${walletName}' created at: wallets/${walletName}`);
+    console.info(`✅ Tests for '${walletName}' added at: tests/e2e/${walletName}`);
 
     biomeFormat().catch((err) => console.error(`⚠️ Error running prettier: ${err}`));
 }
@@ -119,6 +129,7 @@ export function main() {
     }
 
     createWallet(walletName);
+    createTests(walletName);
 }
 
 // Detect if script is run directly, then call main()
