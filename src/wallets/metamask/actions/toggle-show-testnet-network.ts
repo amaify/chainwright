@@ -1,5 +1,4 @@
 import { expect, type Page } from "@playwright/test";
-import { skip } from "@/tests/utils/skip";
 import { homepageSelectors, settingsSelectors } from "../selectors/homepage-selectors.metamask";
 
 export async function toggleShowTestnetNetwork({ page }: { page: Page }) {
@@ -22,7 +21,11 @@ export async function toggleShowTestnetNetwork({ page }: { page: Page }) {
         .isVisible()
         .catch(() => false);
 
-    skip(!isNetworkSwitchOffToggleVisible, "Testnet networks are already visible.");
+    if (!isNetworkSwitchOffToggleVisible) {
+        await netowrksDialog.getByRole("button", { name: /close/i }).click();
+        console.info("Testnet networks are already visible.");
+        return;
+    }
     await showTestnetNetworkToggle.locator("label[class='toggle-button toggle-button--off']").click();
 
     await page.getByTestId("Sepolia").scrollIntoViewIfNeeded();

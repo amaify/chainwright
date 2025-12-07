@@ -4,16 +4,14 @@ import { homepageSelectors } from "@/wallets/metamask/selectors/homepage-selecto
 
 const test = testWithMetamaskFixture;
 
-test.describe("Switch network E2E tests", () => {
-    test("Should switch network successfully", async ({ metamask, metamaskPage }) => {
-        await metamask.switchNetwork({ chainName: "Sepolia", networkType: "testnet" });
+test("Should switch network successfully", async ({ metamask, metamaskPage }) => {
+    await metamask.switchNetwork({ chainName: "Sepolia", networkType: "testnet" });
 
-        await expect(metamaskPage.getByTestId("app-header-logo").first()).toBeVisible();
-        await expect(metamaskPage.getByTestId(homepageSelectors.openNetworkSelectorButton)).toContainText("Sepolia");
+    await expect(metamaskPage.getByTestId("app-header-logo").first()).toBeVisible();
+    await expect(metamaskPage.getByTestId(homepageSelectors.openNetworkSelectorButton)).toContainText("Sepolia");
 
-        await metamask.switchNetwork({ chainName: "Ethereum", networkType: "mainnet" });
+    await metamask.switchNetwork({ chainName: "Ethereum", networkType: "mainnet" });
 
-        await expect(metamaskPage.getByTestId("app-header-logo").first()).toBeVisible();
-        await expect(metamaskPage.getByTestId(homepageSelectors.openNetworkSelectorButton)).toContainText("Ethereum");
-    });
+    await expect(metamaskPage.getByTestId("app-header-logo").first()).toBeVisible();
+    await expect(metamaskPage.getByTestId(homepageSelectors.openNetworkSelectorButton)).toContainText("Ethereum");
 });
