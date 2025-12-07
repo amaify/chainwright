@@ -7,6 +7,7 @@ const projectRoot = path.resolve("./");
 const __filename = fileURLToPath(import.meta.url);
 
 const templateWalletDir = path.resolve(__filename, "..", "templates", "wallet");
+const templateTestsDir = path.resolve(__filename, "..", "templates", "tests");
 
 const pascalCase = (str: string) => str.replace(/(^\w|-\w)/g, (m) => m.replace("-", "").toUpperCase());
 
@@ -15,6 +16,11 @@ type WriteToFile = {
     templateDir: string;
     walletName: string;
     fileTemplate: string;
+};
+
+type Structures = {
+    files: Array<string>;
+    folders: Array<string>;
 };
 
 function writeToFile({ fileTemplate, baseDir, walletName, templateDir }: WriteToFile) {
@@ -68,6 +74,7 @@ async function biomeFormat() {
  */
 function createWallet(walletName: string) {
     const walletDir = path.resolve(projectRoot, "src", "wallets", walletName);
+    const testsDir = path.resolve(projectRoot, "src", "tests", walletName);
 
     if (fs.existsSync(walletDir)) {
         console.error(`❌ Wallet '${walletName}' already exists at: ${walletDir}`);
@@ -75,11 +82,17 @@ function createWallet(walletName: string) {
     }
 
     fs.mkdirSync(walletDir, { recursive: true });
+    fs.mkdirSync(testsDir, { recursive: true });
 
     const structurePath = path.resolve(__filename, "..", "structure.json");
-    const structure = JSON.parse(fs.readFileSync(structurePath, "utf8"));
+    const testsStructurePath = path.resolve(__filename, "..", "tests-structure.json");
+    const structure = JSON.parse(fs.readFileSync(structurePath, "utf8")) as Structures;
+    const testStructure = JSON.parse(fs.readFileSync(testsStructurePath, "utf8")) as Structures;
 
     // Create folders
+    testStructure.folders.forEach((folder) => {
+        fs.mkdirSync(path.resolve(testsDir, folder), { recursive: true });
+    });
     structure.folders.forEach((folder: string) => {
         fs.mkdirSync(path.resolve(walletDir, folder), { recursive: true });
     });
@@ -87,6 +100,10 @@ function createWallet(walletName: string) {
     // Create files
     structure.files.forEach((fileTemplate: string) => {
         writeToFile({ fileTemplate, baseDir: walletDir, walletName, templateDir: templateWalletDir });
+    });
+
+    testStructure.files.forEach((fileTemplate: string) => {
+        writeToFile({ fileTemplate, baseDir: testsDir, walletName, templateDir: templateTestsDir });
     });
 
     console.info(`✅ Wallet '${walletName}' created at: wallets/${walletName}`);

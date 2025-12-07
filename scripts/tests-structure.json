@@ -3,12 +3,12 @@
     "files": [
         "wallet-setup/{{walletName}}.setup.ts",
         "fixture/test-with{{walletName}}-fixture.ts",
-        "e2e/{{walletName}}/add-account.{{walletName}}.spec.ts",
-        "e2e/{{walletName}}/get-account-address.{{walletName}}.spec.ts",
-        "e2e/{{walletName}}/lock-wallet.{{walletName}}.spec.ts",
-        "e2e/{{walletName}}/rename-account.{{walletName}}.spec.ts",
-        "e2e/{{walletName}}/switch-account.{{walletName}}.spec.ts",
-        "e2e/{{walletName}}/switch-network.{{walletName}}.spec.ts",
-        "e2e/{{walletName}}/unlock-wallet.{{walletName}}.spec.ts"
+        "{{walletName}}/add-account.{{walletName}}.spec.ts",
+        "{{walletName}}/get-account-address.{{walletName}}.spec.ts",
+        "{{walletName}}/lock-wallet.{{walletName}}.spec.ts",
+        "{{walletName}}/rename-account.{{walletName}}.spec.ts",
+        "{{walletName}}/switch-account.{{walletName}}.spec.ts",
+        "{{walletName}}/switch-network.{{walletName}}.spec.ts",
+        "{{walletName}}/unlock-wallet.{{walletName}}.spec.ts"
     ]
 }
