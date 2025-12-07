@@ -96,8 +96,6 @@ function createWallet(walletName: string) {
     });
 
     console.info(`✅ Wallet '${walletName}' created at: wallets/${walletName}`);
-
-    biomeFormat().catch((err) => console.error(`⚠️ Error running prettier: ${err}`));
 }
 
 function createTests(walletName: string) {
@@ -107,6 +105,7 @@ function createTests(walletName: string) {
 
     // Create folders
     testStructure.folders.forEach((folder) => {
+        // console.log("Creating folders ---> ", folder);
         fs.mkdirSync(path.resolve(testsDir, folder), { recursive: true });
     });
 
@@ -116,8 +115,6 @@ function createTests(walletName: string) {
     });
 
     console.info(`✅ Tests for '${walletName}' added at: tests/e2e/${walletName}`);
-
-    biomeFormat().catch((err) => console.error(`⚠️ Error running prettier: ${err}`));
 }
 
 // CLI entry point
@@ -130,6 +127,7 @@ export function main() {
 
     createWallet(walletName);
     createTests(walletName);
+    biomeFormat().catch((err) => console.error(`⚠️ Error running prettier: ${err}`));
 }
 
 // Detect if script is run directly, then call main()
