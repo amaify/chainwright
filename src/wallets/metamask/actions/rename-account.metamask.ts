@@ -84,6 +84,6 @@ export async function renameAccount({ page, currentAccountName, newAccountName }
         }
     }
 
-    const backButton = page.locator("button[aria-label='Back']");
+    const backButton = page.locator("button[aria-label='Back']").first();
     await backButton.click();
 }

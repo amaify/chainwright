@@ -17,7 +17,8 @@
         "noUnusedParameters": false,
         "noPropertyAccessFromIndexSignature": false,
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+            "@/tests/*": ["./tests/*"]
         }
     },
     "include": ["**/*.ts", "**/*.tsx"],
