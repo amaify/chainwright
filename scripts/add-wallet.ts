@@ -18,7 +18,7 @@ type WriteToFile = {
     fileTemplate: string;
 };
 
-type Structures = {
+type FileAndFolderStructure = {
     files: Array<string>;
     folders: Array<string>;
 };
@@ -74,7 +74,7 @@ async function biomeFormat() {
  */
 function createWallet(walletName: string) {
     const walletDir = path.resolve(projectRoot, "src", "wallets", walletName);
-    const testsDir = path.resolve(projectRoot, "src", "tests", walletName);
+    const testsDir = path.resolve(projectRoot, "src", "tests");
 
     if (fs.existsSync(walletDir)) {
         console.error(`❌ Wallet '${walletName}' already exists at: ${walletDir}`);
@@ -82,12 +82,11 @@ function createWallet(walletName: string) {
     }
 
     fs.mkdirSync(walletDir, { recursive: true });
-    fs.mkdirSync(testsDir, { recursive: true });
 
     const structurePath = path.resolve(__filename, "..", "structure.json");
     const testsStructurePath = path.resolve(__filename, "..", "tests-structure.json");
-    const structure = JSON.parse(fs.readFileSync(structurePath, "utf8")) as Structures;
-    const testStructure = JSON.parse(fs.readFileSync(testsStructurePath, "utf8")) as Structures;
+    const structure = JSON.parse(fs.readFileSync(structurePath, "utf8")) as FileAndFolderStructure;
+    const testStructure = JSON.parse(fs.readFileSync(testsStructurePath, "utf8")) as FileAndFolderStructure;
 
     // Create folders
     testStructure.folders.forEach((folder) => {
