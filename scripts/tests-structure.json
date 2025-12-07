@@ -1,5 +1,5 @@
 {
-    "folders": ["fixture", "wallet-setup"],
+    "folders": ["fixture", "wallet-setup", "e2e/{{walletName}}"],
     "files": [
         "wallet-setup/{{walletName}}.setup.ts",
         "fixture/test-with-{{walletName}}-fixture.ts",

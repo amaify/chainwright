@@ -109,9 +109,12 @@ function createTests(walletName: string) {
     const structure = JSON.parse(fs.readFileSync(testsStructurePath, "utf8")) as FileAndFolderStructure;
 
     // Create folders
-    structure.folders.forEach((folder) => {
-        // console.log("Creating folders ---> ", folder);
-        fs.mkdirSync(path.resolve(testsDir, folder), { recursive: true });
+    structure.folders.forEach((folderTemplate) => {
+        let folderName = folderTemplate;
+        if (folderTemplate.includes("{{walletName}}")) {
+            folderName = folderTemplate.replaceAll("{{walletName}}", walletName);
+        }
+        fs.mkdirSync(path.resolve(testsDir, folderName), { recursive: true });
     });
 
     // Create files
