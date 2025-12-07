@@ -107,7 +107,7 @@ export class Keplr {
      * const keplr = new Keplr(page);
      * await keplr.addAccount(TBD);
      */
-    async addAccount() {
-        await addAccount(this.page);
+    async addAccount({ chains, privateKey, walletName }: OnboardingArgs) {
+        await addAccount({ page: this.page, privateKey, walletName, chains });
     }
 }

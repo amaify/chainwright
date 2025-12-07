@@ -9,6 +9,11 @@ export class KeplrProfile {
         return `chrome-extension://${extensionId}/sidePanel.html`;
     }
 
+    async onboardingUrl() {
+        const extensionId = await this.extensionId();
+        return `chrome-extension://${extensionId}/${this.onboardingPath}`;
+    }
+
     async promptUrl() {
         const extensionId = await this.extensionId();
         return `chrome-extension://${extensionId}/popup.html`;

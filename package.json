@@ -10,7 +10,7 @@
     ],
     "scripts": {
         "build": "tsup",
-        "dev": "tsx src/cli/index.ts setup-wallet -f",
+        "dev": "tsx src/cli/index.ts setup-wallet ./tests/wallet-setup -f",
         "test": "vitest",
         "format": "biome format --write ./src",
         "test:e2e:debug": "playwright test --config=tests/playwright.config.ts --debug",
