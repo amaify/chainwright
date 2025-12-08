@@ -7,7 +7,7 @@ import { renameAccount } from "./actions/rename-account.keplr";
 import { switchAccount } from "./actions/switch-account.keplr";
 import { switchNetwork } from "./actions/switch-network.keplr";
 import { unlock } from "./actions/unlock.keplr";
-import type { OnboardingArgs } from "./types";
+import type { GetAccountAddressArgs, OnboardingArgs } from "./types";
 
 export class Keplr {
     page: Page;
@@ -93,8 +93,8 @@ export class Keplr {
      * const keplr = new Keplr(page);
      * const address = await keplr.getAccountAddress();
      */
-    async getAccountAddress() {
-        await getAccountAddress(this.page);
+    async getAccountAddress({ chain, walletName }: GetAccountAddressArgs) {
+        return await getAccountAddress({ page: this.page, chain, walletName });
     }
 
     /**

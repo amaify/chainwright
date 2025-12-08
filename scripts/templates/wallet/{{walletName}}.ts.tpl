@@ -94,7 +94,7 @@ export class {{WalletName}} {
      * const address = await {{walletName}}.getAccountAddress();
      */
     async getAccountAddress() {
-        await getAccountAddress(this.page)
+        return await getAccountAddress(this.page)
     }
 
     /**
