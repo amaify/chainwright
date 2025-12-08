@@ -73,9 +73,6 @@ export async function addWalletViaPrivateKey({
     await saveButton.scrollIntoViewIfNeeded();
     await saveButton.click();
 
-    // We only need to click the "Finish" button if we are onboarding.
-    if (mode === "onboard") {
-        const finishButton = page.locator(onboardingSelectors.finishButton);
-        await finishButton.click();
-    }
+    const finishButton = page.locator(onboardingSelectors.finishButton);
+    await finishButton.click();
 }
