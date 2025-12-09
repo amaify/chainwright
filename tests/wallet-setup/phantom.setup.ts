@@ -11,7 +11,6 @@ export default defineWalletSetup(PASSWORD, async ({ walletPage }) => {
 
     await phantom.onboard({
         mode: "private key",
-        password: PASSWORD,
         privateKey: PK,
         accountName: "Default",
         chain: "Solana",

@@ -10,11 +10,15 @@ const keplrChains = [
 ] as const;
 
 type KeplrChains = (typeof keplrChains)[number];
-export type OnboardingArgs = {
+
+type AddAndOnboardingArgs = {
     walletName: string;
     privateKey: string;
     chains: Array<KeplrChains>;
 };
+
+export type OnboardingArgs = Array<AddAndOnboardingArgs>;
+export type AddAccountArgs = AddAndOnboardingArgs & { mode: "add-account-multiple" | "add-account-single" | "onboard" };
 
 export const getAccountAddressSchema = z.discriminatedUnion("chain", [
     z.object({
@@ -29,3 +33,15 @@ export const getAccountAddressSchema = z.discriminatedUnion("chain", [
 ]);
 
 export type GetAccountAddressArgs = z.infer<typeof getAccountAddressSchema>;
+
+export const renameAccountSchema = z.object({
+    currentAccountName: z.string().min(1, "Current account name cannot be an empty string"),
+    newAccountName: z.string().min(1, "New account name cannot be an empty string"),
+});
+
+export type RenameAccountArgs = z.infer<typeof renameAccountSchema>;
+
+export type SwitchAccountArgs = {
+    accountToSwitchTo: string;
+    currentAccountName: string;
+};

@@ -1,11 +1,10 @@
 import type { Page } from "@playwright/test";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { onboardingSelectors } from "./selectors/onboard-selectors.keplr";
-import type { OnboardingArgs } from "./types";
+import type { AddAccountArgs } from "./types";
 
-type AddWalletViaPrivateKey = OnboardingArgs & {
+type AddWalletViaPrivateKey = AddAccountArgs & {
     page: Page;
-    mode: "onboard" | "add-account";
 };
 
 export async function addWalletViaPrivateKey({
@@ -73,6 +72,8 @@ export async function addWalletViaPrivateKey({
     await saveButton.scrollIntoViewIfNeeded();
     await saveButton.click();
 
-    const finishButton = page.locator(onboardingSelectors.finishButton);
-    await finishButton.click();
+    if (mode === "add-account-single") {
+        const finishButton = page.locator(onboardingSelectors.finishButton);
+        await finishButton.click();
+    }
 }

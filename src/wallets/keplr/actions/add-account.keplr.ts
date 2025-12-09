@@ -1,11 +1,11 @@
 import type { Page } from "@playwright/test";
 import { KeplrProfile } from "../keplr-profile";
-import type { OnboardingArgs } from "../types";
+import type { AddAccountArgs } from "../types";
 import { addWalletViaPrivateKey } from "../utils";
 
-type AddAccount = OnboardingArgs & { page: Page };
+type AddAccount = AddAccountArgs & { page: Page };
 
-export async function addAccount({ page, privateKey, chains, walletName }: AddAccount) {
+export async function addAccount({ page, privateKey, chains, walletName, mode }: AddAccount) {
     const walletProfile = new KeplrProfile();
     const onboardingUrl = await walletProfile.onboardingUrl();
 
@@ -23,7 +23,7 @@ export async function addAccount({ page, privateKey, chains, walletName }: AddAc
     for (const contextPage of contextPages) {
         if (contextPage.url().includes(onboardingUrl)) {
             await contextPage.bringToFront();
-            await addWalletViaPrivateKey({ page: contextPage, privateKey, walletName, chains, mode: "add-account" });
+            await addWalletViaPrivateKey({ page: contextPage, privateKey, walletName, chains, mode });
             break;
         }
     }

@@ -7,7 +7,13 @@ import { renameAccount } from "./actions/rename-account.keplr";
 import { switchAccount } from "./actions/switch-account.keplr";
 import { switchNetwork } from "./actions/switch-network.keplr";
 import { unlock } from "./actions/unlock.keplr";
-import type { GetAccountAddressArgs, OnboardingArgs } from "./types";
+import type {
+    AddAccountArgs,
+    GetAccountAddressArgs,
+    OnboardingArgs,
+    RenameAccountArgs,
+    SwitchAccountArgs,
+} from "./types";
 
 export class Keplr {
     page: Page;
@@ -26,8 +32,8 @@ export class Keplr {
      * const keplr = new Keplr(page);
      * await keplr.onboard({ chain: "injective", privateKey: "private key", walletName: "Wallet Name" });
      */
-    async onboard({ chains, privateKey, walletName }: OnboardingArgs) {
-        await onboard({ page: this.page, privateKey, walletName, chains });
+    async onboard(args: OnboardingArgs) {
+        await onboard({ page: this.page, onboard: args });
     }
 
     /**
@@ -59,8 +65,8 @@ export class Keplr {
      * const keplr = new Keplr(page);
      * await keplr.renameAccount({ newAccountName: "New Account Name" });
      */
-    async renameAccount() {
-        await renameAccount(this.page);
+    async renameAccount({ currentAccountName, newAccountName }: RenameAccountArgs) {
+        await renameAccount({ page: this.page, currentAccountName, newAccountName });
     }
 
     /**
@@ -81,8 +87,8 @@ export class Keplr {
      * const keplr = new keplr(page);
      * await keplr.switchAccount("Account 1");
      */
-    async switchAccount() {
-        await switchAccount(this.page);
+    async switchAccount({ accountToSwitchTo, currentAccountName }: SwitchAccountArgs) {
+        await switchAccount({ page: this.page, accountToSwitchTo, currentAccountName });
     }
 
     /**
@@ -107,7 +113,7 @@ export class Keplr {
      * const keplr = new Keplr(page);
      * await keplr.addAccount(TBD);
      */
-    async addAccount({ chains, privateKey, walletName }: OnboardingArgs) {
-        await addAccount({ page: this.page, privateKey, walletName, chains });
+    async addAccount({ chains, privateKey, walletName, mode = "add-account-multiple" }: AddAccountArgs) {
+        await addAccount({ page: this.page, privateKey, walletName, chains, mode });
     }
 }
