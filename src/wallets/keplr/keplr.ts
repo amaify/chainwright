@@ -93,8 +93,8 @@ export class Keplr {
      * const keplr = new Keplr(page);
      * const address = await keplr.getAccountAddress();
      */
-    async getAccountAddress({ chain, walletName }: GetAccountAddressArgs) {
-        return await getAccountAddress({ page: this.page, chain, walletName });
+    async getAccountAddress({ ...args }: GetAccountAddressArgs) {
+        return await getAccountAddress({ page: this.page, ...args });
     }
 
     /**
