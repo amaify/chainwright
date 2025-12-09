@@ -1,10 +1,8 @@
 import { expect, type Page } from "@playwright/test";
 import picocolors from "picocolors";
-import { sleep } from "@/utils/sleep";
 import waitForStablePage from "@/utils/wait-for-stable-page";
 import { KeplrProfile } from "../keplr-profile";
 import { homepageSelectors } from "../selectors/homepage-selectors.keplr";
-import { onboardingSelectors } from "../selectors/onboard-selectors.keplr";
 import type { OnboardingArgs } from "../types";
 import { addWalletViaPrivateKey } from "../utils";
 import { switchAccount } from "./switch-account.keplr";
@@ -37,7 +35,7 @@ export default async function onboard({ page, onboard }: Onboard) {
         isStarted = true;
     }
 
-    if (count === accountsLength) {
+    if (count === accountsLength && onboard.length > 1) {
         await page.goto(await walletProfile.indexUrl());
         await waitForStablePage(page);
 

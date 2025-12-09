@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { sleep } from "@/utils/sleep";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { onboardingSelectors } from "./selectors/onboard-selectors.keplr";
 import type { AddAccountArgs } from "./types";
@@ -71,6 +72,8 @@ export async function addWalletViaPrivateKey({
     const saveButton = page.locator(onboardingSelectors.saveButton);
     await saveButton.scrollIntoViewIfNeeded();
     await saveButton.click();
+    // Wait for the wallet profile to properly load and save before continuing
+    await sleep(2_000);
 
     if (mode === "add-account-single") {
         const finishButton = page.locator(onboardingSelectors.finishButton);

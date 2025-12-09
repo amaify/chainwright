@@ -1,10 +1,14 @@
 import type { Locator, Page } from "@playwright/test";
+import { sleep } from "@/utils/sleep";
 import { type GetAccountAddressArgs, getAccountAddressSchema } from "../types";
 
 type GetAccountAddress = GetAccountAddressArgs & { page: Page };
 
 export async function getAccountAddress({ page, ...args }: GetAccountAddress) {
     const parsedData = getAccountAddressSchema.parse({ ...args });
+
+    // Wait for the chains to load properly
+    await sleep(1_000);
 
     const copyWalletAddressContainer = page.locator(`div:has(div:has-text('${parsedData.walletName}'))`).nth(-3);
     const copyWalletAddressPopover = copyWalletAddressContainer.locator("div:has(> div > svg)");
