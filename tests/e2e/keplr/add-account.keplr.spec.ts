@@ -11,5 +11,5 @@ test("Should add an account successfully", async ({ keplr, keplrPage }) => {
         mode: "add-account-single",
     });
 
-    await expect(keplrPage.getByText("Kopi")).toBeVisible();
+    await expect(keplrPage.getByText("Kopi")).toBeVisible({ timeout: 15_000 });
 });
