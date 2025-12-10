@@ -1,4 +1,6 @@
-import type { Locator, Page } from "@playwright/test";
+import fs from "node:fs";
+import path from "node:path";
+import { expect, type Locator, type Page } from "@playwright/test";
 import { sleep } from "@/utils/sleep";
 import { type GetAccountAddressArgs, getAccountAddressSchema } from "../types";
 
@@ -7,8 +9,20 @@ type GetAccountAddress = GetAccountAddressArgs & { page: Page };
 export async function getAccountAddress({ page, ...args }: GetAccountAddress) {
     const parsedData = getAccountAddressSchema.parse({ ...args });
 
+    // Make sure that the assets are visible before copying the account address
+    const spendableAssetSearchbar = page.getByRole("textbox", {
+        name: "Search for asset or chain (i.e. ATOM, Cosmos)",
+        exact: true,
+    });
+
+    await spendableAssetSearchbar.fill(parsedData.chain);
+    const spendableAssetList = page.locator(`div:has-text('${parsedData.chain}')`).nth(-5);
+    await spendableAssetList.waitFor({ state: "visible", timeout: 10_000 });
+    const allSpendableAssets = await spendableAssetList.locator("div").all();
+    expect(allSpendableAssets.length).toBeGreaterThan(0);
+
     // Give some time for the chains to load
-    await sleep(1_000);
+    // await sleep(1_000);
 
     const copyWalletAddressContainer = page.locator(`div:has(div:has-text('${parsedData.walletName}'))`).nth(-3);
     const copyWalletAddressPopover = copyWalletAddressContainer.locator("div:has(> div > svg)");
