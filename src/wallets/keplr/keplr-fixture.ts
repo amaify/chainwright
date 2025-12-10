@@ -81,11 +81,8 @@ export const keplrFixture = (slowMo: number = 0, profileName?: string) => {
             }
 
             await _keplrPage.bringToFront();
-
             await unlock(_keplrPage);
-
             await use(walletPageContext);
-
             await walletPageContext.close();
         },
         keplrPage: async ({ context: _ }, use) => {
