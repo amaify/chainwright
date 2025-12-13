@@ -5,7 +5,6 @@ import { lockWallet } from "./actions/lock.keplr";
 import onboard from "./actions/onboard.keplr";
 import { renameAccount } from "./actions/rename-account.keplr";
 import { switchAccount } from "./actions/switch-account.keplr";
-import { switchNetwork } from "./actions/switch-network.keplr";
 import { unlock } from "./actions/unlock.keplr";
 import type {
     AddAccountArgs,
@@ -25,12 +24,18 @@ export class Keplr {
     /**
      * Onboards the wallet.
      * @param {OnboardingArgs} args - The arguments required for onboarding.
-     * @param args.chain - The chain to onboard the wallet on.
-     * @param args.privateKey - The private key of the wallet to onboard.
-     * @param args.walletName - The name of the wallet to onboard.
+     * @param args[0].chains - The chains to onboard the wallet on.
+     * @param args[0].privateKey - The private key of the wallet to onboard.
+     * @param args[0].walletName - The name of the wallet to onboard.
      * @example
      * const keplr = new Keplr(page);
-     * await keplr.onboard({ chain: "injective", privateKey: "private key", walletName: "Wallet Name" });
+     * await keplr.onboard([
+     *      {
+     *          chains: ["Injective", "Injective (Testnet)"],
+     *          privateKey: "private key",
+     *          walletName: "Wallet Name"
+     *      }
+     * ]);
      */
     async onboard(args: OnboardingArgs) {
         await onboard({ page: this.page, onboard: args });
@@ -59,7 +64,8 @@ export class Keplr {
 
     /**
      * Renames an account in the wallet.
-     * @param {Omit<RenameAccount, "page">} args - The arguments to rename the account.
+     * @param {RenameAccount} args - The arguments to rename the account.
+     * @param args.currentName - The current name of the active account.
      * @param args.newAccountName - The new name of the account.
      * @example
      * const keplr = new Keplr(page);
@@ -70,22 +76,13 @@ export class Keplr {
     }
 
     /**
-     * Switches the current network to the given network.
-     * @param {SwitchNetwork} networkName - The name of the network to switch to.
-     * @example
-     * const keplr = new Keplr(page);
-     * await keplr.switchNetwork("network name");
-     */
-    async switchNetwork() {
-        await switchNetwork(this.page);
-    }
-
-    /**
      * Switches the current account to the given account.
-     * @param {string} accountName - The name of the account to switch to.
+     * @param {SwitchAccountArgs} args - The name of the account to switch to.
+     * @param args.accountToSwitchTo - The name of the account to switch to.
+     * @param args.currentAccountName - The name of the current account.
      * @example
      * const keplr = new keplr(page);
-     * await keplr.switchAccount("Account 1");
+     * await keplr.switchAccount({ accountToSwitchTo: "Account 1", currentAccountName: "Account 2" });
      */
     async switchAccount({ accountToSwitchTo, currentAccountName }: SwitchAccountArgs) {
         await switchAccount({ page: this.page, accountToSwitchTo, currentAccountName });
@@ -105,13 +102,14 @@ export class Keplr {
 
     /**
      * Adds an account to the wallet via a private key or mnemonic phrase.
-     * @param {{ accountName, ...args }: AddAccount} - The arguments to add the account.
-     * @param {string} args.accountName - The name of the account to add.
-     * @param {string} args.privateKey - The private key of the account to add, if the mode is "privateKey".
-     * @param {string[]} args.mnemonicPhrase - The mnemonic phrase of the account to add, if the mode is "mnemonic".
+     * @param {AddAccountArgs} args - The arguments to add the account.
+     * @param args.chains - The chains of the account to add.
+     * @param args.privateKey - The private key of the account to add, if the mode is "privateKey".
+     * @param args.walletName - The name of the wallet to add the account to.
+     * @param args.mode - The mode of adding the account (default: "add-account-multiple").
      * @example
      * const keplr = new Keplr(page);
-     * await keplr.addAccount(TBD);
+     * await keplr.addAccount({ chains: ["Testnet"], privateKey: "private key", walletName: "Keplr Wallet", mode: "add-account-multiple" });
      */
     async addAccount({ chains, privateKey, walletName, mode = "add-account-multiple" }: AddAccountArgs) {
         await addAccount({ page: this.page, privateKey, walletName, chains, mode });
