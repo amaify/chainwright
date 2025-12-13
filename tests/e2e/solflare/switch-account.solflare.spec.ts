@@ -1,0 +1,1 @@
+// e2e/solflare/switch-account.solflare.spec.ts

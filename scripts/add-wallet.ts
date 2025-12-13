@@ -104,7 +104,7 @@ function createWallet(walletName: string) {
 }
 
 function createTests(walletName: string) {
-    const testsDir = path.resolve(projectRoot, "src", "tests");
+    const testsDir = path.resolve(projectRoot, "tests");
     const testsStructurePath = path.resolve(__filename, "..", "tests-structure.json");
     const structure = JSON.parse(fs.readFileSync(testsStructurePath, "utf8")) as FileAndFolderStructure;
 

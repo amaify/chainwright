@@ -1,0 +1,1 @@
+// e2e/solflare/rename-account.solflare.spec.ts

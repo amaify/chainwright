@@ -1,0 +1,1 @@
+// e2e/solflare/add-account.solflare.spec.ts

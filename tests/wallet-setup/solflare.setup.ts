@@ -1,6 +1,7 @@
 import defineWalletSetup from "@/core/define-wallet-setup";
 
-export default defineWalletSetup(async ({ context, walletPage }) => {
-    console.log("Setting up Solflare");
-    return void 0;
+const PASSWORD = "test1234"; // Update this password as needed.
+
+export default defineWalletSetup(PASSWORD, async ({ walletPage }) => {
+    console.info("Not implemented");
 });

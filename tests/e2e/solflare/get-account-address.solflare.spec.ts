@@ -1,0 +1,1 @@
+// e2e/solflare/get-account-address.solflare.spec.ts
