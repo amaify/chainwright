@@ -60,6 +60,7 @@ export async function getAccountAddress({ page, ...args }: GetAccountAddress) {
             // Traversing up the DOM to find the address parent element
             const parentChainElement = chainElement.locator("xpath=../../../..");
             addressElement = parentChainElement;
+            await popoverSearchInput.clear();
             break;
         }
     }
@@ -71,6 +72,7 @@ export async function getAccountAddress({ page, ...args }: GetAccountAddress) {
     // To get the address, we need to hover over the chain element and click on it.
     // using click() alone will not work. We need to hover first.
     await addressElement.hover();
+    await addressElement.scrollIntoViewIfNeeded();
     await addressElement.click();
 
     const accountAddress = await page.evaluate(async () => await navigator.clipboard.readText());
