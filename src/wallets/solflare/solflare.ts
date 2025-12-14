@@ -82,8 +82,8 @@ export class Solflare {
      * const solflare = new solflare(page);
      * await solflare.switchAccount("Account 1");
      */
-    async switchAccount() {
-        await switchAccount(this.page);
+    async switchAccount(accountName: string) {
+        await switchAccount(this.page, accountName);
     }
 
     /**

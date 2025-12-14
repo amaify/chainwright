@@ -3,13 +3,11 @@ import { type AddAccountArgs, addAccountSchema } from "../types";
 
 type AddAccount = AddAccountArgs & { page: Page };
 
-export async function addAccount({ page, privateKey, walletName, mode }: AddAccount) {
+export async function addAccount({ page, privateKey, walletName }: AddAccount) {
     const parsedArgs = addAccountSchema.parse({ privateKey, walletName });
 
-    if (mode !== "onboard") {
-        const openWalletSelectorMenu = page.getByTestId("icon-section-wallet-picker-arrow-right");
-        await openWalletSelectorMenu.click();
-    }
+    const openWalletSelectorMenu = page.getByTestId("icon-section-wallet-picker-arrow-right");
+    await openWalletSelectorMenu.click();
 
     const addWalletButton = page.getByTestId("icon-btn-add");
     await addWalletButton.click();
@@ -24,4 +22,9 @@ export async function addAccount({ page, privateKey, walletName, mode }: AddAcco
 
     const importButton = page.getByTestId("btn-import");
     await importButton.click();
+
+    const dialogContainer = page.getByRole("dialog");
+    const closeButton = dialogContainer.getByTestId("icon-btn-close");
+    await closeButton.click();
+    await closeButton.click();
 }
