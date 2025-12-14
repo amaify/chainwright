@@ -7,6 +7,7 @@ import { renameAccount } from "./actions/rename-account.solflare";
 import { switchAccount } from "./actions/switch-account.solflare";
 import { switchNetwork } from "./actions/switch-network.solflare";
 import { unlock } from "./actions/unlock.solflare";
+import type { AddAccountArgs, OnboardingArgs, SwitchNetwork } from "./types";
 
 export class Solflare {
     page: Page;
@@ -26,8 +27,8 @@ export class Solflare {
      * const solflare = new Solflare(page);
      * await solflare.onboard({ mode: "importPrivateKey", password: "password", privateKey: "private key" });
      */
-    async onboard() {
-        await onboard(this.page);
+    async onboard({ recoveryPhrase, network }: OnboardingArgs) {
+        await onboard({ page: this.page, recoveryPhrase, network });
     }
 
     /**
@@ -70,8 +71,8 @@ export class Solflare {
      * const solflare = new Solflare(page);
      * await solflare.switchNetwork("network name");
      */
-    async switchNetwork(networkName: SwitchNetwork) {
-        await switchNetwork(this.page);
+    async switchNetwork(network: SwitchNetwork) {
+        await switchNetwork(this.page, network);
     }
 
     /**
@@ -81,7 +82,7 @@ export class Solflare {
      * const solflare = new solflare(page);
      * await solflare.switchAccount("Account 1");
      */
-    async switchAccount(accountName: string) {
+    async switchAccount() {
         await switchAccount(this.page);
     }
 
@@ -100,14 +101,13 @@ export class Solflare {
     /**
      * Adds an account to the wallet via a private key or mnemonic phrase.
      * @param {{ accountName, ...args }: AddAccount} - The arguments to add the account.
-     * @param {string} args.accountName - The name of the account to add.
+     * @param {string} args.walletName - The name of the account to add.
      * @param {string} args.privateKey - The private key of the account to add, if the mode is "privateKey".
-     * @param {string[]} args.mnemonicPhrase - The mnemonic phrase of the account to add, if the mode is "mnemonic".
      * @example
      * const solflare = new Solflare(page);
-     * await solflare.addAccount(TBD);
+     * await solflare.addAccount({ walletName: "Gamify", privateKey: "private key"});
      */
-    async addAccount() {
-        await addAccount(this.page);
+    async addAccount({ privateKey, walletName, mode }: AddAccountArgs) {
+        await addAccount({ page: this.page, privateKey, walletName, mode });
     }
 }

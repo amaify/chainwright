@@ -6,7 +6,7 @@ export class SolflareProfile {
 
     async indexUrl() {
         const extensionId = await this.extensionId();
-        return `chrome-extension://${extensionId}/wallet.html`;
+        return `chrome-extension://${extensionId}/wallet.html#/portfolio`;
     }
 
     async promptUrl() {

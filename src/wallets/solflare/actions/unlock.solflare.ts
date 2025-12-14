@@ -1,5 +1,11 @@
-import { type Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 
 export async function unlock(page: Page) {
-    console.error("Not implemented");
+    const PASSWORD = await getWalletPasswordFromCache("solflare");
+    const passwordInput = page.getByTestId("input-password");
+    await passwordInput.fill(PASSWORD);
+
+    const unlockButton = page.getByTestId("btn-unlock");
+    await unlockButton.click();
 }
