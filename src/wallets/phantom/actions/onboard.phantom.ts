@@ -139,7 +139,7 @@ export default async function onboard({ page, ...args }: Onboarding) {
     await newPage.goto(await new PhantomProfile().indexUrl());
 
     // wait for the wallet profile to finish saving
-    await sleep(8_000);
+    await sleep(4_000);
 
     console.info(picocolors.greenBright("✨ Phantom onboarding completed successfully"));
 }

@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import picocolors from "picocolors";
 import { sleep } from "@/utils/sleep";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { onboardingSelectors } from "../selectors/onboard-selectors.solflare";
@@ -9,6 +10,8 @@ import { switchNetwork } from "./switch-network.solflare";
 type Onboard = OnboardingArgs & { page: Page };
 
 export async function onboard({ page, recoveryPhrase, network, addWallet }: Onboard) {
+    console.info(picocolors.yellowBright(`\n Solflare onboarding started...`));
+
     const PASSWORD = await getWalletPasswordFromCache("solflare");
 
     const haveWalletButton = page.getByTestId(onboardingSelectors.alreadyHaveAWalletButton);
@@ -52,4 +55,6 @@ export async function onboard({ page, recoveryPhrase, network, addWallet }: Onbo
         // Wait for 2 seconds to let the wallet sync
         await sleep(2_000);
     }
+
+    console.info(picocolors.greenBright("✨ Solflare onboarding completed successfully"));
 }
