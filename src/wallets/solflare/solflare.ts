@@ -7,7 +7,7 @@ import { renameAccount } from "./actions/rename-account.solflare";
 import { switchAccount } from "./actions/switch-account.solflare";
 import { switchNetwork } from "./actions/switch-network.solflare";
 import { unlock } from "./actions/unlock.solflare";
-import type { AddAccountArgs, OnboardingArgs, SwitchNetwork } from "./types";
+import type { AddAccountArgs, OnboardingArgs, RenameAccountArgs, SwitchNetwork } from "./types";
 
 export class Solflare {
     page: Page;
@@ -60,8 +60,8 @@ export class Solflare {
      * const solflare = new Solflare(page);
      * await solflare.renameAccount({ newAccountName: "New Account Name" });
      */
-    async renameAccount() {
-        await renameAccount(this.page);
+    async renameAccount({ currentAccountName, newAccountName }: RenameAccountArgs) {
+        await renameAccount({ page: this.page, currentAccountName, newAccountName });
     }
 
     /**

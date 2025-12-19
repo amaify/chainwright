@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { navigationMenuSelectors } from "../selectors/homepage-selectors.solflare";
 import { type AddAccountArgs, addAccountSchema } from "../types";
 
 type AddAccount = AddAccountArgs & { page: Page };
@@ -6,7 +7,7 @@ type AddAccount = AddAccountArgs & { page: Page };
 export async function addAccount({ page, privateKey, walletName }: AddAccount) {
     const parsedArgs = addAccountSchema.parse({ privateKey, walletName });
 
-    const openWalletSelectorMenu = page.getByTestId("icon-section-wallet-picker-arrow-right");
+    const openWalletSelectorMenu = page.getByTestId(navigationMenuSelectors.walletSelectorButton);
     await openWalletSelectorMenu.click();
 
     const addWalletButton = page.getByTestId("icon-btn-add");

@@ -9,4 +9,5 @@ export const settingsMenuSelectors = {
 
 export const navigationMenuSelectors = {
     portfolioButton: "nav-item-portfolio",
+    walletSelectorButton: "icon-section-wallet-picker-arrow-right",
 };

@@ -14,3 +14,8 @@ export const addAccountSchema = z.object({
 });
 
 export type AddAccountArgs = z.infer<typeof addAccountSchema>;
+
+export type RenameAccountArgs = {
+    currentAccountName: string;
+    newAccountName: string;
+};
