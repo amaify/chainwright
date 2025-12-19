@@ -43,7 +43,7 @@ export async function switchNetwork({ page, ...args }: SwitchNetworkParams) {
         const networkButton = page.locator(`button:has-text("${network}")`);
         await networkButton.click();
 
-        await expect(solanaTestnetButton).toContainText(network);
+        await expect(solanaTestnetButton.last()).toContainText(network);
     }
 
     if (args.mode === "on" && args.chain === "Ethereum") {

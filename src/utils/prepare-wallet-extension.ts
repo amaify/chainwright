@@ -52,7 +52,7 @@ export async function prepareWalletExtension({ downloadUrl, name, force }: Args)
         console.info(`✅ ${walletName} Extension extracted successfully.`);
     } else {
         if (IS_EXECUTED) {
-            console.info(picocolors.magentaBright(`Using cached ${walletName} extension for profile creation.`));
+            console.info(picocolors.magentaBright(`Using the cached ${walletName} extension for profile creation.`));
             return outputPath;
         }
 

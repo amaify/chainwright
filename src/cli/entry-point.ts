@@ -77,7 +77,6 @@ export async function clientEntry() {
                           { name: "Phantom", value: "phantom" },
                           { name: "Solflare", value: "solflare" },
                       ],
-                      loop: false,
                       pageSize: 10,
                       default: "all",
                   })

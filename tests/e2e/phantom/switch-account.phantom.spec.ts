@@ -10,7 +10,7 @@ test("Should switch to the specified account", async ({ phantom, phantomPage }) 
     await phantom.addAccount({
         accountName: ACCOUNT_NAME,
         chain: "Ethereum",
-        privateKey: "db8b55484c15a6caa975c300345afadda6d8dffac951175282fc8cf136a4d83a",
+        privateKey: "0x28441de33adac31d474f08119cd1af56ddbdc77f111e9c7e186bb52c3bc2eceb",
     });
 
     await phantom.switchAccount(ACCOUNT_NAME);

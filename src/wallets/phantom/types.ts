@@ -1,16 +1,19 @@
 export type OnboardingArgs =
     | {
           mode: "create";
+          addWallet?: Array<AddAccountArgs>;
       }
     | {
           mode: "recovery phrase";
           secretRecoveryPhrase: string;
+          addWallet?: Array<AddAccountArgs>;
       }
     | {
           mode: "private key";
           privateKey: string;
           accountName: string;
           chain: "Ethereum" | "Solana" | "Base" | "Sui" | "Bitcoin" | "Polygon" | "HyperEVM";
+          addWallet?: Array<AddAccountArgs>;
       };
 
 export type RenameAccountArgs = {

@@ -4,6 +4,7 @@ export type OnboardingArgs = {
     network: MeteorNetwork;
     privateKey: string;
     accountName: string;
+    addWallet?: Array<AddAccountArgs>;
 };
 
 export type RenameAccountArgs = {

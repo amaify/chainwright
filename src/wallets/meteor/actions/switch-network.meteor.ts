@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { sleep } from "@/utils/sleep";
 import { homepageSelectors } from "../selectors/homepage-selectors.meteor";
 import type { MeteorNetwork } from "../types";
 import { switchNetworkUtil } from "../utils";
@@ -17,6 +18,7 @@ export async function switchNetwork(page: Page, network: MeteorNetwork) {
     }
 
     const availableBalance = page.locator("p:has-text('Available Balance')");
+    await sleep(1_000);
     const isAvailableBalanceVisible = await availableBalance.isVisible().catch(() => false);
     if (!isAvailableBalanceVisible) {
         throw new Error(

@@ -5,10 +5,14 @@ import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-
 import { PhantomProfile } from "../phantom-profile";
 import { onboardingSelectors } from "../selectors/onboard-selectors.phantom";
 import type { OnboardingArgs } from "../types";
+import { autoClosePhantomNotification } from "../utils";
+import { addAccount } from "./add-account.phantom";
+import { renameAccount } from "./rename-account.phantom";
+import { switchAccount } from "./switch-account.phantom";
 
 type Onboarding = OnboardingArgs & { page: Page };
 
-export default async function onboard({ page, ...args }: Onboarding) {
+export default async function onboard({ page, addWallet, ...args }: Onboarding) {
     console.info(picocolors.yellowBright(`\n Phantom onboarding started...`));
 
     const PASSWORD = await getWalletPasswordFromCache("phantom");
@@ -127,8 +131,6 @@ export default async function onboard({ page, ...args }: Onboarding) {
         const loadingButton = continueButton.locator("> div > svg");
         await loadingButton.waitFor({ state: "detached", timeout: 30_000 });
 
-        await sleep(1_000);
-
         await continueButton.click();
 
         const getStartedButton = page.locator(onboardingSelectors.getStartedButton).last();
@@ -138,8 +140,29 @@ export default async function onboard({ page, ...args }: Onboarding) {
     const newPage = await page.context().newPage();
     await newPage.goto(await new PhantomProfile().indexUrl());
 
-    // wait for the wallet profile to finish saving
-    await sleep(4_000);
+    const shouldRename = args.mode === "create" || args.mode === "recovery phrase";
+    if (shouldRename) {
+        await renameAccount({ page: newPage, newAccountName: "Default", currentAccountName: "Account 1" });
+    }
+
+    if (addWallet && addWallet.length > 0) {
+        let cancelled = false;
+        const isCancelled = () => cancelled;
+
+        const runner = autoClosePhantomNotification(newPage, isCancelled);
+        for (const { accountName, chain, privateKey } of addWallet) {
+            await addAccount({ page: newPage, privateKey, accountName, chain });
+            cancelled = true;
+        }
+
+        runner.catch((error) => console.error({ error }));
+
+        const _accountName = "accountName" in args ? args.accountName : "Default";
+        await switchAccount(newPage, _accountName);
+    }
+
+    // // wait for the wallet profile to finish saving
+    await sleep(2_000);
 
     console.info(picocolors.greenBright("✨ Phantom onboarding completed successfully"));
 }

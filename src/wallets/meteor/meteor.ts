@@ -27,8 +27,8 @@ export class Meteor {
      * const meteor = new Meteor(page);
      * await meteor.onboard({ mode: "importPrivateKey", password: "password", privateKey: "private key" });
      */
-    async onboard({ network, privateKey, accountName }: OnboardingArgs) {
-        await onboard({ page: this.page, network, privateKey, accountName });
+    async onboard({ network, privateKey, accountName, addWallet }: OnboardingArgs) {
+        await onboard({ page: this.page, network, privateKey, accountName, addWallet });
     }
 
     /**

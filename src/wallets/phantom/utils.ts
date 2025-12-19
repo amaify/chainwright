@@ -31,10 +31,11 @@ export async function autoClosePhantomNotification(page: Page, isCancelled: () =
 
     while (!isCancelled() || !isNotificationClosed()) {
         const _isClosed = isNotificationClosed();
+        const _isCancelled = isCancelled();
 
         // Check if notification is closed
-        // If it's closed, there's no need to check again
-        if (_isClosed) return;
+        // If it's closed or cancelled, there's no need to check again
+        if (_isClosed || _isCancelled) break;
 
         try {
             const notificationButton = page.locator("div[id='modal'] button:has-text('Got it')");

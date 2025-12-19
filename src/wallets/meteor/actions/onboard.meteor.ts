@@ -5,11 +5,15 @@ import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-
 import { MeteorProfile } from "../meteor-profile";
 import { onboardingSelectors } from "../selectors/onboard-selectors.meteor";
 import type { OnboardingArgs } from "../types";
+import { addAccount } from "./add-account.meteor";
+import { openSettings } from "./open-settings.meteor";
 import { renameAccount } from "./rename-account.meteor";
+import { switchAccount } from "./switch-account.meteor";
+import { switchNetwork } from "./switch-network.meteor";
 
 type Onboard = OnboardingArgs & { page: Page };
 
-export default async function onboard({ page, privateKey, network, accountName }: Onboard) {
+export default async function onboard({ page, privateKey, network, accountName, addWallet }: Onboard) {
     console.info(picocolors.yellowBright(`\n Meteor onboarding started...`));
 
     const PASSWORD = await getWalletPasswordFromCache("meteor");
@@ -113,6 +117,28 @@ export default async function onboard({ page, privateKey, network, accountName }
     await finishButton.click();
 
     await renameAccount({ page, newAccountName: accountName });
+
+    if (addWallet && addWallet.length > 0) {
+        for (const { privateKey, accountName, network } of addWallet) {
+            await addAccount({ page, privateKey, accountName, network });
+        }
+
+        // check that the current network is the same as the initial network
+        await openSettings(page);
+        const switchNetworkButton = page.locator(onboardingSelectors.switchNetworkButton).last();
+        await switchNetworkButton.scrollIntoViewIfNeeded();
+
+        const currentNetwork = await switchNetworkButton.textContent();
+        const currentNetworkPassed = network.split("net")[0]?.toLowerCase() ?? "";
+
+        if (currentNetwork?.toLowerCase() !== currentNetworkPassed) {
+            await switchNetwork(page, network);
+        }
+
+        await switchAccount(page, accountName);
+    }
+
+    await sleep(3_000);
 
     console.info(picocolors.greenBright("✨ Meteor onboarding completed successfully"));
 }

@@ -8,6 +8,7 @@ import { PetraProfile } from "../petra-profile";
 import { homepageSelectors } from "../selectors/homepage-selectors.petra";
 import { onboardSelectors } from "../selectors/onboard-selectors.petra";
 import type { OnboardingArgs } from "../types";
+import { addAccount } from "./add-account.petra";
 import { renameAccount } from "./rename-account.petra";
 
 type Onboard = OnboardingArgs & {
@@ -107,6 +108,12 @@ export default async function onboard({ page, ...args }: Onboard) {
 
     await renameAccount({ page, newAccountName: "Default" });
 
-    await sleep(8_000);
+    if (args.addWallet && args.addWallet.length > 0) {
+        for (const { ...addAccountArgs } of args.addWallet) {
+            await addAccount({ page, ...addAccountArgs });
+        }
+    }
+
+    await sleep(3_000);
     console.info(picocolors.greenBright("✨ Petra onboarding completed successfully"));
 }
