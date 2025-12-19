@@ -3,6 +3,7 @@ import z from "zod";
 export type OnboardingArgs = {
     recoveryPhrase: string;
     network?: "Mainnet" | "Devnet" | "Testnet";
+    addWallet?: Array<AddAccountArgs>;
 };
 
 export type SwitchNetwork = Omit<Required<OnboardingArgs>, "recoveryPhrase">["network"];

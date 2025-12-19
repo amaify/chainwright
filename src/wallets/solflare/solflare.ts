@@ -27,8 +27,8 @@ export class Solflare {
      * const solflare = new Solflare(page);
      * await solflare.onboard({ mode: "importPrivateKey", password: "password", privateKey: "private key" });
      */
-    async onboard({ recoveryPhrase, network }: OnboardingArgs) {
-        await onboard({ page: this.page, recoveryPhrase, network });
+    async onboard({ recoveryPhrase, network, addWallet }: OnboardingArgs) {
+        await onboard({ page: this.page, recoveryPhrase, network, addWallet });
     }
 
     /**

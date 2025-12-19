@@ -3,11 +3,12 @@ import { sleep } from "@/utils/sleep";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { onboardingSelectors } from "../selectors/onboard-selectors.solflare";
 import type { OnboardingArgs } from "../types";
+import { addAccount } from "./add-account.solflare";
 import { switchNetwork } from "./switch-network.solflare";
 
 type Onboard = OnboardingArgs & { page: Page };
 
-export async function onboard({ page, recoveryPhrase, network }: Onboard) {
+export async function onboard({ page, recoveryPhrase, network, addWallet }: Onboard) {
     const PASSWORD = await getWalletPasswordFromCache("solflare");
 
     const haveWalletButton = page.getByTestId(onboardingSelectors.alreadyHaveAWalletButton);
@@ -42,4 +43,13 @@ export async function onboard({ page, recoveryPhrase, network }: Onboard) {
     if (network) await switchNetwork(page, network);
 
     await sleep(2_000);
+
+    if (addWallet && addWallet?.length > 0) {
+        for (const { privateKey, walletName } of addWallet) {
+            await addAccount({ page, privateKey, walletName });
+        }
+
+        // Wait for 2 seconds to let the wallet sync
+        await sleep(2_000);
+    }
 }

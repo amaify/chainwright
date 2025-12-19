@@ -23,11 +23,9 @@ export async function renameAccount({ page, currentAccountName, newAccountName }
     await renameAccountButton.click();
 
     const accountNameInput = page.getByTestId("input-name");
+    await accountNameInput.clear();
     await accountNameInput.fill(newAccountName);
 
     const saveButton = page.getByTestId("btn-save");
     await saveButton.click();
-
-    const closeButton = page.getByTestId("icon-btn-close");
-    await closeButton.click();
 }
