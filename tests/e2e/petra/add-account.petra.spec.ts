@@ -1,8 +1,8 @@
 import { expect } from "@playwright/test";
-import { testWithPetraFixture } from "@/tests/fixture/test-with-petra-fixture";
+import { petraWorkerScopeFixture } from "@/wallets/petra/petra-worker-scope-fixture";
 import { accountSelectors } from "@/wallets/petra/selectors/homepage-selectors.petra";
 
-const test = testWithPetraFixture;
+const test = petraWorkerScopeFixture();
 
 test.describe("E2E For Adding account in Petra wallet", () => {
     test("Should add account via private key", async ({ petra, petraPage }) => {
