@@ -1,5 +1,7 @@
 import type { Page } from "@playwright/test";
+import { getPopupPageFromContext } from "@/utils/wallets/get-popup-page-from-context";
 import { addAccount } from "./actions/add-account.petra";
+import { connectToApp } from "./actions/connect-to-app";
 import { getAccountAddress } from "./actions/get-account-address.petra";
 import { lockWallet } from "./actions/lock.petra";
 import onboard from "./actions/onboard.petra";
@@ -7,12 +9,14 @@ import { type RenameAccount, renameAccount } from "./actions/rename-account.petr
 import { switchAccount } from "./actions/switch-account.petra";
 import { switchNetwork } from "./actions/switch-network.petra";
 import unlock from "./actions/unlock.petra";
+import { PetraProfile } from "./petra-profile";
 import type { AddAccount, OnboardingArgs, SwitchNetwork } from "./types";
 
-export class Petra {
+export class Petra extends PetraProfile {
     page: Page;
 
     constructor(page: Page) {
+        super();
         this.page = page;
     }
 
@@ -110,5 +114,11 @@ export class Petra {
      */
     async addAccount({ accountName, ...args }: AddAccount) {
         await addAccount({ page: this.page, accountName, ...args });
+    }
+
+    async connectToApp(account?: string) {
+        const popupUrl = await this.promptUrl();
+        const popupPage = await getPopupPageFromContext(this.page.context(), popupUrl);
+        await connectToApp(popupPage, account);
     }
 }

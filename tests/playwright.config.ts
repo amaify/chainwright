@@ -17,7 +17,7 @@ export default defineConfig({
 
     use: {
         // We are using locally deployed Metamask Test Dapp for somePhantom tests.
-        baseURL: "http://localhost:9999",
+        baseURL: "http://localhost:3000",
 
         // Collect all traces on CI, and only traces for failed tests when running locally.
         // See https://playwright.dev/docs/trace-viewer.
