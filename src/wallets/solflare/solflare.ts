@@ -1,5 +1,7 @@
 import type { Page } from "@playwright/test";
+import { getPopupPageFromContext } from "@/utils/wallets/get-popup-page-from-context";
 import { addAccount } from "./actions/add-account.solflare";
+import { connectToApp } from "./actions/connect-to-app.solflare";
 import { getAccountAddress } from "./actions/get-account-address.solflare";
 import { lockWallet } from "./actions/lock.solflare";
 import { onboard } from "./actions/onboard.solflare";
@@ -7,12 +9,14 @@ import { renameAccount } from "./actions/rename-account.solflare";
 import { switchAccount } from "./actions/switch-account.solflare";
 import { switchNetwork } from "./actions/switch-network.solflare";
 import { unlock } from "./actions/unlock.solflare";
+import { SolflareProfile } from "./solflare-profile";
 import type { AddAccountArgs, OnboardingArgs, RenameAccountArgs, SwitchNetwork } from "./types";
 
-export class Solflare {
+export class Solflare extends SolflareProfile {
     page: Page;
 
     constructor(page: Page) {
+        super();
         this.page = page;
     }
 
@@ -107,7 +111,21 @@ export class Solflare {
      * const solflare = new Solflare(page);
      * await solflare.addAccount({ walletName: "Gamify", privateKey: "private key"});
      */
-    async addAccount({ privateKey, walletName, mode }: AddAccountArgs) {
-        await addAccount({ page: this.page, privateKey, walletName, mode });
+    async addAccount({ privateKey, walletName }: AddAccountArgs) {
+        await addAccount({ page: this.page, privateKey, walletName });
+    }
+
+    /**
+     * Connects to an app by clicking on the "Connect to app" button.
+     * If an account is provided, it will be selected before connecting to the app.
+     * @param {string} [account] - The account to select before connecting to the app.
+     * @example
+     * const solflare = new Solflare(page);
+     * await solflare.connectToApp("Account 1");
+     */
+    async connectToApp(account?: string) {
+        const popupUrl = await this.promptUrl();
+        const popupPage = await getPopupPageFromContext(this.page.context(), popupUrl);
+        await connectToApp(popupPage, account);
     }
 }

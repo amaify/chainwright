@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
-import { testWithsolflareFixture } from "@/tests/fixture/test-with-solflare-fixture";
+import { solflareWorkerScopeFixture } from "@/wallets/solflare/solflare-worker-scope-fixture";
 
-const test = testWithsolflareFixture;
+const test = solflareWorkerScopeFixture();
 
 test.describe("Switch network E2E tests", () => {
     test("Should successfully switch network to Devnet", async ({ solflare, solflarePage }) => {
