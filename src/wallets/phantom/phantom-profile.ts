@@ -2,8 +2,7 @@ import { getWalletExtensionIdFromCache } from "@/utils/wallets/get-wallet-extens
 
 export class PhantomProfile {
     readonly name = "phantom" as const;
-    readonly onboardingPath = "/onboarding.html"; // Not implemented;
-
+    readonly onboardingPath = "/onboarding.html";
     async indexUrl() {
         const extensionId = await this.extensionId();
         return `chrome-extension://${extensionId}/popup.html`;
@@ -11,7 +10,7 @@ export class PhantomProfile {
 
     async promptUrl() {
         const extensionId = await this.extensionId();
-        return `chrome-extension://${extensionId}/<Notification/prompt path>.html`;
+        return `chrome-extension://${extensionId}/notification.html`;
     }
 
     async extensionId() {

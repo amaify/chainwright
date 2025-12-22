@@ -1,5 +1,7 @@
 import type { Page } from "@playwright/test";
+import { getPopupPageFromContext } from "@/utils/wallets/get-popup-page-from-context";
 import { addAccount } from "./actions/add-account.phantom";
+import { connectToApp } from "./actions/connect-to-app";
 import { getAccountAddress } from "./actions/get-account-address.phantom";
 import { lockWallet } from "./actions/lock.phantom";
 import onboard from "./actions/onboard.phantom";
@@ -8,6 +10,7 @@ import { switchAccount } from "./actions/switch-account.phantom";
 import { switchNetwork } from "./actions/switch-network.phantom";
 import { toggleOptionalChain } from "./actions/toggle-optional-chain.phantom";
 import { unlock } from "./actions/unlock.phantom";
+import { PhantomProfile } from "./phantom-profile";
 import type {
     AddAccountArgs,
     GetAccountAddress,
@@ -17,10 +20,11 @@ import type {
     ToggleOptionalChainArgs,
 } from "./types";
 
-export class Phantom {
+export class Phantom extends PhantomProfile {
     page: Page;
 
     constructor(page: Page) {
+        super();
         this.page = page;
     }
 
@@ -136,5 +140,19 @@ export class Phantom {
      */
     async switchNetwork({ ...args }: SwitchNetwork) {
         await switchNetwork({ page: this.page, ...args });
+    }
+
+    /**
+     * Connects to an app by clicking on the "Connect to app" button.
+     * If an account is provided, it will be selected before connecting to the app.
+     * @param {string} [account] - The account to select before connecting to the app.
+     * @example
+     * const phantom = new Phantom(page);
+     * await phantom.connectToApp("Account 1");
+     */
+    async connectToApp(account?: string) {
+        const popupUrl = await this.promptUrl();
+        const popupPage = await getPopupPageFromContext(this.page.context(), popupUrl);
+        await connectToApp(popupPage, account);
     }
 }

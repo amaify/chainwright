@@ -116,6 +116,14 @@ export class Petra extends PetraProfile {
         await addAccount({ page: this.page, accountName, ...args });
     }
 
+    /**
+     * Connects to an app by clicking on the "Connect to app" button.
+     * If an account is provided, it will be selected before connecting to the app.
+     * @param {string} [account] - The account to select before connecting to the app.
+     * @example
+     * const petra = new Petra(page);
+     * await petra.connectToApp("Account 1");
+     */
     async connectToApp(account?: string) {
         const popupUrl = await this.promptUrl();
         const popupPage = await getPopupPageFromContext(this.page.context(), popupUrl);
