@@ -39,7 +39,14 @@ export async function autoClosePhantomNotification(page: Page, isCancelled: () =
 
         try {
             const notificationButton = page.locator("div[id='modal'] button:has-text('Got it')");
-            const isNotificationButtonVisible = await notificationButton.isVisible().catch(() => false);
+            const continueButton = page.locator("div[id='modal'] button:has-text('Continue')");
+
+            const [isContinueButtonVisible, isNotificationButtonVisible] = await Promise.all([
+                continueButton.isVisible().catch(() => false),
+                notificationButton.isVisible().catch(() => false),
+            ]);
+
+            if (isContinueButtonVisible) await continueButton.click();
 
             if (isNotificationButtonVisible) {
                 await notificationButton.click();

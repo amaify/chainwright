@@ -44,6 +44,8 @@ export async function getAccountAddress({ page, accountName, chain }: GetAccount
     }
 
     await addressElement.click();
+    const closeButton = page.locator("button[aria-label='Close']");
+    await closeButton.click();
     const copiedAddress = await page.evaluate(() => navigator.clipboard.readText());
 
     return copiedAddress;

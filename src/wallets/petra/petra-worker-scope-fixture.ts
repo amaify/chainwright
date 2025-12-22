@@ -12,7 +12,7 @@ export type PetraFixture = {
 
 export const petraWorkerScopeFixture = (slowMo: number = 0, profileName?: string) => {
     return base.extend<PetraFixture, WorkerScopeFixture<Petra>>({
-        pageWorker: [
+        workerScopeWalletPage: [
             async ({ browser: _ }, use, workerInfo) => {
                 const wallet = new PetraProfile();
                 const {
@@ -44,11 +44,11 @@ export const petraWorkerScopeFixture = (slowMo: number = 0, profileName?: string
             },
             { scope: "worker" },
         ],
-        petraPage: async ({ pageWorker }, use) => {
-            await use(pageWorker.appPage);
+        petraPage: async ({ workerScopeWalletPage }, use) => {
+            await use(workerScopeWalletPage.appPage);
         },
-        petra: async ({ pageWorker }, use) => {
-            const petraInstance = new Petra(pageWorker.appPage);
+        petra: async ({ workerScopeWalletPage }, use) => {
+            const petraInstance = new Petra(workerScopeWalletPage.appPage);
             await use(petraInstance);
         },
     });

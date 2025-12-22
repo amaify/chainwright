@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
-import { testWithPhantomFixture } from "@/tests/fixture/test-with-phantom-fixture";
+import { phantomWorkerScopeFixture } from "@/wallets/phantom/phantom-worker-scope-fixture";
 
-const test = testWithPhantomFixture;
+const test = phantomWorkerScopeFixture();
 
 test.describe("Phantom Get Account Address Test", () => {
     test("Should get the current account address for Ethereum", async ({ phantom }) => {
