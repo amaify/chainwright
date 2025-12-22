@@ -1,6 +1,8 @@
 import type { Page } from "@playwright/test";
+import { getPopupPageFromContext } from "@/utils/wallets/get-popup-page-from-context";
 import { addAccount } from "./actions/add-account.metamask";
 import { addCustomNetwork } from "./actions/add-custom-network.metamask";
+import { connectToApp } from "./actions/connect-to-app.metamask";
 import { getAccountAddress } from "./actions/get-account-address.metamask";
 import { lockWallet } from "./actions/lock.metamask";
 import onboard from "./actions/onboard.metamask";
@@ -10,12 +12,14 @@ import { type SwitchAccount, switchAccount } from "./actions/switch-account.meta
 import { switchNetwork } from "./actions/switch-network.metamask";
 import { toggleShowTestnetNetwork } from "./actions/toggle-show-testnet-network";
 import unlock from "./actions/unlock.metamask";
+import { MetamaskProfile } from "./metamask-profile";
 import type { AddAccountArgs, AddCustomNetwork, OnboardingArgs, SwitchNetwork } from "./types";
 
-export class Metamask {
+export class Metamask extends MetamaskProfile {
     page: Page;
 
     constructor(page: Page) {
+        super();
         this.page = page;
     }
 
@@ -146,5 +150,19 @@ export class Metamask {
      */
     async addCustomNetwork({ chainId, currencySymbol, networkName, rpcUrl }: AddCustomNetwork) {
         await addCustomNetwork({ page: this.page, chainId, currencySymbol, networkName, rpcUrl });
+    }
+
+    /**
+     * Connects to an app by clicking on the "Connect to app" button.
+     * If an account is provided, it will be selected before connecting to the app.
+     * @param {string} [account] - The account to select before connecting to the app.
+     * @example
+     * const metamask = new Metamask(page);
+     * await metamask.connectToApp("Account 1");
+     */
+    async connectToApp(account?: string) {
+        const popupUrl = await this.promptUrl();
+        const popupPage = await getPopupPageFromContext(this.page.context(), popupUrl);
+        await connectToApp(popupPage, account);
     }
 }
