@@ -1,11 +1,14 @@
 import type { Page } from "@playwright/test";
+import { getPopupPageFromContext } from "@/utils/wallets/get-popup-page-from-context";
 import { addAccount } from "./actions/add-account.keplr";
+import { connectToApp } from "./actions/connect-to-app.keplr";
 import { getAccountAddress } from "./actions/get-account-address.keplr";
 import { lockWallet } from "./actions/lock.keplr";
 import onboard from "./actions/onboard.keplr";
 import { renameAccount } from "./actions/rename-account.keplr";
 import { switchAccount } from "./actions/switch-account.keplr";
 import { unlock } from "./actions/unlock.keplr";
+import { KeplrProfile } from "./keplr-profile";
 import type {
     AddAccountArgs,
     GetAccountAddressArgs,
@@ -14,10 +17,11 @@ import type {
     SwitchAccountArgs,
 } from "./types";
 
-export class Keplr {
+export class Keplr extends KeplrProfile {
     page: Page;
 
     constructor(page: Page) {
+        super();
         this.page = page;
     }
 
@@ -113,5 +117,11 @@ export class Keplr {
      */
     async addAccount({ chains, privateKey, walletName, mode = "add-account-multiple" }: AddAccountArgs) {
         await addAccount({ page: this.page, privateKey, walletName, chains, mode });
+    }
+
+    async connectToApp() {
+        const popupUrl = await this.promptUrl();
+        const popupPage = await getPopupPageFromContext(this.page.context(), popupUrl);
+        await connectToApp(popupPage);
     }
 }

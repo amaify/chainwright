@@ -35,8 +35,6 @@ export async function workerScopeContext<T extends BaseWallet>({
         throw new Error(`Cache for ${wallet.name} does not exist. Create it first!`);
     }
 
-    console.info("Copying user cache to context path");
-
     fs.cpSync(walletDataDir, contextPath, { recursive: true, force: true });
     const walletPath = await getWalletExtensionPathFromCache(wallet.name);
 

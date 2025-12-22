@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 import { getPopupPageFromContext } from "@/utils/wallets/get-popup-page-from-context";
 import { addAccount } from "./actions/add-account.petra";
-import { connectToApp } from "./actions/connect-to-app";
+import { connectToApp } from "./actions/connect-to-app.petra";
 import { getAccountAddress } from "./actions/get-account-address.petra";
 import { lockWallet } from "./actions/lock.petra";
 import onboard from "./actions/onboard.petra";
