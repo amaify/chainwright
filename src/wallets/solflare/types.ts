@@ -2,6 +2,7 @@ import z from "zod";
 
 export type OnboardingArgs = {
     recoveryPhrase: string;
+    walletName: string;
     network?: "Mainnet" | "Devnet" | "Testnet";
     addWallet?: Array<AddAccountArgs>;
 };

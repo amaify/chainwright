@@ -31,8 +31,8 @@ export class Solflare extends SolflareProfile {
      * const solflare = new Solflare(page);
      * await solflare.onboard({ mode: "importPrivateKey", password: "password", privateKey: "private key" });
      */
-    async onboard({ recoveryPhrase, network, addWallet }: OnboardingArgs) {
-        await onboard({ page: this.page, recoveryPhrase, network, addWallet });
+    async onboard({ recoveryPhrase, network, addWallet, walletName }: OnboardingArgs) {
+        await onboard({ page: this.page, recoveryPhrase, network, addWallet, walletName });
     }
 
     /**

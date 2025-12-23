@@ -1,15 +1,15 @@
 import type { Page } from "@playwright/test";
 import picocolors from "picocolors";
-import { sleep } from "@/utils/sleep";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { onboardingSelectors } from "../selectors/onboard-selectors.solflare";
 import type { OnboardingArgs } from "../types";
 import { addAccount } from "./add-account.solflare";
+import { renameAccount } from "./rename-account.solflare";
 import { switchNetwork } from "./switch-network.solflare";
 
 type Onboard = OnboardingArgs & { page: Page };
 
-export async function onboard({ page, recoveryPhrase, network, addWallet }: Onboard) {
+export async function onboard({ page, recoveryPhrase, network, walletName, addWallet }: Onboard) {
     console.info(picocolors.yellowBright(`\n Solflare onboarding started...`));
 
     const PASSWORD = await getWalletPasswordFromCache("solflare");
@@ -42,18 +42,16 @@ export async function onboard({ page, recoveryPhrase, network, addWallet }: Onbo
     const IAgreeButton = page.getByTestId(onboardingSelectors.IAgreeButton);
     await IAgreeButton.click();
 
+    // "Main Wallet" is the default wallet name for the fist wallet in Solflare.
+    await renameAccount({ page, currentAccountName: "Main Wallet", newAccountName: walletName });
+
     // If network is provided, switch to it.
     if (network) await switchNetwork(page, network);
-
-    await sleep(2_000);
 
     if (addWallet && addWallet?.length > 0) {
         for (const { privateKey, walletName } of addWallet) {
             await addAccount({ page, privateKey, walletName });
         }
-
-        // Wait for 2 seconds to let the wallet sync
-        await sleep(2_000);
     }
 
     console.info(picocolors.greenBright("✨ Solflare onboarding completed successfully"));
