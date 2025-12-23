@@ -1,3 +1,5 @@
+import type { BrowserContext } from "@playwright/test";
+import { getPopupPageFromContext } from "@/utils/wallets/get-popup-page-from-context";
 import { getWalletExtensionIdFromCache } from "@/utils/wallets/get-wallet-extension-id-from-cache";
 
 export class MeteorProfile {
@@ -16,5 +18,11 @@ export class MeteorProfile {
 
     async extensionId() {
         return await getWalletExtensionIdFromCache(this.name);
+    }
+
+    async promptPage(context: BrowserContext) {
+        const popupUrl = await this.promptUrl();
+        const popupPage = await getPopupPageFromContext(context, popupUrl);
+        return popupPage;
     }
 }

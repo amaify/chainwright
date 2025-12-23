@@ -1,5 +1,4 @@
 import type { Page } from "@playwright/test";
-import { getPopupPageFromContext } from "@/utils/wallets/get-popup-page-from-context";
 import { addAccount } from "./actions/add-account.keplr";
 import { connectToApp } from "./actions/connect-to-app.keplr";
 import { getAccountAddress } from "./actions/get-account-address.keplr";
@@ -119,9 +118,14 @@ export class Keplr extends KeplrProfile {
         await addAccount({ page: this.page, privateKey, walletName, chains, mode });
     }
 
+    /**
+     * Connects to the wallet.
+     * This function connects to the wallet by opening the connect page and then clicking on the connect button.
+     * @example
+     * const keplr = new Keplr(page);
+     * await keplr.connectToApp();
+     */
     async connectToApp() {
-        const popupUrl = await this.promptUrl();
-        const popupPage = await getPopupPageFromContext(this.page.context(), popupUrl);
-        await connectToApp(popupPage);
+        await connectToApp(await this.promptPage(this.page.context()));
     }
 }
