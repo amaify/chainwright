@@ -1,15 +1,18 @@
 export type OnboardingArgs =
     | {
           mode: "create";
+          accountName: string;
           addWallet?: Array<AddAccount>;
       }
     | {
           mode: "importMnemonic";
+          accountName: string;
           secretRecoveryPhrase: string;
           addWallet?: Array<AddAccount>;
       }
     | {
           mode: "importPrivateKey";
+          accountName: string;
           privateKey: string;
           addWallet?: Array<AddAccount>;
       };

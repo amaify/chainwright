@@ -1,10 +1,12 @@
 import type { Page } from "@playwright/test";
 import { getPopupPageFromContext } from "@/utils/wallets/get-popup-page-from-context";
 import { addAccount } from "./actions/add-account.petra";
+import { confirmTransaction } from "./actions/confirm-transaction";
 import { connectToApp } from "./actions/connect-to-app.petra";
 import { getAccountAddress } from "./actions/get-account-address.petra";
 import { lockWallet } from "./actions/lock.petra";
 import onboard from "./actions/onboard.petra";
+import { rejectTransaction } from "./actions/reject-transaction";
 import { type RenameAccount, renameAccount } from "./actions/rename-account.petra";
 import { switchAccount } from "./actions/switch-account.petra";
 import { switchNetwork } from "./actions/switch-network.petra";
@@ -128,5 +130,24 @@ export class Petra extends PetraProfile {
         const popupUrl = await this.promptUrl();
         const popupPage = await getPopupPageFromContext(this.page.context(), popupUrl);
         await connectToApp(popupPage, account);
+    }
+
+    /**
+     * Confirms a transaction in the wallet by clicking on the "Approve" button.
+     *
+     * @example
+     * const petra = new Petra(page);
+     * await petra.confirmTransaction();
+     */
+    async confirmTransaction() {
+        const popupUrl = await this.promptUrl();
+        const popupPage = await getPopupPageFromContext(this.page.context(), popupUrl);
+        await confirmTransaction(popupPage);
+    }
+
+    async rejectTransaction() {
+        const popupUrl = await this.promptUrl();
+        const popupPage = await getPopupPageFromContext(this.page.context(), popupUrl);
+        await rejectTransaction(popupPage);
     }
 }

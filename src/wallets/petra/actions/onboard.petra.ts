@@ -10,6 +10,7 @@ import { onboardSelectors } from "../selectors/onboard-selectors.petra";
 import type { OnboardingArgs } from "../types";
 import { addAccount } from "./add-account.petra";
 import { renameAccount } from "./rename-account.petra";
+import { switchAccount } from "./switch-account.petra";
 
 type Onboard = OnboardingArgs & {
     page: Page;
@@ -106,12 +107,14 @@ export default async function onboard({ page, ...args }: Onboard) {
         await expect(page.locator(homepageSelectors.sendButton)).toBeVisible({ timeout: IS_VISIBLE_TIMEOUT });
     }
 
-    await renameAccount({ page, newAccountName: "Default" });
+    await renameAccount({ page, newAccountName: args.accountName });
 
     if (args.addWallet && args.addWallet.length > 0) {
         for (const { ...addAccountArgs } of args.addWallet) {
             await addAccount({ page, ...addAccountArgs });
         }
+
+        await switchAccount(page, args.accountName);
     }
 
     await sleep(3_000);

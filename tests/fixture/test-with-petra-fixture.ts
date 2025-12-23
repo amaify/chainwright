@@ -10,7 +10,10 @@ type TestDappFixture = {
 };
 
 export const testDappFixture = testWithPetra.extend<TestDappFixture>({
-    dappPage: async ({ page }, use) => {
+    dappPage: async ({ page, petra }, use) => {
+        await petra.switchAccount("Echo");
+        await petra.switchNetwork("Testnet");
+
         await page.goto("http://localhost:3000/aptos");
         await use(page);
     },

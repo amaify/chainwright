@@ -9,6 +9,7 @@ export default defineWalletSetup(PASSWORD, async ({ walletPage }) => {
 
     await petra.onboard({
         mode: "importMnemonic",
+        accountName: "Default",
         secretRecoveryPhrase: SECRET_PHRASE,
         addWallet: [
             {
