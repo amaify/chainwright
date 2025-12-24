@@ -1,6 +1,8 @@
 import type { Page } from "@playwright/test";
 import { addAccount } from "./actions/add-account.metamask";
 import { addCustomNetwork } from "./actions/add-custom-network.metamask";
+import { cancelTransaction } from "./actions/cancel-transaction.metamask";
+import { confirmTransaction } from "./actions/confirm-transaction.metamask";
 import { connectToApp } from "./actions/connect-to-app.metamask";
 import { getAccountAddress } from "./actions/get-account-address.metamask";
 import { lockWallet } from "./actions/lock.metamask";
@@ -161,5 +163,25 @@ export class Metamask extends MetamaskProfile {
      */
     async connectToApp(account?: string) {
         await connectToApp(await this.promptPage(this.page.context()), account);
+    }
+
+    /**
+     * Confirms a transaction in the wallet by clicking on the "Confirm" button.
+     * @example
+     * const metamask = new Metamask(page);
+     * await metamask.confirmTransaction();
+     */
+    async confirmTransaction() {
+        await confirmTransaction(await this.promptPage(this.page.context()));
+    }
+
+    /**
+     * Cancels a transaction in the wallet by clicking on the "Cancel" button.
+     * @example
+     * const metamask = new Metamask(page);
+     * await metamask.cancelTransaction();
+     */
+    async cancelTransaction() {
+        await cancelTransaction(await this.promptPage(this.page.context()));
     }
 }
