@@ -1,4 +1,5 @@
 import { expect, type Page } from "@playwright/test";
+import { sleep } from "@/utils/sleep";
 import { switchAccount } from "./switch-account.metamask";
 
 /**
@@ -11,11 +12,11 @@ export async function connectToApp(page: Page, account?: string) {
 
     const connectButton = page.getByRole("button", { name: "Connect", exact: true });
     await connectButton.click();
-    await connectButton.waitFor({ state: "detached", timeout: 30_000 });
+
+    // Wait for any popup to show
+    await sleep(2_000);
 
     const noticeDialog = page.getByRole("dialog");
-    await noticeDialog.waitFor({ state: "attached", timeout: 30_000 });
-
     const isNoticeDialogVisible = await noticeDialog.isVisible().catch(() => false);
     if (isNoticeDialogVisible) {
         const snapPrivacyScrollButton = page.getByTestId("snap-privacy-warning-scroll");

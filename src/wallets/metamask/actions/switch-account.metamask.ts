@@ -1,5 +1,4 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { skip } from "@/tests/utils/skip";
 import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors.metamask";
 
 export type SwitchAccount = {
@@ -11,10 +10,9 @@ export async function switchAccount({ page, accountName }: SwitchAccount) {
     const accountMenuButton = page.getByTestId(homepageSelectors.accountMenuButton);
     const accountMenuTextContent = await accountMenuButton.textContent();
 
-    skip(
-        accountMenuTextContent === accountName,
-        `Can't switch account "${accountName}" already selected. Skipping test.`,
-    );
+    if (accountMenuTextContent === accountName) {
+        throw Error(`Can't switch account "${accountName}" already selected. Skipping test.`);
+    }
 
     await expect(accountMenuButton).toBeVisible({ timeout: 15_000 });
     await accountMenuButton.click();
@@ -29,10 +27,11 @@ export async function switchAccount({ page, accountName }: SwitchAccount) {
             .not.toBe(startTextContent);
     }
 
-    const accountCells = await page.getByTestId(/^multichain-account-cell-entropy:/).all();
+    const accountCells = await page.getByTestId(/^multichain-account-cell-(?:entropy|keyring):/).all();
     let currentAccount: Locator | null = null;
 
     for (const accountCell of accountCells) {
+        await accountCell.scrollIntoViewIfNeeded();
         const textContent = await accountCell.textContent();
 
         if (textContent?.includes(accountName)) {
@@ -42,7 +41,7 @@ export async function switchAccount({ page, accountName }: SwitchAccount) {
     }
 
     if (!currentAccount) {
-        skip(!currentAccount, `Account with name "${accountName}" not found.`);
+        throw Error(`Account with name "${accountName}" not found.`);
     }
 
     await currentAccount?.click();
