@@ -7,9 +7,9 @@ type TransactionForm = {
 };
 
 export async function fillForm({ appPage, walletAddress, amount }: TransactionForm) {
-    const addressInput = appPage.locator("input[id='address']");
-    const amountInput = appPage.locator("input[id='amount']");
-    const submitButton = appPage.getByRole("button", { name: "Submit", exact: true });
+    const addressInput = appPage.locator("input[id='address']").first();
+    const amountInput = appPage.locator("input[id='amount']").first();
+    const submitButton = appPage.getByRole("button", { name: "Submit", exact: true }).first();
 
     await addressInput.fill(walletAddress);
     await amountInput.fill(amount);
