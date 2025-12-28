@@ -14,7 +14,7 @@ type WorkerScopeContext<W> = {
 };
 
 export type WorkerScopeFixture<Wallet> = {
-    workerScopeWalletPage: {
+    workerScopeContents: {
         wallet: Wallet;
         walletPage: Page;
         context: BrowserContext;

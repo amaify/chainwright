@@ -13,7 +13,7 @@ export type KeplrFixture = {
 
 export const keplrWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: WorkerScopeFixtureArgs = {}) => {
     return base.extend<KeplrFixture, WorkerScopeFixture<Keplr>>({
-        workerScopeWalletPage: [
+        workerScopeContents: [
             async ({ browser: _ }, use, workerInfo) => {
                 const wallet = new KeplrProfile();
                 const {
@@ -46,8 +46,8 @@ export const keplrWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Worker
             { scope: "worker" },
         ],
         dappPage: [
-            async ({ workerScopeWalletPage }, use) => {
-                const { context } = workerScopeWalletPage;
+            async ({ workerScopeContents }, use) => {
+                const { context } = workerScopeContents;
                 const dappPage = await context.newPage();
                 if (dappUrl) {
                     await dappPage.goto(dappUrl);
@@ -56,11 +56,11 @@ export const keplrWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Worker
             },
             { scope: "worker" },
         ],
-        keplrPage: async ({ workerScopeWalletPage }, use) => {
-            await use(workerScopeWalletPage.walletPage);
+        keplrPage: async ({ workerScopeContents }, use) => {
+            await use(workerScopeContents.walletPage);
         },
-        keplr: async ({ workerScopeWalletPage }, use) => {
-            const petraInstance = new Keplr(workerScopeWalletPage.walletPage);
+        keplr: async ({ workerScopeContents }, use) => {
+            const petraInstance = new Keplr(workerScopeContents.walletPage);
             await use(petraInstance);
         },
     });

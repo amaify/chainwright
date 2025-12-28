@@ -13,7 +13,7 @@ export type PetraFixture = {
 
 export const petraWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: WorkerScopeFixtureArgs = {}) => {
     return base.extend<PetraFixture, WorkerScopeFixture<Petra>>({
-        workerScopeWalletPage: [
+        workerScopeContents: [
             async ({ browser: _ }, use, workerInfo) => {
                 const wallet = new PetraProfile();
                 const {
@@ -46,8 +46,8 @@ export const petraWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Worker
             { scope: "worker" },
         ],
         dappPage: [
-            async ({ workerScopeWalletPage }, use) => {
-                const { context } = workerScopeWalletPage;
+            async ({ workerScopeContents }, use) => {
+                const { context } = workerScopeContents;
                 const dappPage = await context.newPage();
                 if (dappUrl) {
                     await dappPage.goto(dappUrl);
@@ -56,11 +56,11 @@ export const petraWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Worker
             },
             { scope: "worker" },
         ],
-        petraPage: async ({ workerScopeWalletPage }, use) => {
-            await use(workerScopeWalletPage.walletPage);
+        petraPage: async ({ workerScopeContents }, use) => {
+            await use(workerScopeContents.walletPage);
         },
-        petra: async ({ workerScopeWalletPage }, use) => {
-            const petraInstance = new Petra(workerScopeWalletPage.walletPage);
+        petra: async ({ workerScopeContents }, use) => {
+            const petraInstance = new Petra(workerScopeContents.walletPage);
             await use(petraInstance);
         },
     });

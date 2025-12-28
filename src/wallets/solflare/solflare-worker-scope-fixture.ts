@@ -13,7 +13,7 @@ export type SolflareFixture = {
 
 export const solflareWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: WorkerScopeFixtureArgs = {}) => {
     return base.extend<SolflareFixture, WorkerScopeFixture<Solflare>>({
-        workerScopeWalletPage: [
+        workerScopeContents: [
             async ({ browser: _ }, use, workerInfo) => {
                 const wallet = new SolflareProfile();
                 const {
@@ -45,8 +45,8 @@ export const solflareWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Wor
             { scope: "worker" },
         ],
         dappPage: [
-            async ({ workerScopeWalletPage }, use) => {
-                const { context } = workerScopeWalletPage;
+            async ({ workerScopeContents }, use) => {
+                const { context } = workerScopeContents;
                 const dappPage = await context.newPage();
                 if (dappUrl) {
                     await dappPage.goto(dappUrl);
@@ -55,11 +55,11 @@ export const solflareWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Wor
             },
             { scope: "worker" },
         ],
-        solflarePage: async ({ workerScopeWalletPage }, use) => {
-            await use(workerScopeWalletPage.walletPage);
+        solflarePage: async ({ workerScopeContents }, use) => {
+            await use(workerScopeContents.walletPage);
         },
-        solflare: async ({ workerScopeWalletPage }, use) => {
-            const solflareInstance = new Solflare(workerScopeWalletPage.walletPage);
+        solflare: async ({ workerScopeContents }, use) => {
+            const solflareInstance = new Solflare(workerScopeContents.walletPage);
             await use(solflareInstance);
         },
     });

@@ -13,7 +13,7 @@ export type MetamaskFixture = {
 
 export const metamaskWorkerScopeFixture = ({ profileName, dappUrl, slowMo }: WorkerScopeFixtureArgs = {}) => {
     return base.extend<MetamaskFixture, WorkerScopeFixture<Metamask>>({
-        workerScopeWalletPage: [
+        workerScopeContents: [
             async ({ browser: _ }, use, workerInfo) => {
                 const wallet = new MetamaskProfile();
                 const {
@@ -45,8 +45,8 @@ export const metamaskWorkerScopeFixture = ({ profileName, dappUrl, slowMo }: Wor
             { scope: "worker" },
         ],
         dappPage: [
-            async ({ workerScopeWalletPage }, use) => {
-                const { context } = workerScopeWalletPage;
+            async ({ workerScopeContents }, use) => {
+                const { context } = workerScopeContents;
                 const dappPage = await context.newPage();
                 if (dappUrl) {
                     await dappPage.goto(dappUrl);
@@ -55,11 +55,11 @@ export const metamaskWorkerScopeFixture = ({ profileName, dappUrl, slowMo }: Wor
             },
             { scope: "worker" },
         ],
-        metamaskPage: async ({ workerScopeWalletPage }, use) => {
-            await use(workerScopeWalletPage.walletPage);
+        metamaskPage: async ({ workerScopeContents }, use) => {
+            await use(workerScopeContents.walletPage);
         },
-        metamask: async ({ workerScopeWalletPage }, use) => {
-            const metamaskInstance = new Metamask(workerScopeWalletPage.walletPage);
+        metamask: async ({ workerScopeContents }, use) => {
+            const metamaskInstance = new Metamask(workerScopeContents.walletPage);
             await use(metamaskInstance);
         },
     });

@@ -17,7 +17,7 @@ export type PhantomFixture = {
 
 export const phantomWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: WorkerScopeFixtureArgs = {}) => {
     return base.extend<PhantomFixture, WorkerScopeFixture<Phantom>>({
-        workerScopeWalletPage: [
+        workerScopeContents: [
             async ({ browser: _ }, use, workerInfo) => {
                 const wallet = new PhantomProfile();
                 const {
@@ -49,8 +49,8 @@ export const phantomWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Work
             { scope: "worker" },
         ],
         dappPage: [
-            async ({ workerScopeWalletPage }, use) => {
-                const { context } = workerScopeWalletPage;
+            async ({ workerScopeContents }, use) => {
+                const { context } = workerScopeContents;
                 const dappPage = await context.newPage();
                 if (dappUrl) {
                     await dappPage.goto(dappUrl);
@@ -59,18 +59,18 @@ export const phantomWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Work
             },
             { scope: "worker" },
         ],
-        phantomPage: async ({ workerScopeWalletPage }, use) => {
-            await use(workerScopeWalletPage.walletPage);
+        phantomPage: async ({ workerScopeContents }, use) => {
+            await use(workerScopeContents.walletPage);
         },
-        phantom: async ({ workerScopeWalletPage }, use) => {
-            const phantomInstance = new Phantom(workerScopeWalletPage.walletPage);
+        phantom: async ({ workerScopeContents }, use) => {
+            const phantomInstance = new Phantom(workerScopeContents.walletPage);
             await use(phantomInstance);
         },
         autoCloseNotification: [
-            async ({ workerScopeWalletPage }, use) => {
+            async ({ workerScopeContents }, use) => {
                 let cancelled = false;
                 const isCancelled = () => cancelled;
-                const runner = autoClosePhantomNotification(workerScopeWalletPage.walletPage, isCancelled);
+                const runner = autoClosePhantomNotification(workerScopeContents.walletPage, isCancelled);
 
                 await use();
 
