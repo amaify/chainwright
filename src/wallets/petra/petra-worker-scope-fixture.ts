@@ -36,7 +36,7 @@ export const petraWorkerScopeFixture = (slowMo: number = 0, profileName?: string
                 const petra = new Petra(walletPageFromContext);
                 await petra.unlock();
 
-                await use({ wallet: petra, appPage: walletPageFromContext });
+                await use({ wallet: petra, walletPage: walletPageFromContext });
 
                 await context.close();
                 const error = await removeTempContextDir(contextPath);
@@ -45,10 +45,10 @@ export const petraWorkerScopeFixture = (slowMo: number = 0, profileName?: string
             { scope: "worker" },
         ],
         petraPage: async ({ workerScopeWalletPage }, use) => {
-            await use(workerScopeWalletPage.appPage);
+            await use(workerScopeWalletPage.walletPage);
         },
         petra: async ({ workerScopeWalletPage }, use) => {
-            const petraInstance = new Petra(workerScopeWalletPage.appPage);
+            const petraInstance = new Petra(workerScopeWalletPage.walletPage);
             await use(petraInstance);
         },
     });

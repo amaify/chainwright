@@ -35,7 +35,7 @@ export const metamaskWorkerScopeFixture = (slowMo: number = 0, profileName?: str
 
                 const metamask = new Metamask(walletPageFromContext);
                 await metamask.unlock();
-                await use({ wallet: metamask, appPage: walletPageFromContext });
+                await use({ wallet: metamask, walletPage: walletPageFromContext });
 
                 await context.close();
                 const error = await removeTempContextDir(contextPath);
@@ -44,10 +44,10 @@ export const metamaskWorkerScopeFixture = (slowMo: number = 0, profileName?: str
             { scope: "worker" },
         ],
         metamaskPage: async ({ workerScopeWalletPage }, use) => {
-            await use(workerScopeWalletPage.appPage);
+            await use(workerScopeWalletPage.walletPage);
         },
         metamask: async ({ workerScopeWalletPage }, use) => {
-            const solflareInstance = new Metamask(workerScopeWalletPage.appPage);
+            const solflareInstance = new Metamask(workerScopeWalletPage.walletPage);
             await use(solflareInstance);
         },
     });

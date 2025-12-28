@@ -13,10 +13,10 @@ type WorkerScopeContext<W> = {
     slowMo?: number;
 };
 
-export type WorkerScopeFixture<WalletPage> = {
+export type WorkerScopeFixture<Wallet> = {
     workerScopeWalletPage: {
-        wallet: WalletPage;
-        appPage: Page;
+        wallet: Wallet;
+        walletPage: Page;
     };
 };
 

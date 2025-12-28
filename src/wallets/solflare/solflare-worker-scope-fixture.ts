@@ -33,9 +33,9 @@ export const solflareWorkerScopeFixture = (slowMo: number = 0, profileName?: str
                     }
                 }
 
-                const petra = new Solflare(walletPageFromContext);
-                await petra.unlock();
-                await use({ wallet: petra, appPage: walletPageFromContext });
+                const solflare = new Solflare(walletPageFromContext);
+                await solflare.unlock();
+                await use({ wallet: solflare, walletPage: walletPageFromContext });
 
                 await context.close();
                 const error = await removeTempContextDir(contextPath);
@@ -44,10 +44,10 @@ export const solflareWorkerScopeFixture = (slowMo: number = 0, profileName?: str
             { scope: "worker" },
         ],
         solflarePage: async ({ workerScopeWalletPage }, use) => {
-            await use(workerScopeWalletPage.appPage);
+            await use(workerScopeWalletPage.walletPage);
         },
         solflare: async ({ workerScopeWalletPage }, use) => {
-            const solflareInstance = new Solflare(workerScopeWalletPage.appPage);
+            const solflareInstance = new Solflare(workerScopeWalletPage.walletPage);
             await use(solflareInstance);
         },
     });

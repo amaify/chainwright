@@ -36,7 +36,7 @@ export const keplrWorkerScopeFixture = (slowMo: number = 0, profileName?: string
                 const keplr = new Keplr(walletPageFromContext);
                 await keplr.unlock();
 
-                await use({ wallet: keplr, appPage: walletPageFromContext });
+                await use({ wallet: keplr, walletPage: walletPageFromContext });
 
                 await context.close();
                 const error = await removeTempContextDir(contextPath);
@@ -45,10 +45,10 @@ export const keplrWorkerScopeFixture = (slowMo: number = 0, profileName?: string
             { scope: "worker" },
         ],
         keplrPage: async ({ workerScopeWalletPage }, use) => {
-            await use(workerScopeWalletPage.appPage);
+            await use(workerScopeWalletPage.walletPage);
         },
         keplr: async ({ workerScopeWalletPage }, use) => {
-            const petraInstance = new Keplr(workerScopeWalletPage.appPage);
+            const petraInstance = new Keplr(workerScopeWalletPage.walletPage);
             await use(petraInstance);
         },
     });

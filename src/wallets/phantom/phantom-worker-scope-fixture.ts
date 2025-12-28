@@ -39,7 +39,7 @@ export const phantomWorkerScopeFixture = (slowMo: number = 0, profileName?: stri
                 const phantom = new Phantom(walletPageFromContext);
                 await phantom.unlock();
 
-                await use({ wallet: phantom, appPage: walletPageFromContext });
+                await use({ wallet: phantom, walletPage: walletPageFromContext });
 
                 await context.close();
                 const error = await removeTempContextDir(contextPath);
@@ -48,17 +48,17 @@ export const phantomWorkerScopeFixture = (slowMo: number = 0, profileName?: stri
             { scope: "worker" },
         ],
         phantomPage: async ({ workerScopeWalletPage }, use) => {
-            await use(workerScopeWalletPage.appPage);
+            await use(workerScopeWalletPage.walletPage);
         },
         phantom: async ({ workerScopeWalletPage }, use) => {
-            const phantomInstance = new Phantom(workerScopeWalletPage.appPage);
+            const phantomInstance = new Phantom(workerScopeWalletPage.walletPage);
             await use(phantomInstance);
         },
         autoCloseNotification: [
             async ({ workerScopeWalletPage }, use) => {
                 let cancelled = false;
                 const isCancelled = () => cancelled;
-                const runner = autoClosePhantomNotification(workerScopeWalletPage.appPage, isCancelled);
+                const runner = autoClosePhantomNotification(workerScopeWalletPage.walletPage, isCancelled);
 
                 await use();
 
