@@ -3,11 +3,11 @@ import z from "zod";
 export type OnboardingArgs =
     | {
           mode: "create";
-          mainAccountName: string;
+          mainAccountName?: string;
       }
     | {
           mode: "import";
-          mainAccountName: string;
+          mainAccountName?: string;
           secretRecoveryPhrase: string;
       };
 

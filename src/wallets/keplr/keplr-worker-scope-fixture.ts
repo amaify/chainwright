@@ -1,4 +1,5 @@
 import { test as base, type Page } from "@playwright/test";
+import type { WorkerScopeFixtureArgs } from "@/types";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import { type WorkerScopeFixture, workerScopeContext } from "../utils/worker-scope-context";
 import { Keplr } from "./keplr";
@@ -10,7 +11,7 @@ export type KeplrFixture = {
     keplrPage: Page;
 };
 
-export const keplrWorkerScopeFixture = (slowMo: number = 0, profileName?: string) => {
+export const keplrWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: WorkerScopeFixtureArgs = {}) => {
     return base.extend<KeplrFixture, WorkerScopeFixture<Keplr>>({
         workerScopeWalletPage: [
             async ({ browser: _ }, use, workerInfo) => {
@@ -36,11 +37,22 @@ export const keplrWorkerScopeFixture = (slowMo: number = 0, profileName?: string
                 const keplr = new Keplr(walletPageFromContext);
                 await keplr.unlock();
 
-                await use({ wallet: keplr, walletPage: walletPageFromContext });
+                await use({ wallet: keplr, walletPage: walletPageFromContext, context });
 
                 await context.close();
                 const error = await removeTempContextDir(contextPath);
                 if (error) console.error(error);
+            },
+            { scope: "worker" },
+        ],
+        dappPage: [
+            async ({ workerScopeWalletPage }, use) => {
+                const { context } = workerScopeWalletPage;
+                const dappPage = await context.newPage();
+                if (dappUrl) {
+                    await dappPage.goto(dappUrl);
+                }
+                await use(dappPage);
             },
             { scope: "worker" },
         ],

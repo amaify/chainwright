@@ -1,4 +1,5 @@
 import { test as base, type Page } from "@playwright/test";
+import type { WorkerScopeFixtureArgs } from "@/types";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import { type WorkerScopeFixture, workerScopeContext } from "../utils/worker-scope-context";
 import { Metamask } from "./metamask";
@@ -10,7 +11,7 @@ export type MetamaskFixture = {
     metamaskPage: Page;
 };
 
-export const metamaskWorkerScopeFixture = (slowMo: number = 0, profileName?: string) => {
+export const metamaskWorkerScopeFixture = ({ profileName, dappUrl, slowMo }: WorkerScopeFixtureArgs = {}) => {
     return base.extend<MetamaskFixture, WorkerScopeFixture<Metamask>>({
         workerScopeWalletPage: [
             async ({ browser: _ }, use, workerInfo) => {
@@ -35,7 +36,7 @@ export const metamaskWorkerScopeFixture = (slowMo: number = 0, profileName?: str
 
                 const metamask = new Metamask(walletPageFromContext);
                 await metamask.unlock();
-                await use({ wallet: metamask, walletPage: walletPageFromContext });
+                await use({ wallet: metamask, walletPage: walletPageFromContext, context });
 
                 await context.close();
                 const error = await removeTempContextDir(contextPath);
@@ -43,12 +44,23 @@ export const metamaskWorkerScopeFixture = (slowMo: number = 0, profileName?: str
             },
             { scope: "worker" },
         ],
+        dappPage: [
+            async ({ workerScopeWalletPage }, use) => {
+                const { context } = workerScopeWalletPage;
+                const dappPage = await context.newPage();
+                if (dappUrl) {
+                    await dappPage.goto(dappUrl);
+                }
+                await use(dappPage);
+            },
+            { scope: "worker" },
+        ],
         metamaskPage: async ({ workerScopeWalletPage }, use) => {
             await use(workerScopeWalletPage.walletPage);
         },
         metamask: async ({ workerScopeWalletPage }, use) => {
-            const solflareInstance = new Metamask(workerScopeWalletPage.walletPage);
-            await use(solflareInstance);
+            const metamaskInstance = new Metamask(workerScopeWalletPage.walletPage);
+            await use(metamaskInstance);
         },
     });
 };

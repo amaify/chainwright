@@ -1,4 +1,5 @@
 import { test as base, type Page } from "@playwright/test";
+import type { WorkerScopeFixtureArgs } from "@/types";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import type { WorkerScopeFixture } from "../utils/worker-scope-context";
 import { workerScopeContextPhantom } from "../utils/worker-scope-context.phantom";
@@ -14,7 +15,7 @@ export type PhantomFixture = {
     autoCloseNotification: void;
 };
 
-export const phantomWorkerScopeFixture = (slowMo: number = 0, profileName?: string) => {
+export const phantomWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: WorkerScopeFixtureArgs = {}) => {
     return base.extend<PhantomFixture, WorkerScopeFixture<Phantom>>({
         workerScopeWalletPage: [
             async ({ browser: _ }, use, workerInfo) => {
@@ -39,11 +40,22 @@ export const phantomWorkerScopeFixture = (slowMo: number = 0, profileName?: stri
                 const phantom = new Phantom(walletPageFromContext);
                 await phantom.unlock();
 
-                await use({ wallet: phantom, walletPage: walletPageFromContext });
+                await use({ wallet: phantom, walletPage: walletPageFromContext, context });
 
                 await context.close();
                 const error = await removeTempContextDir(contextPath);
                 if (error) console.error(error);
+            },
+            { scope: "worker" },
+        ],
+        dappPage: [
+            async ({ workerScopeWalletPage }, use) => {
+                const { context } = workerScopeWalletPage;
+                const dappPage = await context.newPage();
+                if (dappUrl) {
+                    await dappPage.goto(dappUrl);
+                }
+                await use(dappPage);
             },
             { scope: "worker" },
         ],

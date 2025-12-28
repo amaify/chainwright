@@ -5,11 +5,11 @@ const PASSWORD = "test1234";
 
 export default defineWalletSetup(PASSWORD, async ({ walletPage }) => {
     const metamask = new Metamask(walletPage);
-    const seedPhrase = "slam razor near morning edge across provide sting section bind soup differ";
+    const seedPhrase = "debris dress width prepare table repair index athlete divide avoid month member";
 
     await metamask.onboard({
         mode: "import",
         secretRecoveryPhrase: seedPhrase,
-        mainAccountName: "Testing account",
+        mainAccountName: "Main test",
     });
 });

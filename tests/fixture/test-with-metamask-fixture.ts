@@ -1,9 +1,11 @@
 import type { Page } from "@playwright/test";
 import testWithPlaywrightKit from "@/core/test-with-playwright-kit";
 import { metamaskFixture } from "@/wallets/metamask/metamask-fixture";
+import { metamaskWorkerScopeFixture } from "@/wallets/metamask/metamask-worker-scope-fixture";
 
 export const testWithMetamaskFixture = metamaskFixture();
 export const testWithMetamask = testWithPlaywrightKit(metamaskFixture());
+export const testWithMetamaskWorkerScope = metamaskWorkerScopeFixture({ dappUrl: "http://localhost:3000/polygon" });
 
 type TestDappFixture = {
     dappPage: Page;

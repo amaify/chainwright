@@ -32,3 +32,9 @@ export type WalletSetupConfig = {
     profileName?: string;
     slowMo?: number;
 };
+
+export type WorkerScopeFixtureArgs = {
+    slowMo?: number;
+    profileName?: string;
+    dappUrl?: string;
+};

@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { chromium, type Page, type WorkerInfo } from "@playwright/test";
+import { type BrowserContext, chromium, type Page, type WorkerInfo } from "@playwright/test";
 import createTempContextDirectory from "@/utils/create-temp-context-directory";
 import getCacheDirectory from "@/utils/get-cache-directory";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
@@ -17,7 +17,9 @@ export type WorkerScopeFixture<Wallet> = {
     workerScopeWalletPage: {
         wallet: Wallet;
         walletPage: Page;
+        context: BrowserContext;
     };
+    dappPage: Page;
 };
 
 // Create a worker context for all wallets

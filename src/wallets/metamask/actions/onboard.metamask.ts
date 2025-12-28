@@ -95,7 +95,9 @@ export default async function onboard({ page, mainAccountName, ...args }: Onboar
     }
 
     await toggleShowTestnetNetwork({ page });
-    await switchAccount({ page, accountName: mainAccountName });
+    if (mainAccountName) {
+        await switchAccount({ page, accountName: mainAccountName });
+    }
 
     await sleep(3_000);
 
