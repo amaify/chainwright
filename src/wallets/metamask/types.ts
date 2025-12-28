@@ -4,13 +4,11 @@ export type OnboardingArgs =
     | {
           mode: "create";
           mainAccountName: string;
-          addWallet?: Array<AddAccountArgs>;
       }
     | {
           mode: "import";
           mainAccountName: string;
           secretRecoveryPhrase: string;
-          addWallet?: Array<AddAccountArgs>;
       };
 
 export type AddAccountArgs = {

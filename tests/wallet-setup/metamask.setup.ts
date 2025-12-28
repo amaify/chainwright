@@ -11,11 +11,5 @@ export default defineWalletSetup(PASSWORD, async ({ walletPage }) => {
         mode: "import",
         secretRecoveryPhrase: seedPhrase,
         mainAccountName: "Testing account",
-        addWallet: [
-            {
-                accountName: "Foxtrot",
-                privateKey: "b9c9ceb96d93f77278ec4e4c50e84a90ee08f9279f360bfb7cf8c8a0396149fb",
-            },
-        ],
     });
 });

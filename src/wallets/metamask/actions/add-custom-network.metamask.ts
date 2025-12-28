@@ -1,6 +1,7 @@
 import { expect, type Page } from "@playwright/test";
-import { homepageSelectors, settingsSelectors } from "../selectors/homepage-selectors.metamask";
+import { settingsSelectors } from "../selectors/homepage-selectors.metamask";
 import { type AddCustomNetwork, addCustomNetworkSchema } from "../types";
+import { openSettings } from "./open-settings.metamask";
 
 interface AddCustomNetworkArgs extends AddCustomNetwork {
     page: Page;
@@ -14,9 +15,7 @@ export async function addCustomNetwork({ page, ...args }: AddCustomNetworkArgs) 
         },
     );
 
-    const settingsButton = page.getByTestId(homepageSelectors.openSettingsButton);
-    await settingsButton.click();
-
+    await openSettings(page);
     const networksButton = page.getByTestId(settingsSelectors.networksButton);
     await networksButton.click();
 

@@ -5,7 +5,6 @@ import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-
 import { homepageSelectors } from "../selectors/homepage-selectors.metamask";
 import { onboardSelectors } from "../selectors/onboard-selectors.metamask";
 import type { OnboardingArgs } from "../types";
-import { addAccount } from "./add-account.metamask";
 import { switchAccount } from "./switch-account.metamask";
 import { toggleShowTestnetNetwork } from "./toggle-show-testnet-network";
 
@@ -13,7 +12,7 @@ type Onboard = OnboardingArgs & {
     page: Page;
 };
 
-export default async function onboard({ page, addWallet, mainAccountName, ...args }: Onboard) {
+export default async function onboard({ page, mainAccountName, ...args }: Onboard) {
     console.info(picocolors.yellowBright(`\n 🦊 MetaMask onboarding started...`));
     const PASSWORD = await getWalletPasswordFromCache("metamask");
 
@@ -96,13 +95,6 @@ export default async function onboard({ page, addWallet, mainAccountName, ...arg
     }
 
     await toggleShowTestnetNetwork({ page });
-
-    if (addWallet) {
-        for (const { privateKey, accountName } of addWallet) {
-            await addAccount({ page, privateKey, accountName });
-        }
-    }
-
     await switchAccount({ page, accountName: mainAccountName });
 
     await sleep(3_000);

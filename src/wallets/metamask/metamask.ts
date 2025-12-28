@@ -7,7 +7,6 @@ import { connectToApp } from "./actions/connect-to-app.metamask";
 import { getAccountAddress } from "./actions/get-account-address.metamask";
 import { lockWallet } from "./actions/lock.metamask";
 import onboard from "./actions/onboard.metamask";
-import { openSettings } from "./actions/open-settings.metamask";
 import { type RenameAccount, renameAccount } from "./actions/rename-account.metamask";
 import { type SwitchAccount, switchAccount } from "./actions/switch-account.metamask";
 import { switchNetwork } from "./actions/switch-network.metamask";
@@ -58,7 +57,6 @@ export class Metamask extends MetamaskProfile {
      * await metamask.lock()
      */
     async lock() {
-        await openSettings(this.page);
         await lockWallet(this.page);
     }
 
