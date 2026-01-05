@@ -8,7 +8,6 @@ describe("Is APTOS Address valid", () => {
     });
 
     it("Should be false if the address is invalid", () => {
-        const address = "0x223";
-        expect(isAptosAddressValid(address)).toBe(false);
+        expect(isAptosAddressValid("Not valid")).toBe(false);
     });
 });

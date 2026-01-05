@@ -9,26 +9,20 @@ vi.mock("@/utils/get-cache-directory", () => ({
         path.resolve(process.cwd(), `src/utils/wallets/.test-wallet-cache/${walletName}`),
 }));
 
+const CACHE_ROOT = path.resolve(process.cwd(), "src/utils/wallets/.test-wallet-cache");
+const CACHE_DIR = path.resolve(CACHE_ROOT, "petra");
+const EXTENSION_PATH = "/Users/tobeugwuanyi/Desktop/playwright-kit-web3/.wallet-cache/petra/petra-extension";
+
+beforeAll(() => {
+    fs.mkdirSync(CACHE_DIR, { recursive: true });
+    fs.writeFileSync(path.resolve(CACHE_DIR, "extension-path.txt"), EXTENSION_PATH);
+});
+
+afterAll(() => {
+    fs.rmSync(CACHE_ROOT, { force: true, recursive: true });
+});
+
 describe("Get wallet extension path from cache", () => {
-    const CACHE_ROOT = path.resolve(process.cwd(), "src/utils/wallets/.test-wallet-cache");
-    const CACHE_DIR = path.resolve(CACHE_ROOT, "petra");
-    const EXTENSION_PATH = "/Users/tobeugwuanyi/Desktop/playwright-kit-web3/.wallet-cache/petra/petra-extension";
-
-    beforeAll(() => {
-        if (!fs.existsSync(CACHE_DIR)) {
-            fs.mkdirSync(CACHE_DIR, { recursive: true });
-            fs.writeFileSync(path.resolve(CACHE_DIR, "extension-path.txt"), EXTENSION_PATH);
-        }
-    });
-
-    afterAll(() => {
-        fs.rmSync(CACHE_ROOT, { force: true, recursive: true });
-    });
-
-    afterEach(() => {
-        vi.clearAllMocks();
-    });
-
     it("should return the extension path from the cache", async () => {
         const extensionPath = await getWalletExtensionPathFromCache("petra");
         expect(extensionPath).toBe(EXTENSION_PATH);

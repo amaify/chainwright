@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { glob } from "glob";
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { CLIOptions } from "@/types";
 import getSetupFunction from "../get-setup-function";
 
@@ -15,48 +15,26 @@ describe("getSetupFunction", () => {
 
     beforeAll(() => {
         const setupFiles = ["metamask.setup.ts", "metamask-two.setup.ts", "phantom.setup.ts", "solflare.setup.ts"];
+        fs.mkdirSync(WALLET_SETUP_DIR, { recursive: true });
 
-        if (!fs.existsSync(WALLET_SETUP_DIR)) {
-            fs.mkdirSync(WALLET_SETUP_DIR, { recursive: true });
+        setupFiles.forEach((filename) => {
+            fs.writeFileSync(
+                path.resolve(WALLET_SETUP_DIR, filename),
+                `
+                    import defineWalletSetup from "@/core/define-wallet-setup";
 
-            setupFiles.forEach((filename) => {
-                if (!fs.existsSync(path.resolve(WALLET_SETUP_DIR, filename))) {
-                    fs.writeFileSync(
-                        path.resolve(WALLET_SETUP_DIR, filename),
-                        `
-                        import defineWalletSetup from "@/core/define-wallet-setup";
-
-                        export default defineWalletSetup("test1234", async () => {
-                            console.info("Setting up ${filename}.....");
-                            return void 0;
-                        }, ${filename === "metamask-two.setup.ts" ? '{ profileName: "profile-two" }' : undefined});
-                        `,
-                    );
-                }
-            });
-        }
-    });
-
-    // Remove the wallet setup test files after all tests
-    // This is to avoid the test files being left behind and causing issues with the next test run
-    afterEach(() => {
-        fs.rm(WALLET_SETUP_DIR, { force: true, recursive: true }, (err) => {
-            if (err) {
-                console.error("Error deleting wallet setup test files: ", err);
-            }
+                    export default defineWalletSetup("test1234", async () => {
+                        console.info("Setting up ${filename}.....");
+                        return void 0;
+                    }, ${filename === "metamask-two.setup.ts" ? '{ profileName: "profile-two" }' : undefined});
+                        
+                `,
+            );
         });
     });
 
     afterAll(() => {
-        fs.rm(WALLET_SETUP_DIR, { force: true, recursive: true }, (err) => {
-            if (err) {
-                console.error("Error deleting wallet setup test files: ", err);
-            }
-        });
-    });
-
-    beforeEach(() => {
-        vi.clearAllMocks();
+        fs.rmSync(WALLET_SETUP_DIR, { force: true, recursive: true });
     });
 
     async function handleMock(mockFilePaths: string[], selectedWallet: CLIOptions = "all", walletSetupDir?: string) {
