@@ -11,7 +11,7 @@ export async function switchAccount({ page, accountName }: SwitchAccount) {
     const accountMenuTextContent = await accountMenuButton.textContent();
 
     if (accountMenuTextContent === accountName) {
-        console.info(`Can't switch account "${accountName}" already selected. Skipping test.`);
+        console.info(`Can't switch account to "${accountName}", it is already selected.`);
         return;
     }
 
