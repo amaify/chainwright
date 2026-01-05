@@ -13,7 +13,7 @@ import { switchNetwork } from "./actions/switch-network.metamask";
 import { toggleShowTestnetNetwork } from "./actions/toggle-show-testnet-network";
 import unlock from "./actions/unlock.metamask";
 import { MetamaskProfile } from "./metamask-profile";
-import type { AddAccountArgs, AddCustomNetwork, OnboardingArgs, SwitchNetwork } from "./types";
+import type { AddAccountArgs, AddCustomNetwork, GasFeeSettings, OnboardingArgs, SwitchNetwork } from "./types";
 
 export class Metamask extends MetamaskProfile {
     page: Page;
@@ -169,8 +169,8 @@ export class Metamask extends MetamaskProfile {
      * const metamask = new Metamask(page);
      * await metamask.confirmTransaction();
      */
-    async confirmTransaction() {
-        await confirmTransaction(await this.promptPage(this.page.context()));
+    async confirmTransaction(gasFee?: GasFeeSettings) {
+        await confirmTransaction(await this.promptPage(this.page.context()), gasFee);
     }
 
     /**

@@ -5,7 +5,9 @@ import { metamaskWorkerScopeFixture } from "@/wallets/metamask/metamask-worker-s
 
 export const testWithMetamaskFixture = metamaskFixture();
 export const testWithMetamask = testWithPlaywrightKit(metamaskFixture());
-export const testWithMetamaskWorkerScope = metamaskWorkerScopeFixture({ dappUrl: "http://localhost:3000/polygon" });
+export const testWithMetamaskWorkerScope = metamaskWorkerScopeFixture({
+    dappUrl: "http://localhost:3000/polygon",
+});
 
 type TestDappFixture = {
     dappPage: Page;

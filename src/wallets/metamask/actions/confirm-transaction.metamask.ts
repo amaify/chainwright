@@ -1,8 +1,9 @@
 import { expect, type Page } from "@playwright/test";
 import { sleep } from "@/utils/sleep";
 import { actionFooterSelectors } from "../selectors/action-selectors.metamask";
+import type { GasFeeSettings } from "../types";
 
-export async function confirmTransaction(page: Page) {
+export async function confirmTransaction(page: Page, gasFee?: GasFeeSettings) {
     const confirmButton = page.getByTestId(actionFooterSelectors.confirmButton);
     await sleep(2_000);
 
@@ -27,9 +28,35 @@ export async function confirmTransaction(page: Page) {
         }
     }
 
+    if (gasFee) {
+        const editGasFeeButton = page.getByTestId("edit-gas-fee-icon");
+        await editGasFeeButton.scrollIntoViewIfNeeded();
+        await editGasFeeButton.click();
+
+        if (gasFee.feeType !== "custom") {
+            const feeOptionButton = page.getByTestId(`edit-gas-fee-item-${gasFee.feeType}`);
+            await feeOptionButton.click();
+        }
+
+        if (gasFee.feeType === "custom") {
+            const advanceGasFeeButton = page.getByTestId("edit-gas-fee-item-custom");
+            await advanceGasFeeButton.click();
+
+            const baseFeeInput = page.getByTestId("base-fee-input");
+            const priorityFeeInput = page.getByTestId("priority-fee-input");
+            const saveButton = page.getByRole("button", { name: "Save", exact: true });
+
+            await baseFeeInput.fill(gasFee.maxFee);
+            await priorityFeeInput.fill(gasFee.maxPriorityFee);
+            await saveButton.click();
+        }
+    }
+
+    // Confirm the transaction
     await expect(confirmButton).toBeEnabled();
     await confirmButton.click();
 
+    // Handle potential risk warning dialog.
     const confirmDialog = page.getByRole("dialog");
     const isConfirmDialogVisible = await confirmDialog.isVisible().catch(() => false);
 

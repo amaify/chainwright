@@ -34,3 +34,13 @@ export type SwitchNetwork =
           chainName: "Sepolia" | "Linea Sepolia" | "Mega Testnet" | "Monad Testnet" | (string & {});
           networkType: "testnet" | "custom";
       };
+
+export type GasFeeSettings =
+    | {
+          feeType: "low" | "medium" | "high";
+      }
+    | {
+          feeType: "custom";
+          maxPriorityFee: string;
+          maxFee: string;
+      };
