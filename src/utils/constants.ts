@@ -10,7 +10,7 @@ export const METAMASK_DOWNLOAD_URL = `https://github.com/MetaMask/metamask-exten
 export const SOLFLARE_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}solflare-wallet-extension-v2.13.0.zip`;
 export const PETRA_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}petra-wallet-extension-v2.2.2.zip`;
 export const PHANTOM_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}phantom-wallet-extension-v25.42.0.zip`;
-export const METEOR_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}meteor-wallet-extension-v0.6.8.zip`;
+export const METEOR_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}meteor-wallet-extension-v0.7.0.zip`;
 export const KEPLR_DOWNLOAD_URL = `${ARCHIVED_WALLET_BASE_URL}keplr-wallet-extension-v0.12.296.zip`;
 
 export const SUPPORTED_WALLETS: SupportedWalletsMap = {

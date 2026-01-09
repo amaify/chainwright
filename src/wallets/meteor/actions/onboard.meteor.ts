@@ -21,16 +21,26 @@ export default async function onboard({ page, privateKey, network, accountName, 
     const indexUrl = await meteorProfile.indexUrl();
     await page.goto(indexUrl);
 
-    const switchNetworkButton = page.locator(onboardingSelectors.switchNetworkButton).last();
+    const switchNetworkButton = page.locator(onboardingSelectors.switchNetworkButton);
     const currentNetwork = await switchNetworkButton.textContent();
-    const currentNetworkPassed = network.split("net")[0]?.toLowerCase() ?? "";
+    const _network = network.split("net")[0]?.toLowerCase() ?? "";
 
-    if (!currentNetwork?.toLowerCase().includes(currentNetworkPassed)) {
+    if (!currentNetwork?.toLowerCase().includes(_network)) {
         await switchNetworkButton.click();
-        const popoverMenuList = page.locator("section[role='dialog'] div[role='menu']");
+        const popoverMenuList = page.locator("div[role='menu']");
         const networkButtonOption = popoverMenuList.locator(`> button:has-text('${network}')`);
         await networkButtonOption.click();
     }
+
+    const passwordInput = page.locator("input[placeholder='Enter Password']");
+    const confirmPasswordInput = page.locator("input[placeholder='Confirm Password']");
+    const termsCheckbox = page.locator("label.chakra-checkbox .chakra-checkbox__control");
+    const continueButton = page.locator('button:has-text("Continue")');
+
+    await passwordInput.fill(PASSWORD);
+    await confirmPasswordInput.fill(PASSWORD);
+    await termsCheckbox.click();
+    await continueButton.click();
 
     const importExistingWalletButton = page.locator(onboardingSelectors.importExistingWalletButton);
     await importExistingWalletButton.click();
@@ -38,7 +48,6 @@ export default async function onboard({ page, privateKey, network, accountName, 
     const privateKeyButton = page.locator(onboardingSelectors.privateKeyButton);
     await privateKeyButton.click();
 
-    const continueButton = page.locator('button:has-text("Continue")');
     await continueButton.scrollIntoViewIfNeeded();
     await continueButton.click();
 
@@ -101,20 +110,6 @@ export default async function onboard({ page, privateKey, network, accountName, 
     if (isCloseModalButtonVisible) {
         await closeModalButton.click();
     }
-
-    const setPasswordButton = page.locator('button:has-text("Set Password")');
-    await setPasswordButton.click();
-
-    const passwordInput = page.locator("input[placeholder='Enter Password']");
-    const confirmPasswordInput = page.locator("input[placeholder='Confirm Password']");
-    const changePasswordButton = page.locator('button:has-text("Change Password")');
-
-    await passwordInput.fill(PASSWORD);
-    await confirmPasswordInput.fill(PASSWORD);
-    await changePasswordButton.click();
-
-    const finishButton = page.locator('button:has-text("Finish")');
-    await finishButton.click();
 
     await renameAccount({ page, newAccountName: accountName });
 
