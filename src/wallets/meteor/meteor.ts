@@ -1,5 +1,6 @@
 import type { Page } from "@playwright/test";
 import { addAccount } from "./actions/add-account.meteor";
+import { connectToApp } from "./actions/connect-to-app.meteor";
 import { getAccountAddress } from "./actions/get-account-address.meteor";
 import { lockWallet } from "./actions/lock.meteor";
 import onboard from "./actions/onboard.meteor";
@@ -8,12 +9,14 @@ import { renameAccount } from "./actions/rename-account.meteor";
 import { switchAccount } from "./actions/switch-account.meteor";
 import { switchNetwork } from "./actions/switch-network.meteor";
 import { unlock } from "./actions/unlock.meteor";
+import { MeteorProfile } from "./meteor-profile";
 import type { AddAccountArgs, MeteorNetwork, OnboardingArgs, RenameAccountArgs } from "./types";
 
-export class Meteor {
+export class Meteor extends MeteorProfile {
     page: Page;
 
     constructor(page: Page) {
+        super();
         this.page = page;
     }
 
@@ -120,5 +123,9 @@ export class Meteor {
      */
     async openSettings() {
         await openSettings(this.page);
+    }
+
+    async connectToApp(account?: string) {
+        await connectToApp(await this.promptPage(this.page.context()), account);
     }
 }
