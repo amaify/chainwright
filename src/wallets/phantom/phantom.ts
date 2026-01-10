@@ -1,9 +1,11 @@
 import type { Page } from "@playwright/test";
 import { addAccount } from "./actions/add-account.phantom";
+import { confirmTransaction } from "./actions/confirm-transaction.phantom";
 import { connectToApp } from "./actions/connect-to-app";
 import { getAccountAddress } from "./actions/get-account-address.phantom";
 import { lockWallet } from "./actions/lock.phantom";
 import onboard from "./actions/onboard.phantom";
+import { rejectTransaction } from "./actions/reject-transaction.phantom";
 import { renameAccount } from "./actions/rename-account.phantom";
 import { switchAccount } from "./actions/switch-account.phantom";
 import { switchNetwork } from "./actions/switch-network.phantom";
@@ -151,5 +153,25 @@ export class Phantom extends PhantomProfile {
      */
     async connectToApp(account?: string) {
         await connectToApp(await this.promptPage(this.page.context()), account);
+    }
+
+    /**
+     * Confirms a transaction in the wallet by clicking on the "Confirm" button.
+     * @example
+     * const phantom = new Phantom(page);
+     * await phantom.confirmTransaction();
+     */
+    async confirmTransaction() {
+        await confirmTransaction(await this.promptPage(this.page.context()));
+    }
+
+    /**
+     * Rejects a transaction in the wallet by clicking on the "Reject" button.
+     * @example
+     * const phantom = new Phantom(page);
+     * await phantom.rejectTransaction();
+     */
+    async rejectTransaction() {
+        await rejectTransaction(await this.promptPage(this.page.context()));
     }
 }

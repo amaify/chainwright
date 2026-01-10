@@ -29,13 +29,23 @@ export const solflareWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Wor
                 await context.grantPermissions(["clipboard-read"]);
 
                 for (const page of context.pages()) {
-                    if (page.url().includes(wallet.onboardingPath)) {
+                    if (page.url().includes("about:blank")) {
                         await page.close();
                     }
                 }
 
                 const solflare = new Solflare(walletPageFromContext);
                 await solflare.unlock();
+
+                // Close duplicate homepages.
+                for (const page of context.pages()) {
+                    const unlockButton = page.getByTestId("btn-unlock");
+                    const isUnlockButtonVisible = await unlockButton.isVisible().catch(() => false);
+
+                    if (isUnlockButtonVisible) {
+                        await page.close();
+                    }
+                }
                 await use({ wallet: solflare, walletPage: walletPageFromContext, context });
 
                 await context.close();

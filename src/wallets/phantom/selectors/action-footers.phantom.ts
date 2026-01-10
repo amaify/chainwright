@@ -1,4 +1,4 @@
 export const actionFooterSelectors = {
-    connectButton: "primary-button",
-    cancelButton: "seconddary-button",
+    confirmButton: "primary-button",
+    cancelButton: "secondary-button",
 };

@@ -36,11 +36,13 @@ export async function autoClosePhantomNotification(page: Page, isCancelled: () =
 
         try {
             const notificationButton = page.locator("div[id='modal']").locator("div > button[type='button']").last();
+            const headerCloseButton = page.getByTestId("header--close");
+
+            const isHeaderCloseButton = await headerCloseButton.isVisible().catch(() => false);
             const isNotificationButtonVisible = await notificationButton.isVisible().catch(() => false);
 
-            if (isNotificationButtonVisible) {
-                await notificationButton.click();
-            }
+            if (isNotificationButtonVisible) await notificationButton.click();
+            if (isHeaderCloseButton) await headerCloseButton.click();
         } catch (error) {
             console.error("[autoClosePhantomNotification]: ", error);
         }

@@ -1,12 +1,12 @@
 import type { Page } from "@playwright/test";
 import { addAccount } from "./actions/add-account.meteor";
-import { cancelTransaction } from "./actions/cancel-transaction.meteor";
 import { confirmTransaction } from "./actions/confirm-transaction.meteor";
 import { connectToApp } from "./actions/connect-to-app.meteor";
 import { getAccountAddress } from "./actions/get-account-address.meteor";
 import { lockWallet } from "./actions/lock.meteor";
 import onboard from "./actions/onboard.meteor";
 import { openSettings } from "./actions/open-settings.meteor";
+import { rejectTransaction } from "./actions/reject-transaction.meteor";
 import { renameAccount } from "./actions/rename-account.meteor";
 import { switchAccount } from "./actions/switch-account.meteor";
 import { switchNetwork } from "./actions/switch-network.meteor";
@@ -159,7 +159,7 @@ export class Meteor extends MeteorProfile {
      * const meteor = new Meteor(page);
      * await meteor.cancelTransaction();
      */
-    async cancelTransaction() {
-        await cancelTransaction(await this.promptPage(this.page.context()));
+    async rejectTransaction() {
+        await rejectTransaction(await this.promptPage(this.page.context()));
     }
 }

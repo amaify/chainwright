@@ -22,6 +22,6 @@ test.describe("Confirm and reject transaction E2E tests", () => {
             walletAddress: "0xc74921a7033a1f6bf764ec907e4e5d8fa4567726f3cfe6c9a1185b44689e26e6",
             amount: "0.00001",
         });
-        await meteor.cancelTransaction();
+        await meteor.rejectTransaction();
     });
 });

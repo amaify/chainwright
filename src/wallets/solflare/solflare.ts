@@ -1,9 +1,11 @@
 import type { Page } from "@playwright/test";
 import { addAccount } from "./actions/add-account.solflare";
+import { confirmTransaction } from "./actions/confirm-transaction.solflare";
 import { connectToApp } from "./actions/connect-to-app.solflare";
 import { getAccountAddress } from "./actions/get-account-address.solflare";
 import { lockWallet } from "./actions/lock.solflare";
 import { onboard } from "./actions/onboard.solflare";
+import { rejectTransaction } from "./actions/reject-transaction.solflare";
 import { renameAccount } from "./actions/rename-account.solflare";
 import { switchAccount } from "./actions/switch-account.solflare";
 import { switchNetwork } from "./actions/switch-network.solflare";
@@ -124,5 +126,25 @@ export class Solflare extends SolflareProfile {
      */
     async connectToApp(account?: string) {
         await connectToApp(await this.promptPage(this.page.context()), account);
+    }
+
+    /**
+     * Confirms a transaction in the wallet by clicking on the "Confirm" button.
+     * @example
+     * const solflare = new Solflare(page);
+     * await solflare.confirmTransaction();
+     */
+    async confirmTransaction() {
+        await confirmTransaction(await this.promptPage(this.page.context()));
+    }
+
+    /**
+     * Rejects a transaction in the wallet by clicking on the "Reject" button.
+     * @example
+     * const solflare = new Solflare(page);
+     * await solflare.rejectTransaction();
+     */
+    async rejectTransaction() {
+        await rejectTransaction(await this.promptPage(this.page.context()));
     }
 }

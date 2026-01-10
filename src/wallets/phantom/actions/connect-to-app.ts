@@ -10,5 +10,5 @@ export async function connectToApp(page: Page, account?: string) {
         await switchAccount(page, account);
     }
 
-    await page.getByTestId(actionFooterSelectors.connectButton).click();
+    await page.getByTestId(actionFooterSelectors.confirmButton).click();
 }

@@ -27,5 +27,11 @@ export async function addAccount({ page, privateKey, walletName }: AddAccount) {
     const dialogContainer = page.getByRole("dialog");
     const closeButton = dialogContainer.getByTestId("icon-btn-close");
     await closeButton.click();
-    await closeButton.click();
+
+    // There are instances where the dialog doesn't close after clicking the close button.
+    // To fix this, we check if the close button is still visible and click it if it is.
+    const isCloseButtonStillVisible = await closeButton.isVisible().catch(() => false);
+    if (isCloseButtonStillVisible) {
+        await closeButton.click();
+    }
 }

@@ -9,6 +9,7 @@ import { autoClosePhantomNotification } from "../utils";
 import { addAccount } from "./add-account.phantom";
 import { renameAccount } from "./rename-account.phantom";
 import { switchAccount } from "./switch-account.phantom";
+import { switchNetwork } from "./switch-network.phantom";
 
 type Onboarding = OnboardingArgs & { page: Page };
 
@@ -159,6 +160,10 @@ export default async function onboard({ page, addWallet, ...args }: Onboarding) 
 
         const _accountName = "accountName" in args ? args.accountName : "Default";
         await switchAccount(newPage, _accountName);
+    }
+
+    if (args.switchNetwork) {
+        await switchNetwork({ page: newPage, ...args.switchNetwork });
     }
 
     // // wait for the wallet profile to finish saving

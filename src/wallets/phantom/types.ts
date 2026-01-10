@@ -1,11 +1,13 @@
 export type OnboardingArgs =
     | {
           mode: "create";
+          switchNetwork?: SwitchNetwork;
           addWallet?: Array<AddAccountArgs>;
       }
     | {
           mode: "recovery phrase";
           secretRecoveryPhrase: string;
+          switchNetwork?: SwitchNetwork;
           addWallet?: Array<AddAccountArgs>;
       }
     | {
@@ -13,6 +15,7 @@ export type OnboardingArgs =
           privateKey: string;
           accountName: string;
           chain: "Ethereum" | "Solana" | "Base" | "Sui" | "Bitcoin" | "Polygon" | "HyperEVM";
+          switchNetwork?: SwitchNetwork;
           addWallet?: Array<AddAccountArgs>;
       };
 

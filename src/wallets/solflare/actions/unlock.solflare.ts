@@ -8,4 +8,7 @@ export async function unlock(page: Page) {
 
     const unlockButton = page.getByTestId("btn-unlock");
     await unlockButton.click();
+
+    const heroSectionContainer = page.getByTestId("section-portfolio-hero");
+    await heroSectionContainer.waitFor({ state: "attached" });
 }
