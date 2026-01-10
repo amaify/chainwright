@@ -7,11 +7,16 @@ import { renameAccount } from "./actions/rename-account.{{walletName}}";
 import { switchAccount } from "./actions/switch-account.{{walletName}}";
 import { switchNetwork } from "./actions/switch-network.{{walletName}}";
 import { unlock } from "./actions/unlock.{{walletName}}";
+import { confirmTransaction } from "./actions/confirm-transaction.{{walletName}}"
+import { rejectTransaction } from "./actions/reject-transaction.{{walletName}}"
+import { connectToApp } from "./actions/connect-to-app.{{walletName}}"
+import { {{WalletName}}Profile } from "./{{walletName}}-profile";
 
-export class {{WalletName}} {
+export class {{WalletName}} extends {{WalletName}}Profile {
     page: Page;
 
     constructor(page: Page) {
+        super();
         this.page = page;
     }
 
@@ -109,5 +114,37 @@ export class {{WalletName}} {
      */
     async addAccount() {
         await addAccount(this.page)
+    }
+
+    /**
+     * Connects to an app by clicking on the "Connect to app" button.
+     * If an account is provided, it will be selected before connecting to the app.
+     * @param {string} [account] - The account to select before connecting to the app.
+     * @example
+     * const metamask = new Metamask(page);
+     * await metamask.connectToApp("Account 1");
+     */
+    async connectToApp(account?: string) {
+        await connectToApp(await this.promptPage(this.page.context()), account);
+    }
+
+    /**
+     * Confirms a transaction in the wallet by clicking on the "Confirm" button.
+     * @example
+     * const metamask = new Metamask(page);
+     * await metamask.confirmTransaction();
+     */
+    async confirmTransaction(gasFee?: GasFeeSettings) {
+        await confirmTransaction(await this.promptPage(this.page.context()), gasFee);
+    }
+
+    /**
+     * Cancels a transaction in the wallet by clicking on the "Cancel" button.
+     * @example
+     * const metamask = new Metamask(page);
+     * await metamask.cancelTransaction();
+     */
+    async rejectTransaction() {
+        await rejectTransaction(await this.promptPage(this.page.context()));
     }
 }

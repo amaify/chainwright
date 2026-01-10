@@ -2,6 +2,7 @@
     "folders": ["actions", "selectors"],
     "files": [
         "{{walletName}}-fixture.ts",
+        "{{walletName}}-worker-scope-fixture.ts",
         "{{walletName}}-profile.ts",
         "{{walletName}}.ts",
         "index.ts",
@@ -16,6 +17,9 @@
         "actions/rename-account.{{walletName}}.ts",
         "actions/switch-account.{{walletName}}.ts",
         "actions/switch-network.{{walletName}}.ts",
+        "actions/connect-to-app.{{walletName}}.ts",
+        "actions/confirm-transaction.{{walletName}}.ts",
+        "actions/reject-transaction.{{walletName}}.ts",
         "selectors/homepage-selectors.{{walletName}}.ts",
         "selectors/onboard-selectors.{{walletName}}.ts"
     ]

@@ -9,6 +9,9 @@
         "e2e/{{walletName}}/rename-account.{{walletName}}.spec.ts",
         "e2e/{{walletName}}/switch-account.{{walletName}}.spec.ts",
         "e2e/{{walletName}}/switch-network.{{walletName}}.spec.ts",
-        "e2e/{{walletName}}/unlock-wallet.{{walletName}}.spec.ts"
+        "e2e/{{walletName}}/unlock-wallet.{{walletName}}.spec.ts",
+        "e2e/{{walletName}}/connect-to-app.{{walletName}}.spec.ts",
+        "e2e/{{walletName}}/confirm-transaction.{{walletName}}.spec.ts",
+        "e2e/{{walletName}}/reject-transaction.{{walletName}}.spec.ts"
     ]
 }
