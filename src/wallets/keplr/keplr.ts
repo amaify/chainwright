@@ -1,9 +1,11 @@
 import type { Page } from "@playwright/test";
 import { addAccount } from "./actions/add-account.keplr";
+import { confirmTransaction } from "./actions/confirm-transaction.keplr";
 import { connectToApp } from "./actions/connect-to-app.keplr";
 import { getAccountAddress } from "./actions/get-account-address.keplr";
 import { lockWallet } from "./actions/lock.keplr";
 import onboard from "./actions/onboard.keplr";
+import { rejectTransaction } from "./actions/reject-transaction.keplr";
 import { renameAccount } from "./actions/rename-account.keplr";
 import { switchAccount } from "./actions/switch-account.keplr";
 import { unlock } from "./actions/unlock.keplr";
@@ -127,5 +129,27 @@ export class Keplr extends KeplrProfile {
      */
     async connectToApp() {
         await connectToApp(await this.promptPage(this.page.context()));
+    }
+
+    /**
+     * Confirms a transaction in the wallet by clicking on the "Approve" button.
+     * This function confirms a transaction in the wallet by opening the popup page and then clicking on the "Approve" button.
+     * @example
+     * const keplr = new Keplr(page);
+     * await keplr.confirmTransaction();
+     */
+    async confirmTransaction() {
+        await confirmTransaction(await this.promptPage(this.page.context()));
+    }
+
+    /**
+     * Rejects a transaction in the wallet by clicking on the "Reject" button.
+     * This function rejects a transaction in the wallet by opening the popup page and then clicking on the "Reject" button.
+     * @example
+     * const keplr = new Keplr(page);
+     * await keplr.rejectTransaction();
+     */
+    async rejectTransaction() {
+        await rejectTransaction(await this.promptPage(this.page.context()));
     }
 }

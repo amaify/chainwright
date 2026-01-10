@@ -29,7 +29,7 @@ export const keplrWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Worker
                 await context.grantPermissions(["clipboard-read"]);
 
                 for (const page of context.pages()) {
-                    if (page.url().includes(wallet.onboardingPath)) {
+                    if (page.url().includes("about:blank")) {
                         await page.close();
                     }
                 }

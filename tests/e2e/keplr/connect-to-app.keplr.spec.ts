@@ -1,20 +1,11 @@
 import { expect } from "@playwright/test";
 import { testDappFixture } from "@/tests/fixture/test-with-keplr-fixture";
+import { connectWallet } from "./utils";
 
 const test = testDappFixture;
 
 test("Should connect wallet successfully", async ({ dappPage, keplr }) => {
-    const connectWalletButton = dappPage.getByTestId("connect-wallet-button");
-    await connectWalletButton.click();
-
-    // const dialog = dappPage.getByRole("dialog");
-    // await expect(dialog).toBeVisible();
-
-    // const connectPetraButton = dialog.getByTestId("connect-wallet-Petra");
-    // await connectPetraButton.click();
-
-    await keplr.connectToApp();
-
+    await connectWallet(dappPage, keplr);
     const appConnectedButton = dappPage.getByTestId("wallet-connected-button");
     await expect(appConnectedButton).toBeVisible();
 
