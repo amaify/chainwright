@@ -24,9 +24,7 @@ export const meteorFixture = (slowMo: number = 0, profileName?: string) => {
     return base.extend<MeteorFixture>({
         contextPath: async ({ browserName }, use, testInfo) => {
             const tempWalletDataDir = await createTempContextDirectory(`${browserName}-${testInfo.testId}`);
-
             await use(tempWalletDataDir);
-
             const error = await removeTempContextDir(tempWalletDataDir);
 
             if (error) {

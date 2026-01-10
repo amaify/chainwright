@@ -1,5 +1,7 @@
 import type { Page } from "@playwright/test";
 import { addAccount } from "./actions/add-account.meteor";
+import { cancelTransaction } from "./actions/cancel-transaction.meteor";
+import { confirmTransaction } from "./actions/confirm-transaction.meteor";
 import { connectToApp } from "./actions/connect-to-app.meteor";
 import { getAccountAddress } from "./actions/get-account-address.meteor";
 import { lockWallet } from "./actions/lock.meteor";
@@ -125,7 +127,39 @@ export class Meteor extends MeteorProfile {
         await openSettings(this.page);
     }
 
+    /**
+     * Connects to an app by clicking on the "Connect" button.
+     * If an account is provided, it will be selected before connecting to the app.
+     * @param {string} [account] - The account to select before connecting to the app.
+     * @example
+     * const meteor = new Meteor(page);
+     * await meteor.connectToApp("Account 1");
+     */
     async connectToApp(account?: string) {
         await connectToApp(await this.promptPage(this.page.context()), account);
+    }
+
+    /**
+     * Confirms a transaction in the wallet by clicking on the "Approve" button.
+     * This function confirms a transaction in the wallet by clicking on the "Approve" button.
+     * It first opens the popup page and then clicks on the "Confirm" button.
+     * @example
+     * const meteor = new Meteor(page);
+     * await meteor.confirmTransaction();
+     */
+    async confirmTransaction() {
+        await confirmTransaction(await this.promptPage(this.page.context()));
+    }
+
+    /**
+     * Cancels a transaction in the wallet by clicking on the "Cancel" button.
+     * This function cancels a transaction in the wallet by clicking on the "Cancel" button.
+     * It first opens the popup page and then clicks on the "Cancel" button.
+     * @example
+     * const meteor = new Meteor(page);
+     * await meteor.cancelTransaction();
+     */
+    async cancelTransaction() {
+        await cancelTransaction(await this.promptPage(this.page.context()));
     }
 }

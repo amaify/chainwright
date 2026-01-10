@@ -4,7 +4,6 @@ import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import type { WorkerScopeFixture } from "../utils/worker-scope-context";
 import { workerScopeContextPhantom } from "../utils/worker-scope-context.phantom";
 import { Phantom } from "./phantom";
-import { PhantomProfile } from "./phantom-profile";
 import { autoClosePhantomNotification } from "./utils";
 
 export type PhantomFixture = {
@@ -19,7 +18,6 @@ export const phantomWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Work
     return base.extend<PhantomFixture, WorkerScopeFixture<Phantom>>({
         workerScopeContents: [
             async ({ browser: _ }, use, workerInfo) => {
-                const wallet = new PhantomProfile();
                 const {
                     context,
                     contextPath,
@@ -32,7 +30,7 @@ export const phantomWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Work
 
                 await context.grantPermissions(["clipboard-read"]);
                 for (const page of context.pages()) {
-                    if (page.url().includes(wallet.onboardingPath)) {
+                    if (page.url().includes("about:blank")) {
                         await page.close();
                     }
                 }

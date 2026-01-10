@@ -15,28 +15,26 @@ export const meteorWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Worke
     return base.extend<MeteorFixture, WorkerScopeFixture<Meteor>>({
         workerScopeContents: [
             async ({ browser: _ }, use, workerInfo) => {
-                const wallet = new MeteorProfile();
                 const {
                     context,
                     contextPath,
                     walletPage: walletPageFromContext,
                 } = await workerScopeContext({
-                    wallet,
                     workerInfo,
                     profileName,
                     slowMo,
+                    wallet: new MeteorProfile(),
                 });
-                await context.grantPermissions(["clipboard-read"]);
 
+                await context.grantPermissions(["clipboard-read"]);
                 for (const page of context.pages()) {
-                    if (page.url().includes(wallet.onboardingPath)) {
+                    if (page.url().includes("about:blank")) {
                         await page.close();
                     }
                 }
 
                 const meteor = new Meteor(walletPageFromContext);
                 await meteor.unlock();
-
                 await use({ wallet: meteor, walletPage: walletPageFromContext, context });
 
                 await context.close();
