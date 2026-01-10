@@ -1,12 +1,12 @@
 import type { Page } from "@playwright/test";
 import { addAccount } from "./actions/add-account.metamask";
 import { addCustomNetwork } from "./actions/add-custom-network.metamask";
-import { cancelTransaction } from "./actions/cancel-transaction.metamask";
 import { confirmTransaction } from "./actions/confirm-transaction.metamask";
 import { connectToApp } from "./actions/connect-to-app.metamask";
 import { getAccountAddress } from "./actions/get-account-address.metamask";
 import { lockWallet } from "./actions/lock.metamask";
 import onboard from "./actions/onboard.metamask";
+import { rejectTransaction } from "./actions/reject-transaction.metamask";
 import { type RenameAccount, renameAccount } from "./actions/rename-account.metamask";
 import { type SwitchAccount, switchAccount } from "./actions/switch-account.metamask";
 import { switchNetwork } from "./actions/switch-network.metamask";
@@ -179,7 +179,7 @@ export class Metamask extends MetamaskProfile {
      * const metamask = new Metamask(page);
      * await metamask.cancelTransaction();
      */
-    async cancelTransaction() {
-        await cancelTransaction(await this.promptPage(this.page.context()));
+    async rejectTransaction() {
+        await rejectTransaction(await this.promptPage(this.page.context()));
     }
 }

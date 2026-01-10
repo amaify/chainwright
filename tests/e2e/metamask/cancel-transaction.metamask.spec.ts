@@ -22,5 +22,5 @@ test("Should confirm transaction successfully", async ({ dappPage, metamask }) =
     const ADDRESS = "0xa8dC5724e9e2dA6041Ec614138af7f6084589990";
     await fillForm({ appPage: dappPage, walletAddress: ADDRESS, amount: "0.00001" });
 
-    await metamask.cancelTransaction();
+    await metamask.rejectTransaction();
 });
