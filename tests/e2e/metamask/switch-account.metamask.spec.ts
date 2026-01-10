@@ -5,7 +5,7 @@ import { homepageSelectors } from "@/wallets/metamask/selectors/homepage-selecto
 const test = testWithMetamaskFixture;
 
 test("Should switch account successfully", async ({ metamask, metamaskPage }) => {
-    const ACCOUNT_NAME = "Account 2";
+    const ACCOUNT_NAME = "Account 3";
 
     await metamask.switchAccount({ accountName: ACCOUNT_NAME });
 

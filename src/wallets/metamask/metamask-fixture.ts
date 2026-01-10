@@ -81,9 +81,17 @@ export const metamaskFixture = (slowMo: number = 0, profileName?: string) => {
             await _metamaskPage.bringToFront();
 
             await unlock(_metamaskPage);
+            // Close duplicate homepages.
+            for (const page of walletPageContext.pages()) {
+                const unlockButton = page.getByTestId("unlock-submit");
+                const isUnlockButtonVisible = await unlockButton.isVisible().catch(() => false);
+
+                if (isUnlockButtonVisible) {
+                    await page.close();
+                }
+            }
 
             await use(walletPageContext);
-
             await walletPageContext.close();
         },
         metamaskPage: async ({ context: _ }, use) => {

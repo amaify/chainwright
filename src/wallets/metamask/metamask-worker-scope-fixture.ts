@@ -36,6 +36,16 @@ export const metamaskWorkerScopeFixture = ({ profileName, dappUrl, slowMo }: Wor
 
                 const metamask = new Metamask(walletPageFromContext);
                 await metamask.unlock();
+
+                // Close duplicate homepages.
+                for (const page of context.pages()) {
+                    const unlockButton = page.getByTestId("unlock-submit");
+                    const isUnlockButtonVisible = await unlockButton.isVisible().catch(() => false);
+
+                    if (isUnlockButtonVisible) {
+                        await page.close();
+                    }
+                }
                 await use({ wallet: metamask, walletPage: walletPageFromContext, context });
 
                 await context.close();
