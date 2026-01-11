@@ -1,4 +1,4 @@
-import type { BrowserContext } from "playwright-core";
+import type { BrowserContext } from "@playwright/test";
 import { z } from "zod";
 import type { ExtensionName } from "@/types";
 

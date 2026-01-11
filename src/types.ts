@@ -1,4 +1,4 @@
-import type { BrowserContext, Page } from "playwright-core";
+import type { BrowserContext, Page } from "@playwright/test";
 
 export type CLIOptions = "metamask" | "solflare" | "petra" | "phantom" | "meteor" | "keplr" | "all";
 export type SupportedWallets = Exclude<CLIOptions, "all">;

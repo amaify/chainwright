@@ -1,5 +1,5 @@
+import type { BrowserContext, Page } from "@playwright/test";
 import picocolors from "picocolors";
-import type { BrowserContext, Page } from "playwright-core";
 import { sleep } from "./sleep";
 
 // Increase max retries for CI environments

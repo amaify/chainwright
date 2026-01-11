@@ -24,7 +24,6 @@
         "@types/cli-progress": "^3.11.6",
         "@types/node": "^24.9.1",
         "adm-zip": "^0.5.16",
-        "playwright-core": "^1.56.1",
         "tsup": "^8.5.0",
         "tsx": "^4.20.6",
         "typescript": "^5.9.3",
@@ -36,8 +35,7 @@
         "cli-progress": "^3.12.0",
         "commander": "^14.0.2",
         "glob": "^13.0.0",
-        "picocolors": "^1.1.1",
-        "rimraf": "^6.1.2"
+        "picocolors": "^1.1.1"
     },
     "overrides": {
         "@rollup/rollup-win32-arm64-msvc": "^4.52.5"

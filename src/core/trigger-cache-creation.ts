@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
+import { chromium } from "@playwright/test";
 import picocolors from "picocolors";
-import { chromium } from "playwright-core";
 import type { GetSetupFunctionFileList, SupportedWallets, WalletSetupConfig, WalletSetupFunction } from "@/types";
 import getCacheDirectory from "@/utils/get-cache-directory";
 import { getWalletExtensionIdFromBrowser } from "@/utils/wallets/get-wallet-extension-id-from-browser";
