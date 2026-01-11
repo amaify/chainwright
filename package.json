@@ -1,8 +1,8 @@
 {
-    "name": "playwright-kit-web3",
+    "name": "chainwright",
     "type": "module",
     "bin": {
-        "setup-wallet": "./dist/cli/index.js"
+        "chainwright": "./dist/cli/index.js"
     },
     "files": [
         "dist",
@@ -10,7 +10,7 @@
     ],
     "scripts": {
         "build": "tsup",
-        "dev": "tsx src/cli/index.ts setup-wallet ./tests/wallet-setup -f",
+        "dev": "tsx src/cli/index.ts chainwright ./tests/wallet-setup -f",
         "test": "vitest --exclude '**/*.spec.ts'",
         "format": "biome format --write ./src",
         "test:e2e:debug": "playwright test --config=tests/playwright.config.ts --debug",

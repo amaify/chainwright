@@ -26,12 +26,12 @@ export async function clientEntry() {
     const program = new Command();
 
     program
-        .name(pc.yellow("Playwright Kit Web3"))
+        .name(pc.yellow("Chainwright"))
         .description(pc.green("A CLI tool for setting up wallet cache for E2E testing of web3 applications"))
-        .version(pc.blue("0.1.0"));
+        .version(pc.blue("0.0.0"));
 
     program
-        .command("setup-wallet")
+        .command("chainwright")
         .argument("[dir]", "Directory containing the wallet setup functions", path.resolve(BASE_DIR))
         .option(
             "--headless",

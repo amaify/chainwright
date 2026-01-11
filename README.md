@@ -1,4 +1,4 @@
-# playwright-kit-web3
+# Chainwright
 
 - Contributing for windows:
 -- Biome: Install biome the user's root: npm i -g @biomejs/biome
