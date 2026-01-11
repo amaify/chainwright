@@ -4,7 +4,7 @@ import { testWithKeplrFixture } from "@/tests/fixture/test-with-keplr-fixture";
 const test = testWithKeplrFixture;
 
 test("Should switch account successfully", async ({ keplr, keplrPage }) => {
-    await keplr.switchAccount({ currentAccountName: "Default", accountToSwitchTo: "Nino" });
+    await keplr.switchAccount("Nino");
 
     await expect(keplrPage.getByText("Nino").first()).toBeVisible();
 });

@@ -46,7 +46,7 @@ export default async function onboard({ page, onboard }: Onboard) {
         const accountToSwitchTo = onboard[0]?.walletName;
 
         if (currentAccountName && accountToSwitchTo) {
-            await switchAccount({ page, currentAccountName, accountToSwitchTo });
+            await switchAccount(page, accountToSwitchTo);
         }
     }
 

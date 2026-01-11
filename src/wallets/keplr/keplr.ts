@@ -10,13 +10,7 @@ import { renameAccount } from "./actions/rename-account.keplr";
 import { switchAccount } from "./actions/switch-account.keplr";
 import { unlock } from "./actions/unlock.keplr";
 import { KeplrProfile } from "./keplr-profile";
-import type {
-    AddAccountArgs,
-    GetAccountAddressArgs,
-    OnboardingArgs,
-    RenameAccountArgs,
-    SwitchAccountArgs,
-} from "./types";
+import type { AddAccountArgs, GetAccountAddressArgs, OnboardingArgs, RenameAccountArgs } from "./types";
 
 export class Keplr extends KeplrProfile {
     page: Page;
@@ -82,15 +76,13 @@ export class Keplr extends KeplrProfile {
 
     /**
      * Switches the current account to the given account.
-     * @param {SwitchAccountArgs} args - The name of the account to switch to.
-     * @param args.accountToSwitchTo - The name of the account to switch to.
-     * @param args.currentAccountName - The name of the current account.
+     * @param accountName - The name of the account to switch to.
      * @example
      * const keplr = new keplr(page);
-     * await keplr.switchAccount({ accountToSwitchTo: "Account 1", currentAccountName: "Account 2" });
+     * await keplr.switchAccount("Account 1");
      */
-    async switchAccount({ accountToSwitchTo, currentAccountName }: SwitchAccountArgs) {
-        await switchAccount({ page: this.page, accountToSwitchTo, currentAccountName });
+    async switchAccount(accountName: string) {
+        await switchAccount(this.page, accountName);
     }
 
     /**

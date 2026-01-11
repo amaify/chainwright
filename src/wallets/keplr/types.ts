@@ -40,8 +40,3 @@ export const renameAccountSchema = z.object({
 });
 
 export type RenameAccountArgs = z.infer<typeof renameAccountSchema>;
-
-export type SwitchAccountArgs = {
-    accountToSwitchTo: string;
-    currentAccountName: string;
-};
