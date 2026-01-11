@@ -1,4 +1,5 @@
 import { expect, type Page } from "@playwright/test";
+import { sleep } from "@/utils/sleep";
 import { settingsSelectors } from "../selectors/homepage-selectors.phantom";
 import type { SwitchNetwork } from "../types";
 import { openSettings } from "./open-settings.phantom";
@@ -72,6 +73,17 @@ export async function switchNetwork({ page, ...args }: SwitchNetworkParams) {
 
     const headerBackButton = page.getByTestId("header--back");
     await headerBackButton.click();
+
+    // This is a hack to ensure that the "headerBackButton" is clicked.
+    // In slowMo mode, we wouldn't need this. In normal mode, there is a race condition
+    // happening that prevents the "headerBackButton" from being clicked.
+    let isHeaderBackButtonVisible = await headerBackButton.isVisible().catch(() => false);
+    while (isHeaderBackButtonVisible) {
+        isHeaderBackButtonVisible = await headerBackButton.isVisible().catch(() => false);
+        if (!isHeaderBackButtonVisible) break;
+        await headerBackButton.click();
+        await sleep(300);
+    }
 
     const settingsCloseButton = page.getByTestId(settingsSelectors.closeMenuButton);
     await settingsCloseButton.click();
