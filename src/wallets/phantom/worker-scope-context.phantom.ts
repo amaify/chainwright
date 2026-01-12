@@ -4,8 +4,8 @@ import { chromium, type WorkerInfo } from "@playwright/test";
 import createTempContextDirectory from "@/utils/create-temp-context-directory";
 import getCacheDirectory from "@/utils/get-cache-directory";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
-import { PhantomProfile } from "../phantom/phantom-profile";
-import { getPageFromContextPhantom } from "../phantom/utils";
+import { PhantomProfile } from "./phantom-profile";
+import { getPageFromContextPhantom } from "./utils";
 
 type WorkerScopeContext = {
     workerInfo: WorkerInfo;

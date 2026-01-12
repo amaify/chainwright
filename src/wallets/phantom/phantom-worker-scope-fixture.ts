@@ -2,9 +2,9 @@ import { test as base, type Page } from "@playwright/test";
 import type { WorkerScopeFixtureArgs } from "@/types";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import type { WorkerScopeFixture } from "../utils/worker-scope-context";
-import { workerScopeContextPhantom } from "../utils/worker-scope-context.phantom";
 import { Phantom } from "./phantom";
 import { autoClosePhantomNotification } from "./utils";
+import { workerScopeContextPhantom } from "./worker-scope-context.phantom";
 
 export type PhantomFixture = {
     contextPath: string;

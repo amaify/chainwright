@@ -2,7 +2,7 @@ import { test as base, type Page } from "@playwright/test";
 import type { WorkerScopeFixtureArgs } from "@/types";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import { Metamask } from "./metamask";
-import { type WorkerScopeFixture, workerScopeContextMetamask } from "./metamask-worker-scope-context";
+import { type WorkerScopeFixture, workerScopeContextMetamask } from "./worker-scope-context.metamask";
 
 export type MetamaskFixture = {
     contextPath: string;
