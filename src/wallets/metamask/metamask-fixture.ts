@@ -66,31 +66,19 @@ export const metamaskFixture = (slowMo: number = 0, profileName?: string) => {
             if (origins && origins.length > 0) persistLocalStorage(origins, walletPageContext);
 
             const indexUrl = await wallet.indexUrl();
+            await walletPageContext.waitForEvent("page", {
+                predicate: (page) => page.url().startsWith(indexUrl),
+                timeout: 15_000,
+            });
             const homePage = walletPageContext.pages().find((page) => page.url().startsWith(indexUrl));
-            _metamaskPage = homePage || (await getPageFromContext(walletPageContext, indexUrl));
-
+            _metamaskPage = homePage ?? (await getPageFromContext(walletPageContext, indexUrl));
             await waitForStablePage(_metamaskPage);
 
             for (const page of walletPageContext.pages()) {
-                const url = page.url();
-                if (url.includes("about:blank")) {
-                    await page.close();
-                }
+                if (page.url().includes("about:blank")) await page.close();
             }
-
-            await _metamaskPage.bringToFront();
 
             await unlock(_metamaskPage);
-            // Close duplicate homepages.
-            for (const page of walletPageContext.pages()) {
-                const unlockButton = page.getByTestId("unlock-submit");
-                const isUnlockButtonVisible = await unlockButton.isVisible().catch(() => false);
-
-                if (isUnlockButtonVisible) {
-                    await page.close();
-                }
-            }
-
             await use(walletPageContext);
             await walletPageContext.close();
         },
