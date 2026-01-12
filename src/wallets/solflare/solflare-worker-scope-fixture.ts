@@ -1,9 +1,8 @@
 import { test as base, type Page } from "@playwright/test";
 import type { WorkerScopeFixtureArgs } from "@/types";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
-import { type WorkerScopeFixture, workerScopeContext } from "../utils/worker-scope-context";
 import { Solflare } from "./solflare";
-import { SolflareProfile } from "./solflare-profile";
+import { type WorkerScopeFixture, workerScopeContextSolana } from "./worker-scope-context.solflare";
 
 export type SolflareFixture = {
     contextPath: string;
@@ -12,40 +11,22 @@ export type SolflareFixture = {
 };
 
 export const solflareWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: WorkerScopeFixtureArgs = {}) => {
-    return base.extend<SolflareFixture, WorkerScopeFixture<Solflare>>({
+    return base.extend<SolflareFixture, WorkerScopeFixture>({
         workerScopeContents: [
             async ({ browser: _ }, use, workerInfo) => {
-                const wallet = new SolflareProfile();
                 const {
                     context,
                     contextPath,
                     walletPage: walletPageFromContext,
-                } = await workerScopeContext({
-                    wallet,
+                } = await workerScopeContextSolana({
                     workerInfo,
                     profileName,
                     slowMo,
                 });
                 await context.grantPermissions(["clipboard-read"]);
-
-                for (const page of context.pages()) {
-                    if (page.url().includes("about:blank")) {
-                        await page.close();
-                    }
-                }
-
                 const solflare = new Solflare(walletPageFromContext);
                 await solflare.unlock();
 
-                // Close duplicate homepages.
-                for (const page of context.pages()) {
-                    const unlockButton = page.getByTestId("btn-unlock");
-                    const isUnlockButtonVisible = await unlockButton.isVisible().catch(() => false);
-
-                    if (isUnlockButtonVisible) {
-                        await page.close();
-                    }
-                }
                 await use({ wallet: solflare, walletPage: walletPageFromContext, context });
 
                 await context.close();

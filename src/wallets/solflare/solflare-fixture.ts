@@ -68,24 +68,26 @@ export const solflareFixture = (slowMo: number = 0, profileName?: string) => {
             if (origins && origins.length > 0) persistLocalStorage(origins, walletPageContext);
 
             const indexUrl = await wallet.indexUrl();
-            const homePage = walletPageContext.pages().find((page) => page.url().startsWith(indexUrl));
+            const formatedIndexUrl = indexUrl.split("#")[0] ?? "";
+            // Formatting the string here because the page URL returned in the predicate
+            // points to the onboard's hash URL. So we need to ignore the hash part while matching.
+            await walletPageContext.waitForEvent("page", {
+                predicate: (page) => {
+                    return page.url().includes(formatedIndexUrl);
+                },
+                timeout: 15_000,
+            });
+            const homePage = walletPageContext.pages().find((page) => page.url().startsWith(formatedIndexUrl));
             _solflarePage = homePage || (await getPageFromContext(walletPageContext, indexUrl));
-
             await waitForStablePage(_solflarePage);
 
             for (const page of walletPageContext.pages()) {
                 const url = page.url();
-                if (url.includes("about:blank") || url.includes(wallet.onboardingPath)) {
-                    await page.close();
-                }
+                if (url.includes("about:blank")) await page.close();
             }
 
-            await _solflarePage.bringToFront();
-
             await unlock(_solflarePage);
-
             await use(walletPageContext);
-
             await walletPageContext.close();
         },
         solflarePage: async ({ context: _ }, use) => {
