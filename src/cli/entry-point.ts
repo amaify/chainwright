@@ -5,6 +5,7 @@ import { select } from "@inquirer/prompts";
 import { Command } from "commander";
 import pc from "picocolors";
 import picocolors from "picocolors";
+import { generateTypes } from "@/core/generate-types";
 import getSetupFunction from "@/core/get-setup-function";
 import { triggerCacheCreation } from "@/core/trigger-cache-creation";
 import type { CLIOptions, SupportedWallets } from "@/types";
@@ -97,6 +98,7 @@ export async function clientEntry() {
             for (const { walletName, config, walletPassword, setupFunction, fileList } of _setupFunction) {
                 try {
                     console.info(pc.cyanBright(`\n Setting up cache for ${walletName}...`));
+
                     await triggerCacheCreation({
                         walletName: walletName as SupportedWallets,
                         config,
@@ -105,6 +107,11 @@ export async function clientEntry() {
                         force: flags.force,
                         walletPassword: walletPassword,
                     });
+
+                    // Dynamically generate the profile name types
+                    if (config.profileName) {
+                        await generateTypes({ walletName, profileName: config.profileName });
+                    }
                 } catch (error) {
                     if ((error as Error).message.includes("directory already exists")) {
                         console.warn((error as Error).message);

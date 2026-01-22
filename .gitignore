@@ -28,6 +28,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # test results
 test-results
+generated-profile-name.types.ts
 
 # caches
 .eslintcache
