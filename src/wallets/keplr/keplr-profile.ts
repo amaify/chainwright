@@ -27,7 +27,11 @@ export class KeplrProfile {
 
     async promptPage(context: BrowserContext) {
         const popupUrl = await this.promptUrl();
-        const popupPage = await getPopupPageFromContext(context, popupUrl);
+        const popupPage = await getPopupPageFromContext({
+            context,
+            path: popupUrl,
+            locator: "div[data-simplebar='init']",
+        });
         return popupPage;
     }
 }

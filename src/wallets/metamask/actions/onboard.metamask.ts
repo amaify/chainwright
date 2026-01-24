@@ -2,6 +2,7 @@ import { expect, type Page } from "@playwright/test";
 import picocolors from "picocolors";
 import { sleep } from "@/utils/sleep";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
+import { MetamaskProfile } from "../metamask-profile";
 import { homepageSelectors } from "../selectors/homepage-selectors.metamask";
 import { onboardSelectors } from "../selectors/onboard-selectors.metamask";
 import type { OnboardingArgs } from "../types";
@@ -12,9 +13,20 @@ type Onboard = OnboardingArgs & {
     page: Page;
 };
 
+type TargetInfo = {
+    targetId: string;
+    type: "page";
+    title: "MetaMask";
+    url: string;
+    attached: boolean;
+    canAccessOpener: boolean;
+    browserContextId: string;
+};
+
 export default async function onboard({ page, mainAccountName, ...args }: Onboard) {
     console.info(picocolors.yellowBright(`\n 🦊 MetaMask onboarding started...`));
     const PASSWORD = await getWalletPasswordFromCache("metamask");
+    const walletProfile = new MetamaskProfile();
 
     const createWalletButton = page.getByTestId(onboardSelectors.createWalletButton);
     const importWalletButton = page.getByTestId(onboardSelectors.importWalletButton);
@@ -43,12 +55,6 @@ export default async function onboard({ page, mainAccountName, ...args }: Onboar
         await recoveryPhraseRemindMeLaterButton.click();
 
         await metamaskMetricsIAgreeButton.click();
-        await onboardingDoneButton.click();
-
-        await expect(page.getByTestId(homepageSelectors.buyButton)).toBeVisible();
-        await expect(page.getByTestId(homepageSelectors.swapButton)).toBeVisible();
-        await expect(page.getByTestId(homepageSelectors.sendButton)).toBeVisible();
-        await expect(page.getByTestId(homepageSelectors.receiveButton)).toBeVisible();
     }
 
     if (args.mode === "import") {
@@ -86,13 +92,44 @@ export default async function onboard({ page, mainAccountName, ...args }: Onboar
 
         const walletReadyBox = page.getByTestId("wallet-ready");
         await expect(walletReadyBox).toContainText(/your wallet is ready/i);
-        await onboardingDoneButton.click();
-
-        await expect(page.getByTestId(homepageSelectors.buyButton)).toBeVisible();
-        await expect(page.getByTestId(homepageSelectors.swapButton)).toBeVisible();
-        await expect(page.getByTestId(homepageSelectors.sendButton)).toBeVisible();
-        await expect(page.getByTestId(homepageSelectors.receiveButton)).toBeVisible();
     }
+
+    await onboardingDoneButton.click();
+    const extensionId = await walletProfile.extensionId();
+    const sidepanelUrl = `chrome-extension://${extensionId}/sidepanel.html`;
+
+    // Look for the side panel that opens up and close it.
+    const pageContext = page.context();
+    const cdp = await pageContext.browser()?.newBrowserCDPSession();
+    let sidePanelTargetInfo: TargetInfo | undefined;
+    await expect
+        .poll(
+            async () => {
+                if (cdp) {
+                    const { targetInfos } = await cdp.send("Target.getTargets");
+                    const _isSidePanelVisible = targetInfos.find((target) => target.url === sidepanelUrl);
+                    sidePanelTargetInfo = _isSidePanelVisible as TargetInfo;
+                    return !!_isSidePanelVisible;
+                }
+            },
+            {
+                intervals: [1_000, 3_000, 5_000, 7_000, 10_000],
+                timeout: 15_000,
+            },
+        )
+        .toBe(true);
+
+    // Close the sidepanel page
+    if (sidePanelTargetInfo) {
+        await cdp?.send("Target.closeTarget", { targetId: sidePanelTargetInfo.targetId });
+    }
+
+    await page.goto(await walletProfile.indexUrl());
+
+    await expect(page.getByTestId(homepageSelectors.buyButton)).toBeVisible();
+    await expect(page.getByTestId(homepageSelectors.swapButton)).toBeVisible();
+    await expect(page.getByTestId(homepageSelectors.sendButton)).toBeVisible();
+    await expect(page.getByTestId(homepageSelectors.receiveButton)).toBeVisible();
 
     await toggleShowTestnetNetwork({ page });
     if (mainAccountName) {

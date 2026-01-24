@@ -33,21 +33,21 @@ export async function confirmTransaction(page: Page, gasFee?: GasFeeSettings) {
         await editGasFeeButton.scrollIntoViewIfNeeded();
         await editGasFeeButton.click();
 
-        if (gasFee.feeType !== "custom") {
-            const feeOptionButton = page.getByTestId(`edit-gas-fee-item-${gasFee.feeType}`);
+        if (gasFee.feeType !== "advanced") {
+            const feeOptionButton = page.getByTestId(`gas-option-${gasFee.feeType}`);
             await feeOptionButton.click();
         }
 
-        if (gasFee.feeType === "custom") {
-            const advanceGasFeeButton = page.getByTestId("edit-gas-fee-item-custom");
+        if (gasFee.feeType === "advanced") {
+            const advanceGasFeeButton = page.getByTestId("gas-option-advanced");
             await advanceGasFeeButton.click();
 
-            const baseFeeInput = page.getByTestId("base-fee-input");
-            const priorityFeeInput = page.getByTestId("priority-fee-input");
+            const baseFeeInput = page.getByRole("textbox", { name: "Max base fee" });
+            const priorityFeeInput = page.getByRole("textbox", { name: "Priority fee" });
             const saveButton = page.getByRole("button", { name: "Save", exact: true });
 
-            await baseFeeInput.fill(gasFee.maxFee);
-            await priorityFeeInput.fill(gasFee.maxPriorityFee);
+            await baseFeeInput.fill(gasFee.maxBaseFee);
+            await priorityFeeInput.fill(gasFee.priorityFee);
             await saveButton.click();
         }
     }

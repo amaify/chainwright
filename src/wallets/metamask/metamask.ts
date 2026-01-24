@@ -13,7 +13,14 @@ import { switchNetwork } from "./actions/switch-network.metamask";
 import { toggleShowTestnetNetwork } from "./actions/toggle-show-testnet-network";
 import unlock from "./actions/unlock.metamask";
 import { MetamaskProfile } from "./metamask-profile";
-import type { AddAccountArgs, AddCustomNetwork, GasFeeSettings, OnboardingArgs, SwitchNetwork } from "./types";
+import type {
+    AddAccountArgs,
+    AddCustomNetwork,
+    GasFeeSettings,
+    GetAccountAddressChains,
+    OnboardingArgs,
+    SwitchNetwork,
+} from "./types";
 
 export class Metamask extends MetamaskProfile {
     page: Page;
@@ -119,8 +126,8 @@ export class Metamask extends MetamaskProfile {
      * const metamask = new Metamask(page);
      * await metamask.getAccountAddress()
      */
-    async getAccountAddress() {
-        const address = await getAccountAddress(this.page);
+    async getAccountAddress(network: GetAccountAddressChains) {
+        const address = await getAccountAddress(this.page, network);
         return address;
     }
 

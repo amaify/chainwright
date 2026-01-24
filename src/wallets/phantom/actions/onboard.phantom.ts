@@ -162,8 +162,8 @@ export default async function onboard({ page, addWallet, ...args }: Onboarding) 
         await switchAccount(newPage, _accountName);
     }
 
-    if (args.switchNetwork) {
-        await switchNetwork({ page: newPage, ...args.switchNetwork });
+    if (args.toggleNetworkMode) {
+        await switchNetwork({ page: newPage, ...args.toggleNetworkMode });
     }
 
     // // wait for the wallet profile to finish saving

@@ -6,7 +6,6 @@ import getCacheDirectory from "@/utils/get-cache-directory";
 import getPageFromContext from "@/utils/get-page-from-context";
 import persistLocalStorage from "@/utils/persist-local-storage";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
-import waitForStablePage from "@/utils/wait-for-stable-page";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
 import unlock from "./actions/unlock.metamask";
 import { Metamask } from "./metamask";
@@ -72,7 +71,6 @@ export const metamaskFixture = (slowMo: number = 0, profileName?: string) => {
             });
             const homePage = walletPageContext.pages().find((page) => page.url().startsWith(indexUrl));
             _metamaskPage = homePage ?? (await getPageFromContext(walletPageContext, indexUrl));
-            await waitForStablePage(_metamaskPage);
 
             for (const page of walletPageContext.pages()) {
                 if (page.url().includes("about:blank")) await page.close();

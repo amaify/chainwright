@@ -80,6 +80,6 @@ test.describe("E2E For Confirming transaction in Metamask wallet", () => {
 
     test("Should confirm transaction with advanced(custom) gas fee option", async ({ dappPage, metamask }) => {
         await _confirmTransaction(metamask, dappPage);
-        await metamask.confirmTransaction({ feeType: "custom", maxFee: "8", maxPriorityFee: "0.5" });
+        await metamask.confirmTransaction({ feeType: "advanced", maxBaseFee: "8", priorityFee: "0.5" });
     });
 });

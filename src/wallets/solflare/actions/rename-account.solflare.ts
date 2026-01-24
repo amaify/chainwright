@@ -29,11 +29,7 @@ export async function renameAccount({ page, currentAccountName, newAccountName }
     const saveButton = page.getByTestId("btn-save");
     await saveButton.click();
 
+    await renameAccountButton.waitFor({ state: "attached", timeout: 15_000 });
     const closeButton = page.getByTestId("icon-btn-close");
     await closeButton.click();
-
-    const isCloseButtonStillVisible = await closeButton.isVisible().catch(() => false);
-    if (isCloseButtonStillVisible) {
-        await closeButton.click();
-    }
 }

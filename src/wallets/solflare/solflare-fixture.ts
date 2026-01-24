@@ -6,16 +6,17 @@ import getCacheDirectory from "@/utils/get-cache-directory";
 import getPageFromContext from "@/utils/get-page-from-context";
 import persistLocalStorage from "@/utils/persist-local-storage";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
-import waitForStablePage from "@/utils/wait-for-stable-page";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
 import { unlock } from "./actions/unlock.solflare";
 import { Solflare } from "./solflare";
 import { SolflareProfile } from "./solflare-profile";
+import { autoCloseSolflareNotification } from "./utils";
 
 export type SolflareFixture = {
     contextPath: string;
     solflare: Solflare;
     solflarePage: Page;
+    autoCloseNotification: undefined;
 };
 
 let _solflarePage: Page;
@@ -79,7 +80,6 @@ export const solflareFixture = (slowMo: number = 0, profileName?: string) => {
             });
             const homePage = walletPageContext.pages().find((page) => page.url().startsWith(formatedIndexUrl));
             _solflarePage = homePage || (await getPageFromContext(walletPageContext, indexUrl));
-            await waitForStablePage(_solflarePage);
 
             for (const page of walletPageContext.pages()) {
                 const url = page.url();
@@ -97,5 +97,20 @@ export const solflareFixture = (slowMo: number = 0, profileName?: string) => {
             const solflareInstance = new Solflare(_solflarePage);
             await use(solflareInstance);
         },
+        autoCloseNotification: [
+            async ({ context: _ }, use) => {
+                let cancelled = false;
+                const isCancelled = () => cancelled;
+                const runner = autoCloseSolflareNotification(_solflarePage, isCancelled);
+
+                await use(undefined);
+
+                cancelled = true;
+                await runner.catch((error) => {
+                    console.error(`Auto close notification error: ${(error as Error).message}`);
+                });
+            },
+            { auto: true },
+        ],
     });
 };

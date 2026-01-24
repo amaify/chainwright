@@ -6,7 +6,8 @@ const test = testWithMetamaskFixture;
 test("Should unlock wallet successfully", async ({ metamask, metamaskPage }) => {
     await metamask.lock();
 
-    await expect(metamaskPage.getByText("Welcome")).toBeVisible();
+    const unlockWalletInput = metamaskPage.getByTestId("unlock-password");
+    await expect(unlockWalletInput).toBeVisible();
 
     await metamask.unlock();
 });

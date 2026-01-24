@@ -1,13 +1,13 @@
 export type OnboardingArgs =
     | {
           mode: "create";
-          switchNetwork?: SwitchNetwork;
+          toggleNetworkMode?: SwitchNetwork;
           addWallet?: Array<AddAccountArgs>;
       }
     | {
           mode: "recovery phrase";
           secretRecoveryPhrase: string;
-          switchNetwork?: SwitchNetwork;
+          toggleNetworkMode?: SwitchNetwork;
           addWallet?: Array<AddAccountArgs>;
       }
     | {
@@ -15,7 +15,7 @@ export type OnboardingArgs =
           privateKey: string;
           accountName: string;
           chain: "Ethereum" | "Solana" | "Base" | "Sui" | "Bitcoin" | "Polygon" | "HyperEVM";
-          switchNetwork?: SwitchNetwork;
+          toggleNetworkMode?: SwitchNetwork;
           addWallet?: Array<AddAccountArgs>;
       };
 
@@ -57,5 +57,14 @@ export type SwitchNetwork =
 
 export type GetAccountAddress = {
     accountName: string;
-    chain: "Solana" | "Ethereum" | "Monad" | "Base" | "Sui" | "Polygon" | "Bitcoin" | "Hyperevm";
+    chain:
+        | {
+              mode: "mainnet";
+              network: "Solana" | "Ethereum" | "Monad" | "Base" | "Sui" | "Polygon" | "Bitcoin" | "Hyperevm";
+          }
+        | {
+              mode: "testnet";
+              // NB: Testnet is for the Sui chain
+              network: "Devnet" | "Sepolia" | "Testnet";
+          };
 };

@@ -21,7 +21,11 @@ export class PhantomProfile {
 
     async promptPage(context: BrowserContext) {
         const popupUrl = await this.promptUrl();
-        const popupPage = await getPopupPageFromContext(context, popupUrl);
+        const popupPage = await getPopupPageFromContext({
+            context,
+            path: popupUrl,
+            locator: "div[id='root']",
+        });
         return popupPage;
     }
 }

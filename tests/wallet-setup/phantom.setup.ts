@@ -13,7 +13,7 @@ export default defineWalletSetup(PASSWORD, async ({ walletPage }) => {
         privateKey: PK,
         accountName: "Zebra",
         chain: "Solana",
-        switchNetwork: {
+        toggleNetworkMode: {
             mode: "on",
             chain: "Solana",
             network: "Solana Devnet",

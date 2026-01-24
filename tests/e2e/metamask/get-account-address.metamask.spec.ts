@@ -5,7 +5,7 @@ import { isEVMAddressValid } from "@/tests/utils/is-evm-address-valid";
 const test = testWithMetamaskFixture;
 
 test("Should get account address successfully", async ({ metamask }) => {
-    const accountAddress = await metamask.getAccountAddress();
+    const accountAddress = await metamask.getAccountAddress("Ethereum");
 
     // biome-ignore lint/style/noNonNullAssertion: nothing
     const isAddressValid = isEVMAddressValid(accountAddress!);

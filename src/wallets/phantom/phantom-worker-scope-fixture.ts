@@ -10,8 +10,7 @@ export type PhantomFixture = {
     contextPath: string;
     phantom: Phantom;
     phantomPage: Page;
-    // biome-ignore lint/suspicious/noConfusingVoidType: Nothing
-    autoCloseNotification: void;
+    autoCloseNotification: undefined;
 };
 
 export const phantomWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: WorkerScopeFixtureArgs = {}) => {
@@ -70,7 +69,7 @@ export const phantomWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Work
                 const isCancelled = () => cancelled;
                 const runner = autoClosePhantomNotification(workerScopeContents.walletPage, isCancelled);
 
-                await use();
+                await use(undefined);
 
                 cancelled = true;
                 await runner.catch((error) => {

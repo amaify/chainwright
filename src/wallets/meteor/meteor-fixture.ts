@@ -6,7 +6,6 @@ import getCacheDirectory from "@/utils/get-cache-directory";
 import getPageFromContext from "@/utils/get-page-from-context";
 import persistLocalStorage from "@/utils/persist-local-storage";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
-import waitForStablePage from "@/utils/wait-for-stable-page";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
 import { unlock } from "./actions/unlock.meteor";
 import { Meteor } from "./meteor";
@@ -65,8 +64,6 @@ export const meteorFixture = (slowMo: number = 0, profileName?: string) => {
             const indexUrl = await wallet.indexUrl();
             const homePage = walletPageContext.pages().find((page) => page.url().startsWith(indexUrl));
             _meteorPage = homePage || (await getPageFromContext(walletPageContext, indexUrl));
-
-            await waitForStablePage(_meteorPage);
 
             for (const page of walletPageContext.pages()) {
                 const url = page.url();

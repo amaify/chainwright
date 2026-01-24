@@ -31,7 +31,7 @@ export async function getAccountAddress({ page, accountName, chain }: GetAccount
 
     // Get the tooltip menu that cointains the address.
     const tooltipMenu = accountListButton.locator(`div:has-text('${parsedAccountName}')`).nth(-2);
-    const addressElement = tooltipMenu.locator(`div > p:has-text('${chain}')`);
+    const addressElement = tooltipMenu.locator(`div > p:has-text('${chain.network}')`);
 
     const isAddressElementVisible = await addressElement.isVisible().catch(() => false);
     if (!isAddressElementVisible) {

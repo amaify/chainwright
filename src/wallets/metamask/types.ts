@@ -40,7 +40,9 @@ export type GasFeeSettings =
           feeType: "low" | "medium" | "high";
       }
     | {
-          feeType: "custom";
-          maxPriorityFee: string;
-          maxFee: string;
+          feeType: "advanced";
+          maxBaseFee: string;
+          priorityFee: string;
       };
+
+export type GetAccountAddressChains = "Ethereum" | "Tron" | "Bitcoin" | "Solana";

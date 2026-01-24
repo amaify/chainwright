@@ -6,7 +6,6 @@ import getCacheDirectory from "@/utils/get-cache-directory";
 import getPageFromContext from "@/utils/get-page-from-context";
 import persistLocalStorage from "@/utils/persist-local-storage";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
-import waitForStablePage from "@/utils/wait-for-stable-page";
 import { getWalletExtensionPathFromCache } from "@/utils/wallets/get-wallet-extension-path-from-cache";
 import unlock from "./actions/unlock.petra";
 import { Petra } from "./petra";
@@ -71,8 +70,6 @@ export const petraFixture = (slowMo: number = 0, profileName?: string) => {
             const homePage = walletPageContext.pages().find((page) => page.url().startsWith(indexUrl));
             _petraPage = homePage || (await getPageFromContext(walletPageContext, indexUrl));
 
-            await waitForStablePage(_petraPage);
-
             for (const page of walletPageContext.pages()) {
                 const url = page.url();
                 if (url.includes("about:blank") || url.includes(wallet.onboardingPath)) {
@@ -81,11 +78,8 @@ export const petraFixture = (slowMo: number = 0, profileName?: string) => {
             }
 
             await _petraPage.bringToFront();
-
             await unlock(_petraPage);
-
             await use(walletPageContext);
-
             await walletPageContext.close();
         },
         petraPage: async ({ context: _ }, use) => {

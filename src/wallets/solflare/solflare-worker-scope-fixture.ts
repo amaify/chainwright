@@ -2,12 +2,14 @@ import { test as base, type Page } from "@playwright/test";
 import type { WorkerScopeFixtureArgs } from "@/types";
 import { removeTempContextDir } from "@/utils/remove-temp-context-directory";
 import { Solflare } from "./solflare";
+import { autoCloseSolflareNotification } from "./utils";
 import { type WorkerScopeFixture, workerScopeContextSolana } from "./worker-scope-context.solflare";
 
 export type SolflareFixture = {
     contextPath: string;
     solflare: Solflare;
     solflarePage: Page;
+    autoCloseNotification: undefined;
 };
 
 export const solflareWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: WorkerScopeFixtureArgs = {}) => {
@@ -53,5 +55,20 @@ export const solflareWorkerScopeFixture = ({ slowMo, profileName, dappUrl }: Wor
             const solflareInstance = new Solflare(workerScopeContents.walletPage);
             await use(solflareInstance);
         },
+        autoCloseNotification: [
+            async ({ workerScopeContents }, use) => {
+                let cancelled = false;
+                const isCancelled = () => cancelled;
+                const runner = autoCloseSolflareNotification(workerScopeContents.walletPage, isCancelled);
+
+                await use(undefined);
+
+                cancelled = true;
+                await runner.catch((error) => {
+                    console.error(`Auto close notification error: ${(error as Error).message}`);
+                });
+            },
+            { auto: true },
+        ],
     });
 };

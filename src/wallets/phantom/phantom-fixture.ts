@@ -13,8 +13,7 @@ import { autoClosePhantomNotification, getPageFromContextPhantom } from "./utils
 
 export type PhantomFixture = {
     contextPath: string;
-    // biome-ignore lint/suspicious/noConfusingVoidType: Nothing
-    autoCloseNotification: void;
+    autoCloseNotification: undefined;
     phantom: Phantom;
     phantomPage: Page;
 };
@@ -93,7 +92,7 @@ export const phantomFixture = (slowMo: number = 0, profileName?: string) => {
                 const isCancelled = () => cancelled;
                 const runner = autoClosePhantomNotification(_phantomPage, isCancelled);
 
-                await use();
+                await use(undefined);
 
                 cancelled = true;
                 await runner.catch((error) => {
