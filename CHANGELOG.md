@@ -1,5 +1,13 @@
 # @tobelabs/chainwright
 
+## 0.10.8
+
+### Patch Changes
+
+- 87bca60: [Core] - Update dependencies
+- 1ea2a78: Add example folders for wallet setup
+- 9962fca: Update README.md and CONTRIBUTING.md
+
 ## 0.10.7
 
 ### Patch Changes
