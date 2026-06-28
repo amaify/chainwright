@@ -1,5 +1,11 @@
 # @tobelabs/chainwright
 
+## 0.10.9
+
+### Patch Changes
+
+- Fix flakiness in the Injective's "get-account-address" action
+
 ## 0.10.8
 
 ### Patch Changes

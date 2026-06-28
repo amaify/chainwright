@@ -18,7 +18,7 @@ export async function getAccountAddress({ page, ...args }: GetAccountAddress) {
         .nth(-2)
         .filter({ hasNot: page.locator("span") });
 
-    await spendableAssetList.waitFor({ state: "attached", timeout: 20_000 });
+    await spendableAssetList.waitFor({ state: "attached", timeout: 30_000 });
 
     const isSpendableAssetVisible = await spendableAssetList.isVisible().catch(() => false);
     if (!isSpendableAssetVisible) {
@@ -63,7 +63,6 @@ export async function getAccountAddress({ page, ...args }: GetAccountAddress) {
             // Traversing up the DOM to find the address parent element
             const parentChainElement = chainElement.locator("xpath=../../../..");
             addressElement = parentChainElement;
-            await popoverSearchInput.clear();
             break;
         }
     }
@@ -78,8 +77,7 @@ export async function getAccountAddress({ page, ...args }: GetAccountAddress) {
     await addressElement.scrollIntoViewIfNeeded();
     await addressElement.click();
 
-    await addressElement.waitFor({ state: "detached", timeout: 7_000 });
-
     const accountAddress = await page.evaluate(async () => await navigator.clipboard.readText());
+    expect(accountAddress).not.toBeFalsy();
     return accountAddress;
 }
