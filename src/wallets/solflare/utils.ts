@@ -1,17 +1,10 @@
 import type { Page } from "@playwright/test";
 import { sleep } from "@/utils/sleep";
 
-export async function autoCloseSolflareNotification(page: Page, isCancelled: () => boolean) {
+export async function autoCloseSolflareNotification(page: Page, signal: AbortSignal) {
     const INTERVAL = 150;
-    let IS_POLLING_COMPLETE = false;
 
-    while (!isCancelled()) {
-        const _isCancelled = isCancelled();
-
-        // Check if notification is closed
-        // If it's closed or cancelled, there's no need to check again
-        if (_isCancelled || IS_POLLING_COMPLETE || page.isClosed()) break;
-
+    while (!signal.aborted && !page.isClosed()) {
         try {
             const notificationPopupCloseButton = page
                 .locator("div[role='dialog']")
@@ -23,13 +16,11 @@ export async function autoCloseSolflareNotification(page: Page, isCancelled: () 
 
             if (isNotificationPopupCloseButtonVisisble) {
                 await notificationPopupCloseButton.click();
-                IS_POLLING_COMPLETE = true;
+                return;
             }
         } catch (error) {
             console.error("[autoCloseSolflareNotification]: ", error);
         }
-
-        if (_isCancelled || IS_POLLING_COMPLETE || page.isClosed()) break;
 
         await sleep(INTERVAL);
     }

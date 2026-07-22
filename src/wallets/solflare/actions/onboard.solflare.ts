@@ -3,6 +3,7 @@ import type { Page } from "@playwright/test";
 import { getWalletPasswordFromCache } from "@/utils/wallets/get-wallet-password-from-cache";
 import { onboardingSelectors } from "../selectors/onboard-selectors.solflare";
 import type { OnboardingArgs } from "../types";
+import { autoCloseSolflareNotification } from "../utils";
 import { addAccount } from "./add-account.solflare";
 import { renameAccount } from "./rename-account.solflare";
 import { switchNetwork } from "./switch-network.solflare";
@@ -42,6 +43,10 @@ export async function onboard({ page, recoveryPhrase, network, walletName, addit
     const IAgreeButton = page.getByTestId(onboardingSelectors.IAgreeButton);
     await IAgreeButton.click();
 
+    const autoCloseController = new AbortController();
+
+    autoCloseSolflareNotification(page, autoCloseController.signal).catch((error) => console.error({ error }));
+
     if (walletName) {
         // "Main Wallet" is the default wallet name for the fist wallet in Solflare.
         await renameAccount({ page, currentAccountName: "Main Wallet", newAccountName: walletName });
@@ -55,6 +60,8 @@ export async function onboard({ page, recoveryPhrase, network, walletName, addit
             await addAccount({ page, privateKey, walletName });
         }
     }
+
+    autoCloseController.abort();
 
     console.info(styleText("greenBright", "✨ Solflare onboarding completed successfully", { validateStream: false }));
 }

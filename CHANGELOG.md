@@ -1,5 +1,11 @@
 # @tobelabs/chainwright
 
+## 0.10.10
+
+### Patch Changes
+
+- [Solflare] - Close the "What's new" modal popup during onboarding
+
 ## 0.10.9
 
 ### Patch Changes

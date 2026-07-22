@@ -81,13 +81,12 @@ export const solflareFixture = ({ slowMo = 0, profileName }: WalletProfileFixtur
         },
         autoCloseNotification: [
             async ({ context: _ }, use) => {
-                let cancelled = false;
-                const isCancelled = () => cancelled;
-                const runner = autoCloseSolflareNotification(_solflarePage, isCancelled);
+                const autoCloseController = new AbortController();
+                const runner = autoCloseSolflareNotification(_solflarePage, autoCloseController.signal);
 
                 await use(undefined);
 
-                cancelled = true;
+                autoCloseController.abort();
                 await runner.catch((error) => {
                     console.error(`Auto close notification error: ${(error as Error).message}`);
                 });

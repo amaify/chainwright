@@ -199,14 +199,13 @@ export default async function onboard({ page, additionalAccounts, ...args }: Onb
     }
 
     if (additionalAccounts && additionalAccounts.length > 0) {
-        let cancelled = false;
-        const isCancelled = () => cancelled;
+        const autoCloseController = new AbortController();
 
-        autoClosePhantomNotification(newPage, isCancelled).catch((error) => console.error({ error }));
+        autoClosePhantomNotification(newPage, autoCloseController.signal).catch((error) => console.error({ error }));
 
         for (const { accountName, chain, privateKey } of additionalAccounts) {
             await addAccount({ page: newPage, privateKey, accountName, chain });
-            cancelled = true;
+            autoCloseController.abort();
         }
 
         await switchAccount(newPage, args.accountName);

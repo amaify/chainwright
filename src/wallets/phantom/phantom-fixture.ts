@@ -77,13 +77,12 @@ export const phantomFixture = ({ slowMo = 0, profileName }: WalletProfileFixture
         },
         autoCloseNotification: [
             async ({ context: _ }, use) => {
-                let cancelled = false;
-                const isCancelled = () => cancelled;
-                const runner = autoClosePhantomNotification(_phantomPage, isCancelled);
+                const autoCloseController = new AbortController();
+                const runner = autoClosePhantomNotification(_phantomPage, autoCloseController.signal);
 
                 await use(undefined);
 
-                cancelled = true;
+                autoCloseController.abort();
                 await runner.catch((error) => {
                     console.error(`Auto close notification error: ${(error as Error).message}`);
                 });
