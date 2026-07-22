@@ -23,6 +23,6 @@
             "@/tests/*": ["./tests/*"]
         }
     },
-    "include": ["**/*.ts", "**/*.tsx"],
+    "include": ["src/**/*.ts", "tests/**/*.ts", "environment.d.ts"],
     "exclude": ["node_modules", "docs"]
 }
