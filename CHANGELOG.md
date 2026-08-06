@@ -1,5 +1,11 @@
 # @tobelabs/chainwright
 
+## 0.10.12
+
+### Patch Changes
+
+- [Keplr] - Replacing the download source because the maintainers of the Keplr wallet have made their repository private; we can no longer download the zip file directly from it.
+
 ## 0.10.11
 
 ### Patch Changes
