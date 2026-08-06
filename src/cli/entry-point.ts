@@ -103,6 +103,7 @@ export async function clientEntry() {
                 selectedWallets: response as Array<CLIOptions>,
             });
 
+            let ACTION_COUNT = 0;
             for (const { walletName, config, walletPassword, setupFunction, fileList } of _setupFunction) {
                 try {
                     console.info(
@@ -171,11 +172,15 @@ export async function clientEntry() {
                                             { validateStream: false },
                                         ),
                                     );
+                                    if (_setupFunction.length === 1 || ACTION_COUNT === _setupFunction.length - 1) {
+                                        process.exit(1);
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                ACTION_COUNT++;
             }
         });
 

@@ -114,7 +114,7 @@ describe("downloadFile", () => {
         expect(mockProgressBar.stop).toHaveBeenCalled();
     });
 
-    it("should exit with error code 1 when HTTP request fails", async () => {
+    it("should log the status, status text and error body when the HTTP request fails", async () => {
         const url = "https://example.com/not-found.txt";
         const destination = path.resolve(TEST_DIR, "not-found.txt");
 
@@ -122,21 +122,70 @@ describe("downloadFile", () => {
         global.fetch = vi.fn().mockResolvedValue({
             ok: false,
             status: 404,
+            statusText: "Not Found",
             headers: new Headers(),
-        });
-
-        const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
-            expect(code).toBe(1);
-            throw new Error("process.exit called");
+            text: vi.fn().mockResolvedValue("Resource not found"),
         });
 
         const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-        await expect(downloadFile({ url, destination })).rejects.toThrow("process.exit called");
+        await expect(downloadFile({ url, destination })).rejects.toThrow();
 
-        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining(`❌ Download failed: HTTP 404`));
+        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("❌ Download failed: HTTP 404 Not Found"));
+        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("Resource not found"));
 
-        exitSpy.mockRestore();
+        // Verify the in-flight request was aborted
+        const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
+        const fetchOptions = fetchMock.mock.calls[0]?.[1] as { signal: AbortSignal };
+        expect(fetchOptions.signal.aborted).toBe(true);
+
+        consoleErrorSpy.mockRestore();
+    });
+
+    it("should truncate the error body to 500 characters when the HTTP request fails", async () => {
+        const url = "https://example.com/server-error.txt";
+        const destination = path.resolve(TEST_DIR, "server-error.txt");
+        const longBody = "x".repeat(1000);
+
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false,
+            status: 500,
+            statusText: "Internal Server Error",
+            headers: new Headers(),
+            text: vi.fn().mockResolvedValue(longBody),
+        });
+
+        const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+        await expect(downloadFile({ url, destination })).rejects.toThrow();
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("x".repeat(500)));
+        expect(consoleErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining("x".repeat(501)));
+
+        consoleErrorSpy.mockRestore();
+    });
+
+    it("should omit the error body when reading it fails", async () => {
+        const url = "https://example.com/unreadable-body.txt";
+        const destination = path.resolve(TEST_DIR, "unreadable-body.txt");
+
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false,
+            status: 502,
+            statusText: "Bad Gateway",
+            headers: new Headers(),
+            text: vi.fn().mockRejectedValue(new Error("body stream error")),
+        });
+
+        const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+        await expect(downloadFile({ url, destination })).rejects.toThrow();
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+            expect.stringContaining("❌ Download failed: HTTP 502 Bad Gateway"),
+        );
+        expect(consoleErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining("\n"));
+
         consoleErrorSpy.mockRestore();
     });
 
@@ -153,10 +202,6 @@ describe("downloadFile", () => {
             body: Readable.toWeb(Readable.from(contentBuffer)) as ReadableStream,
         });
 
-        const exitSpy = vi.spyOn(process, "exit").mockImplementation(() => {
-            throw new Error("process.exit called");
-        });
-
         await expect(downloadFile({ url, destination })).resolves.toBeUndefined();
 
         // Get the progress bar instance that was created
@@ -171,8 +216,6 @@ describe("downloadFile", () => {
         expect(fs.existsSync(destination)).toBe(true);
         const fileContent = fs.readFileSync(destination, "utf-8");
         expect(fileContent).toBe(content);
-
-        exitSpy.mockRestore();
     });
 
     it("should handle timeout and abort the request", async () => {
@@ -184,12 +227,33 @@ describe("downloadFile", () => {
         abortError.name = "AbortError";
         global.fetch = vi.fn().mockRejectedValue(abortError);
 
-        const exitSpy = vi.spyOn(process, "exit").mockImplementation(() => {
-            throw new Error("process.exit called");
+        await expect(downloadFile({ url, destination })).rejects.toThrow("The operation was aborted");
+    });
+
+    it("should log the error and resolve when writing to the destination fails", async () => {
+        const url = "https://example.com/file.txt";
+        // Destination inside a directory that does not exist, so the write stream errors
+        const destination = path.resolve(TEST_DIR, "missing-dir", "file.txt");
+        const contentBuffer = Buffer.from("Hello, World!");
+
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            status: 200,
+            headers: new Headers({
+                "content-length": contentBuffer.length.toString(),
+            }),
+            body: Readable.toWeb(Readable.from(contentBuffer)) as ReadableStream,
         });
 
-        await expect(downloadFile({ url, destination })).rejects.toThrow();
+        const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        const clearTimeoutSpy = vi.spyOn(global, "clearTimeout");
 
-        exitSpy.mockRestore();
+        await expect(downloadFile({ url, destination })).resolves.toBeUndefined();
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("❌ Download failed:"));
+        expect(clearTimeoutSpy).toHaveBeenCalled();
+
+        consoleErrorSpy.mockRestore();
+        clearTimeoutSpy.mockRestore();
     });
 });

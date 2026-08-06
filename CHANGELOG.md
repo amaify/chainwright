@@ -1,5 +1,11 @@
 # @tobelabs/chainwright
 
+## 0.10.13
+
+### Patch Changes
+
+- [CLI] - Enhance error handling in downloadFile function.
+
 ## 0.10.12
 
 ### Patch Changes
