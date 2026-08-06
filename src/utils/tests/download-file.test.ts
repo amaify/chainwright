@@ -114,7 +114,7 @@ describe("downloadFile", () => {
         expect(mockProgressBar.stop).toHaveBeenCalled();
     });
 
-    it("should log the status, status text and error body when the HTTP request fails", async () => {
+    it("should log the status and status text and rethrow when the HTTP request fails", async () => {
         const url = "https://example.com/not-found.txt";
         const destination = path.resolve(TEST_DIR, "not-found.txt");
 
@@ -124,67 +124,15 @@ describe("downloadFile", () => {
             status: 404,
             statusText: "Not Found",
             headers: new Headers(),
-            text: vi.fn().mockResolvedValue("Resource not found"),
         });
 
         const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-        await expect(downloadFile({ url, destination })).rejects.toThrow();
-
-        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("❌ Download failed: HTTP 404 Not Found"));
-        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("Resource not found"));
-
-        // Verify the in-flight request was aborted
-        const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-        const fetchOptions = fetchMock.mock.calls[0]?.[1] as { signal: AbortSignal };
-        expect(fetchOptions.signal.aborted).toBe(true);
-
-        consoleErrorSpy.mockRestore();
-    });
-
-    it("should truncate the error body to 500 characters when the HTTP request fails", async () => {
-        const url = "https://example.com/server-error.txt";
-        const destination = path.resolve(TEST_DIR, "server-error.txt");
-        const longBody = "x".repeat(1000);
-
-        global.fetch = vi.fn().mockResolvedValue({
-            ok: false,
-            status: 500,
-            statusText: "Internal Server Error",
-            headers: new Headers(),
-            text: vi.fn().mockResolvedValue(longBody),
-        });
-
-        const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-        await expect(downloadFile({ url, destination })).rejects.toThrow();
-
-        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("x".repeat(500)));
-        expect(consoleErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining("x".repeat(501)));
-
-        consoleErrorSpy.mockRestore();
-    });
-
-    it("should omit the error body when reading it fails", async () => {
-        const url = "https://example.com/unreadable-body.txt";
-        const destination = path.resolve(TEST_DIR, "unreadable-body.txt");
-
-        global.fetch = vi.fn().mockResolvedValue({
-            ok: false,
-            status: 502,
-            statusText: "Bad Gateway",
-            headers: new Headers(),
-            text: vi.fn().mockRejectedValue(new Error("body stream error")),
-        });
-
-        const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-        await expect(downloadFile({ url, destination })).rejects.toThrow();
+        await expect(downloadFile({ url, destination })).rejects.toThrow("HTTP 404 Not Found");
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-            expect.stringContaining("❌ Download failed: HTTP 502 Bad Gateway"),
+            expect.stringContaining("❌ Wallet extension download failed: Error: HTTP 404 Not Found"),
         );
-        expect(consoleErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining("\n"));
 
         consoleErrorSpy.mockRestore();
     });
@@ -218,7 +166,7 @@ describe("downloadFile", () => {
         expect(fileContent).toBe(content);
     });
 
-    it("should handle timeout and abort the request", async () => {
+    it("should log the error and rethrow when the request is aborted", async () => {
         const url = "https://example.com/slow-file.txt";
         const destination = path.resolve(TEST_DIR, "slow-file.txt");
 
@@ -227,10 +175,18 @@ describe("downloadFile", () => {
         abortError.name = "AbortError";
         global.fetch = vi.fn().mockRejectedValue(abortError);
 
+        const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
         await expect(downloadFile({ url, destination })).rejects.toThrow("The operation was aborted");
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+            expect.stringContaining("❌ Wallet extension download failed: AbortError: The operation was aborted"),
+        );
+
+        consoleErrorSpy.mockRestore();
     });
 
-    it("should log the error and resolve when writing to the destination fails", async () => {
+    it("should log the error and rethrow when writing to the destination fails", async () => {
         const url = "https://example.com/file.txt";
         // Destination inside a directory that does not exist, so the write stream errors
         const destination = path.resolve(TEST_DIR, "missing-dir", "file.txt");
@@ -248,9 +204,9 @@ describe("downloadFile", () => {
         const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
         const clearTimeoutSpy = vi.spyOn(global, "clearTimeout");
 
-        await expect(downloadFile({ url, destination })).resolves.toBeUndefined();
+        await expect(downloadFile({ url, destination })).rejects.toThrow();
 
-        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("❌ Download failed:"));
+        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("❌ Wallet extension download failed:"));
         expect(clearTimeoutSpy).toHaveBeenCalled();
 
         consoleErrorSpy.mockRestore();
