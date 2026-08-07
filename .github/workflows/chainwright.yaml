@@ -9,11 +9,17 @@ on:
       - "tests/e2e/**/*.spec.ts"
       - "src/wallets/**/actions/**/*.ts"
 
+permissions:
+  contents: read
+
 jobs:
   test:
+    if: github.repository == 'amaify/chainwright'
     runs-on: ubuntu-22.04
     timeout-minutes: 60
-
+    strategy:
+      matrix:
+        node-version: [24]
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -56,18 +62,15 @@ jobs:
           echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v5
+        uses: pnpm/setup@v2
         with:
-          version: 10
-
-      - name: Use Node LTS
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24.x
-          cache: "pnpm"
+          runtime: node@${{ matrix.node-version }}
+          version: 11
+          install: false
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Install XVFB
         run: sudo apt-get install -y xvfb

@@ -1,7 +1,6 @@
 # dependencies (bun install)
 node_modules
 test-package
-pnpm-workspace.yaml
 
 # output
 out

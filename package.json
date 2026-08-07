@@ -1,6 +1,6 @@
 {
     "name": "chainwright",
-    "version": "0.10.14",
+    "version": "0.10.15",
     "description": "Playwright Web3 wallet testing framework for end-to-end dApp automation with MetaMask, Phantom, Solflare, Petra, Meteor, and Keplr",
     "type": "module",
     "license": "MIT",
@@ -111,18 +111,7 @@
         "commander": "^15.0.0",
         "glob": "^13.0.6",
         "prool": "^0.2.14",
-        "tsx": "^4.23.9",
+        "tsx": "^4.23.10",
         "zod": "^4.4.3"
-    },
-    "overrides": {
-        "tar": "^7.5.21"
-    },
-    "resolutions": {
-        "tar": "^7.5.21"
-    },
-    "pnpm": {
-        "overrides": {
-            "tar": "^7.5.21"
-        }
     }
 }

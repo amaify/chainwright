@@ -11,8 +11,12 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
+    if: github.repository == 'amaify/chainwright'
     name: Changesets Release
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [24]
     permissions:
       contents: write
       pull-requests: write
@@ -24,16 +28,12 @@ jobs:
           fetch-depth: 0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v5
+        uses: pnpm/setup@v2
         with:
-          version: 10
-
-      - name: Use Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24.x
-          registry-url: https://registry.npmjs.org
-          package-manager-cache: false
+          runtime: node@${{ matrix.node-version }}
+          version: 11
+          install: false
+          cache: true
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile

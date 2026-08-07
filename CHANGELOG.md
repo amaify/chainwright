@@ -1,5 +1,11 @@
 # @tobelabs/chainwright
 
+## 0.10.15
+
+### Patch Changes
+
+- [Core] - Upgrade packages and fix the failing CI workflow
+
 ## 0.10.14
 
 ### Patch Changes

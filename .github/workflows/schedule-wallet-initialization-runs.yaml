@@ -1,0 +1,47 @@
+name: Scheduled Wallet Initialization Runs
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # Runs at 6 AM UTC, Monday - Friday
+    - cron: "0 6 * * 1-5"
+
+permissions:
+  contents: read
+
+jobs:
+  setup-wallets:
+    if: github.repository == 'amaify/chainwright'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        node-version: [24]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          submodules: "recursive"
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/setup@v2
+        with:
+          runtime: node@${{ matrix.node-version }}
+          version: 11
+          install: false
+          cache: true
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Install XVFB
+        run: sudo apt-get install -y xvfb
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium
+
+      - name: Initialize wallets
+        run: xvfb-run pnpm run setup-wallets
