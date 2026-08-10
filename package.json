@@ -91,17 +91,17 @@
         "add:wallet": "tsx scripts/add-wallet.ts"
     },
     "peerDependencies": {
-        "@playwright/test": "1.61.1"
+        "@playwright/test": "1.62.1"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.4.15",
+        "@biomejs/biome": "2.5.7",
         "@changesets/cli": "^2.31.1",
-        "@playwright/test": "1.61.1",
+        "@playwright/test": "1.62.1",
         "@types/adm-zip": "^0.5.8",
         "@types/cli-progress": "^3.11.6",
-        "@types/node": "^26.0.1",
+        "@types/node": "^26.2.0",
         "tsup": "^8.5.1",
-        "typescript": "^6.0.3",
+        "typescript": "^7.0.2",
         "vitest": "^4.1.10"
     },
     "dependencies": {
@@ -111,7 +111,7 @@
         "commander": "^15.0.0",
         "glob": "^13.0.6",
         "prool": "^0.2.14",
-        "tsx": "^4.23.10",
+        "tsx": "^4.23.12",
         "zod": "^4.4.3"
     }
 }
