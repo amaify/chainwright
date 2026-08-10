@@ -1,6 +1,6 @@
 allowBuilds:
   esbuild: true
 minimumReleaseAgeExclude:
-  - tsx@4.23.9 || 4.23.10
+  - tsx@4.23.9 || 4.23.10 || 4.23.12
 overrides:
   tar: ^7.5.21

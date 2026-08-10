@@ -3,7 +3,6 @@
         "lib": ["dom", "dom.iterable", "esnext"],
         "types": ["node", "vitest/globals"],
         "target": "es2024",
-        "ignoreDeprecations": "6.0",
         "declaration": true,
         "module": "esnext",
         "moduleResolution": "bundler",
