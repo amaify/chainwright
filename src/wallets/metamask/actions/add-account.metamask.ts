@@ -1,5 +1,4 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import z from "zod";
 import { skip } from "@/tests/utils/skip";
 import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors.metamask";
 import { onboardSelectors } from "../selectors/onboard-selectors.metamask";
@@ -10,9 +9,6 @@ type AddAccount = AddAccountArgs & {
 };
 
 export async function addAccount({ page, privateKey, accountName }: AddAccount) {
-    const parsedAccountName = z.string().min(1, "Account name cannot be an empty string").trim().parse(accountName);
-    const parsedPrivateKey = z.string().min(1, "Private key cannot be an empty string").trim().parse(privateKey);
-
     const accountMenuButton = page.getByTestId(homepageSelectors.accountMenuButton);
 
     await expect(accountMenuButton).toBeVisible({ timeout: 30_000 });
@@ -38,7 +34,7 @@ export async function addAccount({ page, privateKey, accountName }: AddAccount) 
     await importAccountButton.click();
 
     const inputField = page.locator("input[id='private-key-box']");
-    await inputField.fill(parsedPrivateKey);
+    await inputField.fill(privateKey);
 
     const confirmButton = page.getByTestId(onboardSelectors.importAccountConfirmButton);
     await expect(confirmButton).toBeEnabled();
@@ -63,7 +59,7 @@ export async function addAccount({ page, privateKey, accountName }: AddAccount) 
     if (activeAccountName) {
         await renameImportedAccount({
             page,
-            accountName: parsedAccountName,
+            accountName,
             activeAccountLocator: activeAccount,
             activeAccountName,
         });

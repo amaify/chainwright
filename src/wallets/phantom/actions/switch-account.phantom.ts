@@ -1,10 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
-import z from "zod";
 import { menuSelectors } from "../selectors/homepage-selectors.phantom";
 
 export async function switchAccount(page: Page, accountName: string) {
-    const parsedAccountName = z.string().min(1, "Account name cannot be an empty string").parse(accountName);
-
     const openMenuButton = page.getByTestId(menuSelectors.openMenuButton);
     await openMenuButton.click();
 
@@ -15,14 +12,14 @@ export async function switchAccount(page: Page, accountName: string) {
 
     for (const account of accountButton) {
         const textContent = await account.textContent();
-        if (textContent?.includes(parsedAccountName)) {
+        if (textContent?.includes(accountName)) {
             accountListButton = account;
             break;
         }
     }
 
     if (!accountListButton) {
-        throw new Error(`Account with name "${parsedAccountName}" not found in the account list.`);
+        throw new Error(`Account with name "${accountName}" not found in the account list.`);
     }
 
     await accountListButton.click();

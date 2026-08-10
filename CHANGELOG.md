@@ -1,5 +1,11 @@
 # @tobelabs/chainwright
 
+## 0.11.0
+
+### Minor Changes
+
+- [Core] - Replace the 'glob' package with Node.js internal method
+
 ## 0.10.17
 
 ### Patch Changes

@@ -1,7 +1,7 @@
+import { globSync as glob } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { styleText } from "node:util";
-import { glob } from "glob";
 import type { CLIOptions, GetSetupFunctionFileList, SupportedWallets } from "@/types";
 import extractWalletNameFromPath from "@/utils/wallets/extract-wallet-name-from-path";
 import type { defineWalletSetup } from "./define-wallet-setup";
@@ -17,7 +17,7 @@ const toPosix = (path: string) => path.replace(/\\/g, "/");
 
 const createGlobPattern = (walletSetupDir: string) => {
     const base = toPosix(path.resolve(walletSetupDir));
-    return `${base}/**/*.setup.{ts,js,}`;
+    return `${base}/**/*.setup.{ts,js,mjs}`;
 };
 
 const importSetupFile = (filePath: string) => {
@@ -27,14 +27,12 @@ const importSetupFile = (filePath: string) => {
 
 export default async function getSetupFunction({ walletSetupDir, selectedWallets }: SetupFunctionHash) {
     const globPattern = createGlobPattern(walletSetupDir);
-    const fileList = (
-        await glob(globPattern, {
-            dot: true,
-            absolute: true,
-            nodir: true,
-            windowsPathsNoEscape: true,
-        })
-    ).sort();
+    const fileList = glob(globPattern, {
+        withFileTypes: true,
+    })
+        .filter((dirent) => dirent.isFile())
+        .map((dirent) => path.join(dirent.parentPath, dirent.name))
+        .sort();
 
     // biome-ignore lint/style/noNonNullAssertion: We will always have a selected wallet
     const _selectedWallets = selectedWallets.length === 1 ? selectedWallets[0]! : selectedWallets;
