@@ -1,5 +1,11 @@
 # @tobelabs/chainwright
 
+## 0.10.16
+
+### Patch Changes
+
+- [Core] - Update Playwright and other core dependencies
+
 ## 0.10.15
 
 ### Patch Changes
