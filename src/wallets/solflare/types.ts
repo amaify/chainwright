@@ -1,5 +1,4 @@
 import type { Page } from "@playwright/test";
-import z from "zod";
 import type { Solflare } from "./solflare";
 
 export type OnboardingArgs = {
@@ -11,12 +10,10 @@ export type OnboardingArgs = {
 
 export type SwitchNetwork = Omit<Required<OnboardingArgs>, "recoveryPhrase">["network"];
 
-export const addAccountSchema = z.object({
-    walletName: z.string().min(1, "Wallet name cannot be an empty string"),
-    privateKey: z.string().min(1, "Private key cannot be an empty string"),
-});
-
-export type AddAccountArgs = z.infer<typeof addAccountSchema>;
+export type AddAccountArgs = {
+    walletName: string;
+    privateKey: string;
+};
 
 export type RenameAccountArgs = {
     currentAccountName: string;

@@ -1,20 +1,13 @@
 import { expect, type Page } from "@playwright/test";
 import { settingsSelectors } from "../selectors/homepage-selectors.metamask";
-import { type AddCustomNetwork, addCustomNetworkSchema } from "../types";
+import type { AddCustomNetwork } from "../types";
 import { openSettings } from "./open-settings.metamask";
 
 interface AddCustomNetworkArgs extends AddCustomNetwork {
     page: Page;
 }
 
-export async function addCustomNetwork({ page, ...args }: AddCustomNetworkArgs) {
-    const { chainId, currencySymbol, networkName, rpcUrl } = addCustomNetworkSchema.parse(
-        { ...args },
-        {
-            reportInput: true,
-        },
-    );
-
+export async function addCustomNetwork({ page, chainId, currencySymbol, networkName, rpcUrl }: AddCustomNetworkArgs) {
     await openSettings(page);
     const networksButton = page.getByTestId(settingsSelectors.networksButton);
     await networksButton.click();

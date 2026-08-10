@@ -1,25 +1,21 @@
 import fs from "node:fs";
 import path from "node:path";
-import { glob } from "glob";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, describe, expect, it } from "vitest";
 import type { CLIOptions } from "@/types";
 import getSetupFunction from "../get-setup-function";
 
-// Mock glob
-vi.mock("glob", () => ({
-    glob: vi.fn(),
-}));
-
 describe("getSetupFunction", () => {
-    const WALLET_SETUP_DIR = path.resolve(process.cwd(), "src/core/test/wallet-setup-test-files");
+    const TEST_ROOT = path.resolve(process.cwd(), "src/core/test/wallet-setup-test-files");
 
-    beforeAll(() => {
-        const setupFiles = ["metamask.setup.ts", "metamask-two.setup.ts", "phantom.setup.ts", "solflare.setup.ts"];
-        fs.mkdirSync(WALLET_SETUP_DIR, { recursive: true });
+    let dirCounter = 0;
+
+    function createSetupDir(setupFiles: string[]): string {
+        const walletSetupDir = path.resolve(TEST_ROOT, `case-${++dirCounter}`);
+        fs.mkdirSync(walletSetupDir, { recursive: true });
 
         setupFiles.forEach((filename) => {
             fs.writeFileSync(
-                path.resolve(WALLET_SETUP_DIR, filename),
+                path.resolve(walletSetupDir, filename),
                 `
                     import { defineWalletSetup } from "@/core/define-wallet-setup";
 
@@ -27,40 +23,31 @@ describe("getSetupFunction", () => {
                         console.info("Setting up ${filename}.....");
                         return void 0;
                     }, ${filename === "metamask-two.setup.ts" ? '{ profileName: "profile-two" }' : undefined});
-                        
+
                 `,
             );
         });
-    });
+
+        return walletSetupDir;
+    }
 
     afterAll(() => {
-        fs.rmSync(WALLET_SETUP_DIR, { force: true, recursive: true });
+        fs.rmSync(TEST_ROOT, { force: true, recursive: true });
     });
 
-    async function handleMock(
-        mockFilePaths: string[],
-        selectedWallet: Array<CLIOptions> = ["all"],
-        walletSetupDir?: string,
-    ) {
-        vi.mocked(glob).mockResolvedValue(mockFilePaths);
-
-        const result = await getSetupFunction({
-            walletSetupDir: walletSetupDir ?? WALLET_SETUP_DIR,
-            selectedWallets: selectedWallet,
-        });
-
-        return result;
+    async function runSetup(walletSetupDir: string, selectedWallets: Array<CLIOptions> = ["all"]) {
+        return getSetupFunction({ walletSetupDir, selectedWallets });
     }
 
     it("should return all setup functions when selectedWallet is 'all'", async () => {
-        const mockFilePaths = [
-            path.resolve(WALLET_SETUP_DIR, "metamask.setup.ts"),
-            path.resolve(WALLET_SETUP_DIR, "metamask-two.setup.ts"),
-            path.resolve(WALLET_SETUP_DIR, "phantom.setup.ts"),
-            path.resolve(WALLET_SETUP_DIR, "solflare.setup.ts"),
-        ];
+        const walletSetupDir = createSetupDir([
+            "metamask.setup.ts",
+            "metamask-two.setup.ts",
+            "phantom.setup.ts",
+            "solflare.setup.ts",
+        ]);
 
-        const result = await handleMock(mockFilePaths);
+        const result = await runSetup(walletSetupDir);
 
         expect(result).toHaveLength(4);
         expect(result[0]).toHaveProperty("walletName");
@@ -75,14 +62,22 @@ describe("getSetupFunction", () => {
         });
     });
 
+    it("should ignore directories whose names match the setup file pattern", async () => {
+        const walletSetupDir = createSetupDir(["metamask.setup.ts", "phantom.setup.ts"]);
+        fs.mkdirSync(path.resolve(walletSetupDir, "solflare.setup.ts"));
+
+        const result = await runSetup(walletSetupDir);
+
+        expect(result).toHaveLength(2);
+        const walletNames = result.map((r) => r.walletName);
+        expect(walletNames).not.toContain("solflare");
+    });
+
     it("should filter setup functions when selectedWallet is specific", async () => {
-        const mockFilePaths = [
-            path.resolve(WALLET_SETUP_DIR, "metamask.setup.ts"),
-            path.resolve(WALLET_SETUP_DIR, "metamask-two.setup.ts"),
-            path.resolve(WALLET_SETUP_DIR, "phantom.setup.ts"),
-        ];
-        vi.mocked(glob).mockResolvedValue(mockFilePaths);
-        const result = await handleMock(mockFilePaths, ["metamask"]);
+        const walletSetupDir = createSetupDir(["metamask.setup.ts", "metamask-two.setup.ts", "phantom.setup.ts"]);
+
+        const result = await runSetup(walletSetupDir, ["metamask"]);
+
         expect(result).toHaveLength(2);
         result.forEach((item) => {
             expect(item).toHaveProperty("walletName", "metamask");
@@ -92,11 +87,11 @@ describe("getSetupFunction", () => {
     });
 
     it("should throw an error when no setup files are found", async () => {
-        vi.mocked(glob).mockResolvedValue([]);
+        const walletSetupDir = createSetupDir([]);
 
-        await expect(handleMock([], ["all"])).rejects.toThrowError(
+        await expect(runSetup(walletSetupDir, ["all"])).rejects.toThrowError(
             [
-                `No wallet setup file found at ${WALLET_SETUP_DIR} for wallet: "all".`,
+                `No wallet setup file found at ${walletSetupDir} for wallet: "all".`,
                 `Setup files must use a ".setup.{ts,js,mjs}" extension and include a valid wallet name.`,
                 `Examples: "metamask.setup.ts", "solflare.setup.ts", "phantom.setup.ts", "metamask-connected.setup.ts"`,
             ].join("\n "),
@@ -104,17 +99,11 @@ describe("getSetupFunction", () => {
     });
 
     it("should throw an error when filtered file list is empty", async () => {
-        const walletSetupDir = "/test/wallet-setup";
-        const mockFilePaths = [
-            path.resolve("/test/wallet-setup/phantom.setup.ts"),
-            path.resolve("/test/wallet-setup/solflare.setup.ts"),
-        ];
+        const walletSetupDir = createSetupDir(["phantom.setup.ts", "solflare.setup.ts"]);
 
-        vi.mocked(glob).mockResolvedValue(mockFilePaths);
-
-        await expect(handleMock(mockFilePaths, ["metamask"], walletSetupDir)).rejects.toThrow(
+        await expect(runSetup(walletSetupDir, ["metamask"])).rejects.toThrow(
             [
-                `No wallet setup file found at /test/wallet-setup for wallet: "metamask".`,
+                `No wallet setup file found at ${walletSetupDir} for wallet: "metamask".`,
                 `Setup files must use a ".setup.{ts,js,mjs}" extension and include a valid wallet name.`,
                 `Examples: "metamask.setup.ts", "solflare.setup.ts", "phantom.setup.ts", "metamask-connected.setup.ts"`,
             ].join("\n "),
@@ -122,11 +111,9 @@ describe("getSetupFunction", () => {
     });
 
     it("should handle wallet profiles correctly", async () => {
-        const mockFilePaths = [path.resolve(WALLET_SETUP_DIR, "metamask-two.setup.ts")];
+        const walletSetupDir = createSetupDir(["metamask-two.setup.ts"]);
 
-        vi.mocked(glob).mockResolvedValue(mockFilePaths);
-
-        const result = await handleMock(mockFilePaths, ["metamask"]);
+        const result = await runSetup(walletSetupDir, ["metamask"]);
 
         expect(result).toHaveLength(1);
         expect(result[0]).toHaveProperty("walletName", "metamask");
@@ -134,52 +121,37 @@ describe("getSetupFunction", () => {
         expect(result[0]).toHaveProperty("setupFunction");
     });
 
-    it("should use absolute paths in glob pattern", async () => {
-        const walletSetupDir = "src/core/test/wallet-setup-test-files";
-        const resolvedDir = path.resolve(process.cwd(), walletSetupDir);
-        const mockFilePaths = [path.resolve(resolvedDir, "metamask.setup.ts")];
+    it("should resolve a relative walletSetupDir to absolute file paths", async () => {
+        const walletSetupDir = createSetupDir(["metamask.setup.ts"]);
+        const relativeDir = path.relative(process.cwd(), walletSetupDir);
 
-        vi.mocked(glob).mockResolvedValue(mockFilePaths);
+        const result = await runSetup(relativeDir, ["metamask"]);
 
-        await handleMock(mockFilePaths, ["metamask"], walletSetupDir);
-
-        const globCall = vi.mocked(glob).mock.calls[0];
-        if (globCall?.[0]) {
-            expect(globCall[0]).toMatch(/\.setup\.\{ts,js,\}/);
-        }
+        expect(result).toHaveLength(1);
+        result[0]?.fileList.forEach(({ filePath }) => {
+            expect(path.isAbsolute(filePath)).toBe(true);
+        });
     });
 
     it("should sort file list alphabetically", async () => {
-        const mockFilePaths = [
-            path.resolve(WALLET_SETUP_DIR, "solflare.setup.ts"),
-            path.resolve(WALLET_SETUP_DIR, "metamask.setup.ts"),
-            path.resolve(WALLET_SETUP_DIR, "phantom.setup.ts"),
-        ];
+        const walletSetupDir = createSetupDir(["solflare.setup.ts", "metamask.setup.ts", "phantom.setup.ts"]);
 
-        vi.mocked(glob).mockResolvedValue(mockFilePaths);
+        const result = await runSetup(walletSetupDir, ["all"]);
 
-        const result = await handleMock(mockFilePaths, ["all"]);
-
-        expect(vi.mocked(glob)).toHaveBeenCalled();
-        // Verify the file list is sorted (glob should sort, but we verify the result)
-        const sortedPaths = [...mockFilePaths].sort();
+        const expectedPaths = ["metamask.setup.ts", "phantom.setup.ts", "solflare.setup.ts"].map((filename) =>
+            path.resolve(walletSetupDir, filename),
+        );
         const firstResult = result[0];
         if (firstResult) {
-            // The fileList should match the sorted order
             const fileListPaths = firstResult.fileList.map((f) => f.filePath);
-            expect(fileListPaths).toEqual(sortedPaths);
+            expect(fileListPaths).toEqual(expectedPaths);
         }
     });
 
     it("should include fileList in all returned objects", async () => {
-        const mockFilePaths = [
-            path.resolve(WALLET_SETUP_DIR, "metamask.setup.ts"),
-            path.resolve(WALLET_SETUP_DIR, "phantom.setup.ts"),
-        ];
+        const walletSetupDir = createSetupDir(["metamask.setup.ts", "phantom.setup.ts"]);
 
-        vi.mocked(glob).mockResolvedValue(mockFilePaths);
-
-        const result = await handleMock(mockFilePaths, ["all"]);
+        const result = await runSetup(walletSetupDir, ["all"]);
 
         expect(result).toHaveLength(2);
         result.forEach((item) => {
@@ -187,23 +159,17 @@ describe("getSetupFunction", () => {
             expect(item.fileList).toHaveLength(2);
             expect(item.fileList).toEqual(
                 expect.arrayContaining([
-                    expect.objectContaining({ filePath: mockFilePaths[0] }),
-                    expect.objectContaining({ filePath: mockFilePaths[1] }),
+                    expect.objectContaining({ filePath: path.resolve(walletSetupDir, "metamask.setup.ts") }),
+                    expect.objectContaining({ filePath: path.resolve(walletSetupDir, "phantom.setup.ts") }),
                 ]),
             );
         });
     });
 
     it("should correctly extract wallet names from file paths", async () => {
-        const mockFilePaths = [
-            path.resolve(WALLET_SETUP_DIR, "metamask.setup.ts"),
-            path.resolve(WALLET_SETUP_DIR, "metamask-two.setup.ts"),
-            path.resolve(WALLET_SETUP_DIR, "phantom.setup.ts"),
-        ];
+        const walletSetupDir = createSetupDir(["metamask.setup.ts", "metamask-two.setup.ts", "phantom.setup.ts"]);
 
-        vi.mocked(glob).mockResolvedValue(mockFilePaths);
-
-        const result = await handleMock(mockFilePaths, ["all"]);
+        const result = await runSetup(walletSetupDir, ["all"]);
 
         expect(result).toHaveLength(3);
         // Verify wallet names are correctly extracted
