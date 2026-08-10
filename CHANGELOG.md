@@ -1,5 +1,11 @@
 # @tobelabs/chainwright
 
+## 0.10.17
+
+### Patch Changes
+
+- [Release] - Fix failing release build by reverting from Typescript v7.0.2 to v5.9.3
+
 ## 0.10.16
 
 ### Patch Changes
