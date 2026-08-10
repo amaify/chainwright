@@ -1,3 +1,3 @@
-#!/usr/bin/env -S node --import tsx
+#!/usr/bin/env node
 
 export * from "./entry-point";

@@ -1,5 +1,4 @@
 import type { Page } from "@playwright/test";
-import z from "zod";
 import { menuSelectors, settingsSelectors } from "../selectors/homepage-selectors.phantom";
 import type { GetAccountAddress } from "../types";
 
@@ -8,14 +7,13 @@ type GetAccountAddressArgs = GetAccountAddress & { page: Page };
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export async function getAccountAddress({ page, accountName, chain }: GetAccountAddressArgs) {
-    const parsedAccountName = z.string().min(1, "Account name cannot be an empty string").parse(accountName);
     const openMenuButton = page.getByTestId(menuSelectors.openMenuButton);
     await openMenuButton.click();
 
     const manageAccountsButton = page.getByTestId(menuSelectors.manageAccountsButton);
     await manageAccountsButton.click();
 
-    const accountProfileToSelect = page.getByTestId(`manage-accounts-sortable-${parsedAccountName}`);
+    const accountProfileToSelect = page.getByTestId(`manage-accounts-sortable-${accountName}`);
     await accountProfileToSelect.click();
 
     const accountAddressesButton = page.getByRole("button", { name: /Account Address(?:es)?/i });

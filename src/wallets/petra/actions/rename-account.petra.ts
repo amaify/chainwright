@@ -1,5 +1,4 @@
 import { expect, type Page } from "@playwright/test";
-import z from "zod";
 import { accountSelectors, homepageSelectors } from "../selectors/homepage-selectors.petra";
 
 export type RenameAccount = {
@@ -8,8 +7,6 @@ export type RenameAccount = {
 };
 
 export async function renameAccount({ page, newAccountName }: RenameAccount) {
-    const parsedNewAccountName = z.string().min(1, "Account name cannot be an empty string").parse(newAccountName);
-
     const settingsMenuButton = page.locator(homepageSelectors.settingsMenu);
     await settingsMenuButton.click();
 
@@ -23,17 +20,17 @@ export async function renameAccount({ page, newAccountName }: RenameAccount) {
 
     const currentAccountName = await renameInput.getAttribute("value");
 
-    if (currentAccountName === parsedNewAccountName) {
-        throw Error(`The account to be renamed "${parsedNewAccountName}" already exists.`);
+    if (currentAccountName === newAccountName) {
+        throw Error(`The account to be renamed "${newAccountName}" already exists.`);
     }
 
-    await renameInput.fill(parsedNewAccountName);
+    await renameInput.fill(newAccountName);
 
     const saveButton = page.locator(accountSelectors.saveButton);
     await expect(saveButton).toBeEnabled();
     await saveButton.click();
 
-    await expect(page.getByText(parsedNewAccountName).first()).toBeVisible();
+    await expect(page.getByText(newAccountName).first()).toBeVisible();
     const backButton = page.locator(homepageSelectors.backButton);
     await backButton.click();
 

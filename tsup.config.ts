@@ -12,7 +12,7 @@ export default defineConfig({
         "src/wallets/phantom/index.ts",
         "src/wallets/solflare/index.ts",
     ],
-    external: ["@inquirer/checkbox", "@playwright/test", "adm-zip", "cli-progress", "commander", "glob", "tsx", "zod"],
+    external: ["@inquirer/checkbox", "@playwright/test", "adm-zip", "cli-progress", "commander"],
     outDir: "dist",
     format: "esm",
     platform: "node",
