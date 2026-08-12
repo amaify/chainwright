@@ -37,8 +37,8 @@ Chainwright is an end-to-end testing toolkit for Web3 dapps built on Playwright.
 
 ## Requirements
 
-- Node.js `>=22`
-- `@playwright/test@1.61.1` (peer dependency)
+- Node.js `>=22.18`
+- `@playwright/test@1.62.1` (peer dependency)
 
 ## Operating Systems
 Supports the following operating systems:
@@ -77,7 +77,7 @@ yarn add -D chainwright @playwright/test
 
 ### 1. Create wallet setup files
 
-Create a setup directory (default: `tests/wallet-setup`) and add `*.setup.ts` files with a wallet name in the filename, for example:
+Create a setup directory (default: `tests/wallet-setup`) and add files with a `*.setup.ts` domain in the filename, for example:
 
 - `base.setup.ts`
 - `base-two.setup.ts`
@@ -145,9 +145,9 @@ export default defineWalletSetup(
 );
 ```
 
-To support multiple profiles in a single wallet (for example, MetaMask), only setup files from the second profile onward need an explicit, distinct profile name.
+To support multiple profiles in a single wallet (for example, MetaMask), only setup files from the second profile onward need a distinct profile name.
 
-`main.setup.ts` can use the default profile, while `main-two.setup.ts` (and any additional setup files) should declare a unique profile name. Then, in any fixture that should use that profile, pass the exact `profileName` value.
+`main.setup.ts` can use the default profile, while `main-two.setup.ts` (and any additional setup files) should declare a unique profile name. Then, in any fixture that should use that profile, pass the exact `profileName`.
 
 Example:
 - `main.setup.ts`: uses the default profile
@@ -192,7 +192,7 @@ These are Chainwright's wallet extensions and their versions:
   - **Phantom**: v26.10.0 [Source](https://github.com/amaify/chainwright/releases/tag/v0.1.0)
   - **Solflare**: v2.19.1 [Source](https://github.com/amaify/chainwright/releases/tag/v0.1.0)
   - **Meteor**: v0.7.0 [Source](https://github.com/amaify/chainwright/releases/tag/v0.1.0)
-  - **Keplr**: v0.13.39 [Source](https://github.com/chainapsis/keplr-wallet/releases/tag/v0.13.39)
+  - **Keplr**: v0.13.39 [Source](https://github.com/amaify/chainwright/releases/tag/v0.1.0)
 
 Example:
 
@@ -248,8 +248,6 @@ bun chainwright --metamask --force
 
 # Overriding multiple existing wallet cache during setup
 bun chainwright --wallets metamask phantom petra --force
-
-# NOTE: These command will work with other package managers. npm, pnpm, and yarn.
 ```
 
 To specify a directory:
@@ -258,7 +256,7 @@ To specify a directory:
 bun chainwright <directory path> <wallet>
 
 Example:
-bun chainwright ./src/e2e/your-tests --metamask
+bun chainwright ./src/e2e/setup-files --metamask
 ```
 
 Useful flags:
@@ -326,7 +324,7 @@ const testWithFixture = testWithChainwright(fixture({ profileName: "profile name
 
 ## Worker-Scoped Fixture
 
-Use worker-scoped fixtures when tests in a `test.describe()` block can safely share a wallet context. Setup and teardown run once per worker instead of per test, which speeds up CI runs and reduces flakiness caused by repeated wallet initialization.
+Use worker-scoped fixtures when you want your tests to share the same wallet context. Setup and teardown run once per worker instead of per test, which speeds up CI runs and reduces flakiness caused by repeated wallet initialization.
 
 ```ts
 import { type Page } from "@playwright/test";
@@ -396,6 +394,9 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     timeout-minutes: 60
+    strategy:
+      matrix:
+        node-version: [24]
 
     steps:
       - name: Checkout code
@@ -405,18 +406,15 @@ jobs:
           fetch-depth: 0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v5
+        uses: pnpm/setup@v2
         with:
-          version: 10
-
-      - name: Use Node LTS
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24.x
-          cache: "pnpm"
+          runtime: node@${{ matrix.node-version }}
+          version: 11
+          install: false
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Install XVFB
         run: sudo apt-get install -y xvfb
@@ -468,9 +466,9 @@ Extra Phantom/Solflare fixtures:
 defineWalletSetup(password, setupFn, config?)
 ```
 
-- `password: string` - wallet unlock password saved in cache metadata
-- `setupFn: ({ context, walletPage }) => Promise<void>` - runs onboarding/import flow
-- `config?: { profileName?: string; slowMo?: number, extensionSource?: {...} }` - useful for setting up multiple wallet profiles, running the setup in slow motion `slowMo` and using a custom extension source.
+- `password: string` - wallet unlock password saved as a `.txt` file in the wallet cache
+- `setupFn: ({ context, walletPage }) => Promise<void>` - runs onboarding/setup flow
+- `config?: { profileName?: string; slowMo?: number, extensionSource?: {downloadUrl: "...", localPath: "...", sha256: "..."} }` - useful for setting up multiple wallet profiles, running the setup in slow motion `slowMo` and using a custom extension source.
 
 ### `testWithChainwright`
 
