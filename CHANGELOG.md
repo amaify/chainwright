@@ -1,5 +1,11 @@
 # @tobelabs/chainwright
 
+## 0.11.1
+
+### Patch Changes
+
+- Update the README.md
+
 ## 0.11.0
 
 ### Minor Changes
