@@ -91,8 +91,7 @@
         "check:ci": "pnpm run lint && pnpm run check:types",
         "format": "biome format --write ./src",
         "tests:e2e:debug": "playwright test --config=tests/playwright.config.ts --debug",
-        "tests:e2e:ui": "playwright test --config=tests/playwright.config.ts --ui",
-        "add:wallet": "tsx scripts/add-wallet.ts"
+        "tests:e2e:ui": "playwright test --config=tests/playwright.config.ts --ui"
     },
     "peerDependencies": {
         "@playwright/test": "1.62.1"
