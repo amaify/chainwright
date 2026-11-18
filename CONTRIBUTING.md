@@ -42,7 +42,7 @@ When contributing:
 - `src/`: core library, wallet modules, CLI
 - `tests/e2e/`: end-to-end wallet and dapp specs
 - `tests/wallet-setup/`: setup files used to build wallet cache
-- `scripts/`: helper tooling (including wallet scaffolding)
+- `.claude/skills/`: Claude Code skills (including `add-wallet` for scaffolding a new wallet)
 - `examples/`: Contains wallet setup examples
 
 ## Development Commands
@@ -66,15 +66,21 @@ When contributing:
 
 ## Adding a New Wallet
 
-Use the wallet scaffolder:
+Adding a wallet is handled by the `add-wallet` [Claude Code](https://claude.com/claude-code) skill (`.claude/skills/add-wallet/SKILL.md`):
 
-- `pnpm run add:wallet`: Specify the wallet name
+1. **Scaffold** with just the wallet name:
 
-```bash
-pnpm run add:wallet foxtrot
-```
+   ```
+   /add-wallet <wallet>
+   ```
 
-Then implement wallet-specific actions/selectors and add/update tests in `tests/e2e` and `tests/wallet-setup`.
+   The skill creates `src/wallets/<wallet>/` and its tests by mirroring an existing wallet. It then registers the wallet everywhere it needs to be listed: CLI flags, `src/types.ts`, `src/utils/constants.ts`, `tsup.config.ts`, `package.json` exports, the README and the examples. Finally it runs lint, type checks and unit tests. Values that depend on the extension (download URL, checksum, manifest name, page paths) are left as `TODO(add-wallet)` placeholders, and nothing is downloaded at this stage.
+
+2. **Add the extension** once you have its download URL. Give the URL to Claude (e.g. `/add-wallet <wallet> <download-url>`) and it will fill in the placeholders.
+
+If you're not using Claude Code, follow `.claude/skills/add-wallet/SKILL.md` by hand. It's a step-by-step checklist.
+
+Then implement the wallet-specific actions and selectors, and remove `test.fixme` from each spec in `tests/e2e/<wallet>` once its action works.
 
 ## Changesets (Required for User-Facing Changes)
 
